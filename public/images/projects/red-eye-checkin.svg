@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Red Eye Tickets mobile check-in workflow visual</title>
+  <desc id="desc">A self-hosted visual showing the mobile check-in scanner, pause controls, admission state, and attendance reporting workflow.</desc>
+  <rect width="1280" height="720" fill="#000f21"/>
+  <rect x="110" y="80" width="330" height="560" rx="36" fill="#071628" stroke="rgba(255,255,255,.2)"/>
+  <rect x="140" y="118" width="270" height="486" rx="24" fill="#16a34a"/>
+  <path d="M202 246H162V206M348 246H388V206M202 466H162V506M348 466H388V506" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="8"/>
+  <text x="208" y="382" fill="#00170b" font-family="Arial, sans-serif" font-size="52" font-weight="900">ADMIT</text>
+  <text x="204" y="426" fill="#00170b" font-family="Arial, sans-serif" font-size="24" font-weight="800">Ticket valid</text>
+  <text x="516" y="178" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="4">ADMISSIONS WORKFLOW</text>
+  <text x="516" y="258" fill="#ffffff" font-family="Arial, sans-serif" font-size="66" font-weight="800">Mobile check-in</text>
+  <text x="520" y="310" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="24">Scanner states built for fast doors, staff confidence, and practical device use.</text>
+  <g transform="translate(520 396)">
+    <rect width="154" height="78" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)"/>
+    <text x="24" y="36" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800">Scan</text>
+    <text x="24" y="59" fill="#8da0b8" font-family="Arial, sans-serif" font-size="14">QR status</text>
+    <rect x="178" width="154" height="78" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)"/>
+    <text x="202" y="36" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800">Pause</text>
+    <text x="202" y="59" fill="#8da0b8" font-family="Arial, sans-serif" font-size="14">battery saver</text>
+    <rect x="356" width="154" height="78" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)"/>
+    <text x="380" y="36" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800">Report</text>
+    <text x="380" y="59" fill="#8da0b8" font-family="Arial, sans-serif" font-size="14">attendance</text>
+  </g>
+</svg>

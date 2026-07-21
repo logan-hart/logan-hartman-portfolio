@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">The Heart motion and heartbeat animation visual</title>
+  <desc id="desc">A self-hosted motion case-study visual showing heartbeat timing, wave animation, and theatrical interaction direction.</desc>
+  <rect width="1280" height="720" fill="#030306"/>
+  <defs>
+    <linearGradient id="heart" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffb703"/>
+      <stop offset=".5" stop-color="#d61aff"/>
+      <stop offset="1" stop-color="#fb7b16"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="13" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <path d="M0 350 C168 240 290 452 438 342 C590 228 688 458 858 330 C1012 214 1126 366 1280 300" fill="none" stroke="#8d2cff" stroke-width="10" opacity=".65" filter="url(#glow)"/>
+  <circle cx="438" cy="324" r="162" fill="none" stroke="url(#heart)" stroke-width="8" stroke-dasharray="3 12" filter="url(#glow)"/>
+  <text x="376" y="318" fill="#ffffff" font-family="Arial, sans-serif" font-size="72" font-weight="500" letter-spacing="3">THE</text>
+  <text x="310" y="400" fill="#ffffff" font-family="Arial, sans-serif" font-size="92" font-weight="500" letter-spacing="2">HEART</text>
+  <text x="708" y="226" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="4">MOTION SYSTEM</text>
+  <text x="708" y="300" fill="#ffffff" font-family="Arial, sans-serif" font-size="54" font-weight="800">Heartbeat timing</text>
+  <text x="710" y="348" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="23">GSAP-style sequencing preserved as a lightweight interaction demo.</text>
+  <path d="M710 462 H790 L826 392 L882 540 L928 454 H1138" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M710 462 H790 L826 392 L882 540 L928 454 H1138" fill="none" stroke="#8d2cff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+</svg>

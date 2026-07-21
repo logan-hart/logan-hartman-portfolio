@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">CATS Jellicle Ball hero case-study visual</title>
+  <desc id="desc">A self-hosted CATS hero visual summarizing theatrical artwork, carousel behavior, and responsive frontend direction.</desc>
+  <rect width="1280" height="720" fill="#ffee00"/>
+  <rect x="68" y="70" width="1144" height="580" rx="10" fill="#050505"/>
+  <text x="116" y="154" fill="#ffee00" font-family="Arial Black, Arial, sans-serif" font-size="22" font-weight="900" letter-spacing="4">FRONTEND INTERACTION</text>
+  <text x="116" y="260" fill="#ffee00" font-family="Arial Black, Arial, sans-serif" font-size="84" font-weight="900">CATS</text>
+  <text x="116" y="334" fill="#ffffff" font-family="Arial, sans-serif" font-size="38">The Jellicle Ball</text>
+  <text x="118" y="398" fill="#ffee00" font-family="Arial, sans-serif" font-size="25">Pure CSS carousel loop, repeated image track, responsive theatrical layout.</text>
+  <g transform="translate(660 148)">
+    <rect width="330" height="390" rx="10" fill="#ffee00"/>
+    <circle cx="106" cy="118" r="52" fill="#050505"/>
+    <circle cx="226" cy="118" r="52" fill="#050505"/>
+    <path d="M90 284 C148 226 216 226 276 284" fill="none" stroke="#050505" stroke-width="12" stroke-linecap="round"/>
+    <path d="M74 332H260" stroke="#050505" stroke-width="14" stroke-linecap="round"/>
+  </g>
+</svg>

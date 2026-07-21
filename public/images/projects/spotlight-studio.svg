@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Spotlight Strategies discovery-to-implementation visual</title>
+  <desc id="desc">A self-hosted case-study visual showing discovery, communication, structure, and implementation work for client projects.</desc>
+  <rect width="1280" height="720" fill="#000f21"/>
+  <rect x="70" y="68" width="1140" height="584" rx="10" fill="#071628" stroke="rgba(255,255,255,.16)"/>
+  <text x="112" y="142" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="4">CLIENT STRATEGY</text>
+  <text x="112" y="222" fill="#ffffff" font-family="Arial, sans-serif" font-size="68" font-weight="800">Discovery Through</text>
+  <text x="112" y="294" fill="#ffffff" font-family="Arial, sans-serif" font-size="68" font-weight="800">Implementation</text>
+  <text x="116" y="348" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="24">Turning loose goals into websites, decks, brand systems, and clear next steps.</text>
+  <g transform="translate(112 452)">
+    <rect width="202" height="98" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
+    <text x="26" y="44" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="800">Discover</text>
+    <text x="26" y="72" fill="#8da0b8" font-family="Arial, sans-serif" font-size="15">goals and users</text>
+    <rect x="246" width="202" height="98" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
+    <text x="272" y="44" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="800">Structure</text>
+    <text x="272" y="72" fill="#8da0b8" font-family="Arial, sans-serif" font-size="15">message hierarchy</text>
+    <rect x="492" width="202" height="98" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
+    <text x="518" y="44" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="800">Build</text>
+    <text x="518" y="72" fill="#8da0b8" font-family="Arial, sans-serif" font-size="15">usable deliverables</text>
+  </g>
+  <g transform="translate(806 140)" opacity=".95">
+    <rect width="300" height="378" rx="10" fill="#0b1b2f" stroke="rgba(255,255,255,.17)"/>
+    <rect x="24" y="28" width="252" height="126" rx="8" fill="rgba(251,123,22,.16)"/>
+    <path d="M52 76H218M52 112H188" stroke="#fb7b16" stroke-width="9" stroke-linecap="round"/>
+    <rect x="24" y="184" width="110" height="74" rx="8" fill="rgba(255,255,255,.08)"/>
+    <rect x="166" y="184" width="110" height="74" rx="8" fill="rgba(255,255,255,.08)"/>
+    <path d="M40 300H260M40 334H220" stroke="rgba(255,255,255,.32)" stroke-width="9" stroke-linecap="round"/>
+  </g>
+</svg>

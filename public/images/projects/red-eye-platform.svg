@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Red Eye Tickets product platform workflow visual</title>
+  <desc id="desc">A self-hosted Red Eye Tickets case-study visual showing event commerce, payments, check-in, and operations workflows.</desc>
+  <rect width="1280" height="720" fill="#000f21"/>
+  <rect x="72" y="70" width="1136" height="580" rx="10" fill="#071628" stroke="rgba(255,255,255,.16)"/>
+  <text x="112" y="136" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="4">PRODUCT SYSTEMS</text>
+  <text x="112" y="214" fill="#ffffff" font-family="Arial, sans-serif" font-size="70" font-weight="800">Red Eye Tickets</text>
+  <text x="116" y="260" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="24">Commerce, admissions, producer tools, reporting, and support operations.</text>
+  <text x="116" y="306" fill="#8da0b8" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2">PRODUCTION FLOORS · JULY 21, 2026</text>
+  <g transform="translate(112 338)">
+    <rect width="208" height="118" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
+    <text x="26" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">19K+</text>
+    <text x="26" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">orders processed</text>
+    <rect x="232" width="208" height="118" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
+    <text x="258" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">29K+</text>
+    <text x="258" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">tickets issued</text>
+    <rect x="464" width="254" height="118" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
+    <text x="490" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">$900K+</text>
+    <text x="490" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">gross payment volume</text>
+  </g>
+  <g transform="translate(736 184)">
+    <rect width="348" height="326" rx="12" fill="#0b1b2f" stroke="rgba(255,255,255,.18)"/>
+    <path d="M48 84H296M48 150H238M48 216H278" stroke="rgba(255,255,255,.22)" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="80" cy="84" r="12" fill="#fb7b16"/>
+    <circle cx="80" cy="150" r="12" fill="#fb7b16"/>
+    <circle cx="80" cy="216" r="12" fill="#fb7b16"/>
+    <path d="M86 84 C154 84 150 150 218 150 S258 216 318 216" fill="none" stroke="#fb7b16" stroke-width="4"/>
+    <rect x="48" y="260" width="252" height="34" rx="17" fill="rgba(251,123,22,.16)" stroke="rgba(251,123,22,.45)"/>
+  </g>
+</svg>

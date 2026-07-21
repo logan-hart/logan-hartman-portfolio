@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: logan-hartman-portfolio
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./out
+    branch: main
+    autoDeploy: true
+    envVars:
+      - key: NEXT_PUBLIC_RED_EYE_DEMO_ENABLED
+        value: false
+    headers:
+      - path: /_next/static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
