@@ -183,8 +183,11 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           </article>
         </section>
 
-        <section className="cats-live-buzz" aria-label="The Buzz editorial system">
+        <section className="cats-live-meow" aria-label="MEOW production artwork">
+          <Image alt="MEOW" height={1246} sizes="100vw" src="/images/cats-live/cats-meow.webp" width={2560} />
+        </section>
 
+        <section className="cats-live-buzz" aria-label="The Buzz editorial system">
           <div className="cats-live-buzz-features" aria-label="Press feature carousel">
             <button aria-label="Previous press features" className="cats-live-buzz-feature-arrow cats-live-buzz-feature-arrow--previous" onClick={() => scrollBuzzFeatures(-1)} type="button">
               <ChevronLeft aria-hidden="true" />
@@ -224,10 +227,6 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
               width={2073}
             />
           </div>
-        </section>
-
-        <section className="cats-live-meow" aria-label="MEOW production artwork">
-          <Image alt="MEOW" height={1246} sizes="100vw" src="/images/cats-live/cats-meow.webp" width={2560} />
         </section>
 
         <div className="cats-live-footer-mark">
