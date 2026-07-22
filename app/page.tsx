@@ -4,6 +4,7 @@ import Link from "next/link";
 import { preload } from "react-dom";
 import { EvidenceCards } from "@/components/red-eye/EvidenceCards";
 import { Section } from "@/components/Section";
+import { careerFacts } from "@/data/careerFacts";
 import {
   impactMetrics,
   operatingManualPrinciples,
@@ -13,7 +14,7 @@ import { redEyeMetricsAsOf } from "@/data/redEyeMetrics";
 
 const approachIcons = [Route, Compass, Blocks];
 const homepageImpactMetrics = impactMetrics.filter((metric) =>
-  ["Ticketed events", "Buyer identities", "Tickets issued", "Gross payment volume"].includes(metric.label),
+  ["Ticketed events", "Buyer identities", "Completed orders", "Tickets issued"].includes(metric.label),
 );
 
 const featuredLabels: Record<string, string> = {
@@ -30,6 +31,7 @@ const featuredTitles: Record<string, string> = {
 };
 
 export default function HomePage() {
+  const redEye = careerFacts.redEye;
   preload("/images/hero-workflow-background.webp", {
     as: "image",
     fetchPriority: "high",
@@ -42,20 +44,25 @@ export default function HomePage() {
         <div aria-hidden="true" className="hero-ribbons" />
         <div className="container hero-content">
           <div className="hero-copy">
-            <p className="eyebrow">Product engineer · Co-Founder &amp; CTO</p>
+            <p className="eyebrow">Product-minded technical builder · Co-Founder &amp; CTO</p>
             <h1>
               Building products for the <span className="accent-text">messy part of real operations.</span>
             </h1>
             <p className="hero-lead">
-              At Red Eye Tickets, I built checkout, payments, producer tools, and live admissions used to issue 29K+
-              tickets across 240+ events.
+              I work across product, engineering, and operations, translating real workflows into reliable software. At
+              Red Eye Tickets, I rebuilt a WordPress MVP into a custom event-commerce platform used by buyers, producers,
+              admins, and door staff.
+            </p>
+            <p className="hero-proof-line">
+              Since its {redEye.customPlatformLaunchLabel} launch: {redEye.metrics.ticketedEvents.value} events ·{" "}
+              {redEye.metrics.completedOrders.value} orders · {redEye.metrics.ticketsIssued.value} tickets.
             </p>
             <div className="actions">
               <Link className="button button--primary" href="/work/red-eye-tickets/">
-                View Red Eye case study <ArrowRight aria-hidden="true" size={18} />
+                Explore Red Eye <ArrowRight aria-hidden="true" size={18} />
               </Link>
               <Link className="button button--ghost" href="/#evidence">
-                Inspect engineering evidence
+                Read engineering stories
               </Link>
             </div>
           </div>
@@ -84,10 +91,10 @@ export default function HomePage() {
       </section>
 
       <Section
-        eyebrow="Inspectable engineering evidence"
+        eyebrow="Engineering evidence"
         id="evidence"
-        title="The claims have artifacts behind them."
-        intro="Production integrations and incidents are separated from documented decisions and local prototypes, so the maturity of each piece is explicit."
+        title="The decisions and systems behind the work."
+        intro="Explore production integrations, incident reviews, architecture decisions, and clearly labeled prototypes."
         variant="tight"
       >
         <EvidenceCards />
@@ -116,7 +123,7 @@ export default function HomePage() {
               >
                 <div className="home-project__media">
                   <Image
-                    alt={`${project.title} project preview`}
+                    alt=""
                     height={720}
                     priority={index === 0}
                     sizes={index === 0 ? "(max-width: 860px) 100vw, 58vw" : "(max-width: 860px) 100vw, 50vw"}
@@ -135,6 +142,9 @@ export default function HomePage() {
                       {project.engagementLabel ? ` · ${project.engagementLabel}` : ""}
                     </p>
                   ) : null}
+                  <div className="status-list" aria-label="Project status">
+                    {project.statusLabels.map((status) => <span key={status}>{status}</span>)}
+                  </div>
                   <div className="home-project__footer">
                     <span>{project.tags.slice(0, 3).join(" · ")}</span>
                     <ArrowRight aria-hidden="true" size={18} />

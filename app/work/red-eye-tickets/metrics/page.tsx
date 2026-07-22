@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function RedEyeMetricsPage() {
   return (
     <EvidencePage
-      eyebrow="Metric methodology"
+      eyebrow="Production evidence"
       title="How the production numbers are counted"
       intro="The case study uses conservative, rounded floors from a read-only production snapshot. This page defines each claim and makes its limits explicit."
       meta={[`Snapshot: ${redEyeMetricsAsOf}`, "Read-only query", "QA fixtures excluded"]}

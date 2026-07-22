@@ -55,12 +55,13 @@ export default function DemosPage() {
                 <div className="demo-tile__body">
                   <Icon aria-hidden="true" size={21} strokeWidth={1.8} />
                   <div>
+                    <span className="status-badge">{project.demoStatus ?? "Live interactive demo"}</span>
                     <span className="category">{project.category}</span>
                     <h3>{project.title}</h3>
                     <p>{project.description}</p>
                   </div>
                   <Link className="card-link" href={demoAnchors[project.slug] ?? `/work/${project.slug}/`}>
-                    {project.slug === "red-eye-tickets" && !redEyeLiveDemoEnabled ? "Review evidence" : "Try demo"} <ArrowUpRight aria-hidden="true" size={17} />
+                    {project.slug === "red-eye-tickets" && !redEyeLiveDemoEnabled ? "Review captured evidence" : "Try demo"} <ArrowUpRight aria-hidden="true" size={17} />
                   </Link>
                 </div>
               </article>
@@ -73,6 +74,7 @@ export default function DemosPage() {
             <div className="demo-tile__body">
               <ShieldCheck aria-hidden="true" size={21} strokeWidth={1.8} />
               <div>
+                <span className="status-badge">Local prototype</span>
                 <span className="category">AI-assisted operations</span>
                 <h3>Red Eye automation loop</h3>
                 <p>

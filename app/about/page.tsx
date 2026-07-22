@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArrowRight, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 import { Section } from "@/components/Section";
+import { careerFacts } from "@/data/careerFacts";
 import { profile } from "@/data/profile";
 
 const capabilities = [
@@ -66,7 +67,7 @@ export default function AboutPage() {
       </Section>
       <Section
         eyebrow="Current focus"
-        title="Co-Founder and CTO at Red Eye Tickets · March 2025–present"
+        title={`Co-Founder and CTO at Red Eye Tickets · ${careerFacts.redEye.rolePeriod}`}
         variant="band"
       >
         <div className="about-current-grid">
@@ -74,13 +75,17 @@ export default function AboutPage() {
             <span>Product scope</span>
             <h3>A live event-commerce platform</h3>
             <p>
-              I own product direction and implementation across checkout, wallet payments, ticket delivery, producer
-              tools, refunds, reporting, and mobile admissions.
+              As the sole technical contributor, I own product direction and implementation across checkout, wallet
+              payments, ticket delivery, producer tools, refunds, reporting, and mobile admissions. The custom platform
+              launched in {careerFacts.redEye.customPlatformLaunchLabel}.
             </p>
           </article>
           <article>
             <span>Operating proof</span>
-            <h3>29K+ tickets across 240+ events</h3>
+            <h3>
+              {careerFacts.redEye.metrics.ticketsIssued.value} tickets across{" "}
+              {careerFacts.redEye.metrics.ticketedEvents.value} events
+            </h3>
             <p>
               The work includes the unglamorous parts of production ownership: edge cases, support workflows,
               incident recovery, release evidence, and tools for people working a live event.
@@ -93,27 +98,13 @@ export default function AboutPage() {
       </Section>
       <Section
         eyebrow="Evidence standard"
-        title="Different maturity levels stay separate."
-        intro="The portfolio labels what ran in production, what was a scoped contribution, and what has only been verified locally."
+        title="Scope and maturity stay visible."
         variant="tight"
       >
-        <div className="about-proof-grid">
-          <article>
-            <span>Production</span>
-            <h3>Operating systems and incidents</h3>
-            <p>Red Eye scale, payment flows, and the Unicode PDF incident come from a live operating product.</p>
-          </article>
-          <article>
-            <span>Contribution</span>
-            <h3>Bounded client and team work</h3>
-            <p>Supporting cases state the contribution boundary instead of implying ownership of an entire production.</p>
-          </article>
-          <article>
-            <span>Prototype</span>
-            <h3>Runnable, with limits visible</h3>
-            <p>Safety evals, the operations gateway, and readiness tooling include tests and explicit deployment gaps.</p>
-          </article>
-        </div>
+        <p className="about-evidence-note">
+          Production systems, scoped contributions, representative visuals, and local prototypes are labeled explicitly
+          throughout the portfolio.
+        </p>
       </Section>
       <Section variant="tight">
         <div className="about-cta">

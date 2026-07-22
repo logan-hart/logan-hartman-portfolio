@@ -20,10 +20,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/red-eye/social-preview.webp",
-        width: 1800,
-        height: 1012,
-        alt: "Red Eye Tickets product workflow preview",
+        url: "/images/hero-workflow-background.webp",
+        width: 1717,
+        height: 916,
+        alt: "Logan Hartman product engineering portfolio preview",
       },
     ],
   },
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Logan Hartman | Product Engineer",
     description: profile.subheadline,
-    images: ["/images/red-eye/social-preview.webp"],
+    images: ["/images/hero-workflow-background.webp"],
   },
   alternates: {
     canonical: "/",
@@ -45,6 +45,7 @@ const personJsonLd = {
   url: profile.siteUrl,
   ...(profile.email ? { email: `mailto:${profile.email}` } : {}),
   jobTitle: profile.title,
+  knowsAbout: profile.expertise,
   sameAs: [profile.linkedIn, profile.github],
   description: profile.positioning,
 };

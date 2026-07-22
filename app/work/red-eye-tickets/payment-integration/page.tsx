@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function PaymentIntegrationPage() {
   return (
     <EvidencePage
-      eyebrow="Production integration"
+      eyebrow="Production"
       title="One checkout, three payment protocols, no duplicate charges"
       intro="Red Eye had to make cards, Apple Pay, and Google Pay feel like one checkout while respecting different provider contracts, single-use tokens, asynchronous processor outcomes, and a strict boundary around financial data."
       meta={["February–July 2026", "Authorize.Net + wallets", "Substantial implementation contribution"]}

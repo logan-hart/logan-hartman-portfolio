@@ -9,3 +9,12 @@ pnpm-debug.log*
 .env
 .env*.local
 coverage/
+*.tsbuildinfo
+
+# Private portfolio research and source material. These files inform the
+# sanitized public case studies but must never be published with the site.
+/source-assets/
+/PORTFOLIO_*.md
+/RECRUITER_*.md
+/RED_EYE_*.md
+/SITE_COPY_REVIEW.md

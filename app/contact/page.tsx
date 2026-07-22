@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowUpRight, Download, Github, Linkedin, Mail } from "lucide-react";
 import { Section } from "@/components/Section";
 import { profile } from "@/data/profile";
 
@@ -31,7 +31,7 @@ export default function ContactPage() {
             </p>
             {profile.email ? (
               <a className="button button--primary" href={`mailto:${profile.email}`}>
-                Send an email <Mail aria-hidden="true" size={18} />
+                Email Logan <Mail aria-hidden="true" size={18} />
               </a>
             ) : (
               <a className="button button--primary" href={profile.linkedIn} rel="noreferrer" target="_blank">
@@ -47,9 +47,16 @@ export default function ContactPage() {
             </a>
             <a href={profile.github} rel="noreferrer" target="_blank">
               <Github aria-hidden="true" size={20} />
-              <span><strong>GitHub</strong><small>Public code archive</small></span>
+              <span><strong>GitHub</strong><small>Selected code, demos, and technical artifacts</small></span>
               <ArrowUpRight aria-hidden="true" size={18} />
             </a>
+            {profile.resumeUrl ? (
+              <a download href={profile.resumeUrl}>
+                <Download aria-hidden="true" size={20} />
+                <span><strong>Resume</strong><small>Download PDF</small></span>
+                <ArrowUpRight aria-hidden="true" size={18} />
+              </a>
+            ) : null}
           </div>
         </div>
       </Section>

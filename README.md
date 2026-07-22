@@ -7,6 +7,8 @@ Product-engineering portfolio for Logan Hartman, built with Next.js, TypeScript,
 
 The portfolio uses self-hosted case studies and interaction demos so the relevant product and implementation work remains understandable even when an external production site changes.
 
+![Logan Hartman product-engineering portfolio homepage](./public/images/portfolio-homepage.png)
+
 ## What This Repository Demonstrates
 
 - Product case studies organized around users, constraints, decisions, and outcomes
@@ -19,6 +21,17 @@ The portfolio uses self-hosted case studies and interaction demos so the relevan
 ## Public-Portfolio Boundaries
 
 The Red Eye Tickets production application, credentials, customer records, and private operational data are intentionally excluded. Public examples use sanitized captures, deterministic fixtures, portfolio-safe diagrams, and aggregated metrics. Client work is included only through approved or self-hosted materials.
+
+## Sanitized Evidence
+
+The [`evidence/red-eye`](./evidence/red-eye/) pack makes representative workflow behavior inspectable without publishing the private production application. It includes:
+
+- a deterministic buyer, payments, and admissions workflow snapshot;
+- payment and ticket-state invariants expressed independently of production models;
+- provenance, redaction, and maturity boundaries; and
+- an executable structural and privacy-boundary check.
+
+Run `npm run verify:evidence` to validate the public fixture. The evidence pack is a portfolio-safe reconstruction of documented production behavior, not extracted production source or customer data.
 
 ## Local Development
 
@@ -41,6 +54,7 @@ The production build performs TypeScript validation and prerenders the complete 
 
 ## Content Editing
 
+- Canonical roles, dates, launch dates, and public metric floors live in `data/careerFacts.ts`.
 - Profile/contact details live in `data/profile.ts`.
 - Project and case study content lives in `data/projects.ts`.
 - Interactive demo modules live in `components/demos/`.
@@ -56,7 +70,7 @@ Each client case study supports:
 - `interactiveDemoComponent`
 - `permissionsNote`
 
-Public metadata uses `NEXT_PUBLIC_SITE_URL` when supplied and otherwise uses Render's `RENDER_EXTERNAL_URL`. Contact defaults to LinkedIn; set `NEXT_PUBLIC_CONTACT_EMAIL` at build time only after verifying the mailbox.
+Public metadata uses `NEXT_PUBLIC_SITE_URL` when supplied and otherwise uses Render's `RENDER_EXTERNAL_URL`. Contact defaults to LinkedIn; set `NEXT_PUBLIC_CONTACT_EMAIL` only after verifying the public mailbox. Set `NEXT_PUBLIC_RESUME_URL` to a public PDF path or URL to display the resume download action.
 
 ## Render Static Site
 

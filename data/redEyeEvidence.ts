@@ -9,7 +9,7 @@ export type EvidenceLink = {
 export const redEyeEvidenceLinks: EvidenceLink[] = [
   {
     href: "/work/red-eye-tickets/payment-integration/",
-    label: "Production integration",
+    label: "Production",
     title: "One checkout across three payment protocols",
     description:
       "How Authorize.Net, Apple Pay, and Google Pay were joined through provider-specific adapters, order-bound idempotency, recovery, and reconciliation.",
@@ -17,7 +17,7 @@ export const redEyeEvidenceLinks: EvidenceLink[] = [
   },
   {
     href: "/work/red-eye-tickets/postmortem-unicode-pdf/",
-    label: "Production postmortem",
+    label: "Production incident",
     title: "The event title that broke ticket PDFs",
     description:
       "A valid emoji exposed an implicit encoding contract between the web product, stored event data, fonts, and the PDF renderer.",
@@ -25,7 +25,7 @@ export const redEyeEvidenceLinks: EvidenceLink[] = [
   },
   {
     href: "/work/red-eye-tickets/adr-local-first-repair/",
-    label: "Architecture decision record",
+    label: "Accepted architecture decision",
     title: "Why production repair stays local-first",
     description:
       "A documented tradeoff between autonomous cloud repair, CI-hosted automation, and a bounded local evidence-and-review loop.",
@@ -33,10 +33,10 @@ export const redEyeEvidenceLinks: EvidenceLink[] = [
   },
   {
     href: "/work/red-eye-tickets/reliability/",
-    label: "Reliability engineering",
+    label: "Local prototype",
     title: "Safety evals, operational evidence, and launch readiness",
     description:
-      "A balanced agent-safety benchmark, read-only GitHub/Render/runbook gateway, and deterministic producer readiness report prototyped against Red Eye's real operating risks.",
+      "A local agent-safety benchmark, read-only GitHub/Render/runbook gateway, and producer-readiness report tested against production-shaped operating risks.",
     meta: "26 evals · 9 MCP tests · graceful degradation",
   },
 ];
@@ -74,8 +74,8 @@ export const architectureContracts = [
     copy: "Camera scanning degrades to manual lookup, while credentials constrain staff access and the server remains authoritative.",
   },
   {
-    title: "Operational automation",
-    copy: "Telemetry is read-only evidence. Repairs are prepared in isolated worktrees, checked by policy, and released through GitHub gates.",
+    title: "Publishing boundary",
+    copy: "Approved event state triggers a controlled public-frontend rebuild so event pages and metadata can publish without a separate manual release.",
   },
 ];
 

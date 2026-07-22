@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
   <title id="title">Steve Madden brand and sales presentation design visual</title>
-  <desc id="desc">A self-hosted case-study visual showing sales decks, CAD assets, packaging concepts, and stakeholder presentation systems.</desc>
+  <desc id="desc">A case-study visual showing sales decks, CAD assets, packaging concepts, and product presentation materials.</desc>
   <rect width="1280" height="720" fill="#f8fafc"/>
   <rect x="74" y="70" width="1132" height="580" rx="10" fill="#000f21"/>
   <text x="112" y="146" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="4">VISUAL COMMUNICATION</text>
   <text x="112" y="232" fill="#ffffff" font-family="Arial, sans-serif" font-size="72" font-weight="800">Brand &amp; Sales</text>
-  <text x="112" y="306" fill="#ffffff" font-family="Arial, sans-serif" font-size="72" font-weight="800">Presentation Systems</text>
-  <text x="116" y="360" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="24">Product direction translated into clear buyer- and stakeholder-ready materials.</text>
+  <text x="112" y="306" fill="#ffffff" font-family="Arial, sans-serif" font-size="72" font-weight="800">Presentation Materials</text>
+  <text x="116" y="360" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="24">Product direction translated into clear buyer and merchandising materials.</text>
   <g transform="translate(116 450)">
     <rect width="176" height="70" rx="8" fill="#ffffff"/>
     <text x="24" y="44" fill="#000f21" font-family="Arial, sans-serif" font-size="22" font-weight="800">Decks</text>
