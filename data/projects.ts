@@ -558,22 +558,6 @@ export const projects: Project[] = [
     imageAlt: "Live CATS: The Jellicle Ball homepage with production artwork and ticket navigation",
     liveUrl: "https://catsthejellicleball.com/",
     liveUrlLabel: "View production site",
-    screenshots: [
-      {
-        src: "/images/cats-live/cats-buzz-hero.webp",
-        alt: "The Buzz editorial masthead from the CATS production site",
-        caption: "Production editorial system: oversized typography, monochrome portraiture, and the show’s signature yellow.",
-        width: 1692,
-        height: 753,
-      },
-      {
-        src: "/images/cats-live/cats-meow.webp",
-        alt: "Large MEOW production artwork from the CATS homepage",
-        caption: "The homepage’s theatrical MEOW end-cap, preserved alongside the responsive interaction demo.",
-        width: 2560,
-        height: 1246,
-      },
-    ],
     interactiveDemoComponent: "cats-carousel",
     permissionsNote:
       "Permissioned portfolio case study using self-hosted copies of public production assets and a scoped recreation of the carousel interaction pattern. The production site is linked for context; this case study keeps contribution boundaries explicit.",
@@ -584,7 +568,6 @@ export const projects: Project[] = [
         "The work needed to preserve theatrical impact while keeping the interaction modular, responsive, and reviewable after the production site changed.",
       constraints: [
         "The public production site could change independently after launch.",
-        "The demo needed to use permissioned/self-hosted assets and avoid implying ownership of the full site.",
         "Responsive behavior had to work across browser and mobile contexts.",
         "The interaction needed to support the approved direction without turning the portfolio into an entertainment microsite.",
       ],
