@@ -20,7 +20,7 @@ import { VideoFallback } from "@/components/demos/VideoFallback";
 import { ArchitectureMap } from "@/components/red-eye/ArchitectureMap";
 import { EvidenceCards } from "@/components/red-eye/EvidenceCards";
 import { Section } from "@/components/Section";
-import type { ProductArtifact, Screenshot } from "@/data/projects";
+import type { ProductArtifact, Project, Screenshot } from "@/data/projects";
 import { projects } from "@/data/projects";
 import { redEyeMetric, redEyeMetricsAsOf } from "@/data/redEyeMetrics";
 
@@ -64,12 +64,12 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   };
 }
 
-function ListPanel({ title, items }: { title: string; items?: string[] }) {
+function ListPanel({ title, items }: { title?: string; items?: string[] }) {
   if (!items?.length) return null;
 
   return (
     <section className="case-panel">
-      <h2>{title}</h2>
+      {title ? <h2>{title}</h2> : null}
       <ul>
         {items.map((item) => (
           <li key={item}>{item}</li>
@@ -84,24 +84,36 @@ function CaseTabs({
   hasImplementation,
   hasLessons,
   hasOutcomes,
+  isCompactCreative,
   isRedEye,
 }: {
   hasDecisions: boolean;
   hasImplementation: boolean;
   hasLessons: boolean;
   hasOutcomes: boolean;
+  isCompactCreative: boolean;
   isRedEye: boolean;
 }) {
-  const tabs = [
-    { href: "#overview", label: "Overview", show: true },
-    { href: "#decisions", label: "Decisions", show: hasDecisions },
-    { href: "#implementation", label: "Build", show: hasImplementation },
-    { href: "#architecture", label: "Architecture", show: isRedEye },
-    { href: "#evidence", label: "Evidence", show: true },
-    { href: "#artifacts", label: "Engineering", show: isRedEye },
-    { href: "#outcomes", label: "Outcomes", show: hasOutcomes },
-    { href: "#lessons", label: "Lessons", show: hasLessons },
-  ].filter((tab) => tab.show);
+  const tabs = (
+    isCompactCreative
+      ? [
+          { href: "#overview", label: "Overview", show: true },
+          { href: "#implementation", label: "Contribution", show: hasImplementation },
+          { href: "#decisions", label: "Decisions", show: hasDecisions },
+          { href: "#demos", label: "Evidence", show: true },
+          { href: "#lessons", label: "Reflection", show: hasLessons },
+        ]
+      : [
+          { href: "#overview", label: "Overview", show: true },
+          { href: "#decisions", label: "Decisions", show: hasDecisions },
+          { href: "#implementation", label: "Build", show: hasImplementation },
+          { href: "#architecture", label: "Architecture", show: isRedEye },
+          { href: "#evidence", label: "Evidence", show: true },
+          { href: "#artifacts", label: "Engineering", show: isRedEye },
+          { href: "#outcomes", label: "Outcomes", show: hasOutcomes },
+          { href: "#lessons", label: "Lessons", show: hasLessons },
+        ]
+  ).filter((tab) => tab.show);
 
   return (
     <nav aria-label="Case study sections" className="case-tabs">
@@ -111,6 +123,25 @@ function CaseTabs({
         </a>
       ))}
     </nav>
+  );
+}
+
+function ProjectEvidenceLinks({ project }: { project: Project }) {
+  if (!project.liveUrl && !project.archivedDemoUrl) return null;
+
+  return (
+    <div className="actions">
+      {project.liveUrl && (
+        <a className="button button--ghost" href={project.liveUrl} rel="noreferrer" target="_blank">
+          {project.liveUrlLabel ?? "View production site"} <ArrowUpRight aria-hidden="true" size={17} />
+        </a>
+      )}
+      {project.archivedDemoUrl && (
+        <a className="button button--ghost" href={project.archivedDemoUrl} rel="noreferrer" target="_blank">
+          Archived demo <ArrowUpRight aria-hidden="true" size={17} />
+        </a>
+      )}
+    </div>
   );
 }
 
@@ -256,9 +287,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   const caseStudy = project.caseStudy;
   const isRedEye = project.slug === "red-eye-tickets";
+  const isCompactCreative = project.caseStudyPresentation === "creative-compact";
   const demoIntro = isRedEye
     ? "Review audited Red Eye workflows through product captures and a portfolio-safe source snapshot."
-    : "Explore the preserved interaction without depending on a production site.";
+    : isCompactCreative
+      ? "Selected portions of the original front-end work, recreated so the responsive behavior remains reviewable."
+      : "Explore the preserved interaction without depending on a production site.";
   const caseMetricCards = isRedEye
     ? redEyeCaseMetrics
     : project.metrics?.slice(0, 4).map((metric) => {
@@ -275,7 +309,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const caseHeroFacts = [
     project.roleLabel ? { label: "Role", value: project.roleLabel } : null,
     project.period ? { label: "Period", value: project.period } : null,
-    project.engagementLabel ? { label: "Evidence", value: project.engagementLabel } : null,
+    project.engagementLabel
+      ? { label: isCompactCreative ? "Context" : "Evidence", value: project.engagementLabel }
+      : null,
     project.launchLabel ? { label: "Launch", value: project.launchLabel } : null,
   ].filter((item): item is { label: string; value: string } => Boolean(item));
 
@@ -346,6 +382,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               hasImplementation={hasImplementation}
               hasLessons={Boolean(lessonItems?.length)}
               hasOutcomes={Boolean(outcomeItems?.length)}
+              isCompactCreative={isCompactCreative}
               isRedEye={isRedEye}
             />
           )}
@@ -379,7 +416,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       )}
 
-      {hasDecisions && (
+      {hasDecisions && !isCompactCreative && (
         <Section
           eyebrow="Decisions"
           id="decisions"
@@ -397,10 +434,29 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       )}
 
       {hasImplementation && (
-        <Section eyebrow="Implementation" id="implementation" title="What I built" variant="tight">
-          <ListPanel items={implementationItems} title="Core implementation" />
+        <Section
+          eyebrow={isCompactCreative ? "Creative engineering" : "Implementation"}
+          id="implementation"
+          title={isCompactCreative ? "What I contributed" : "What I built"}
+          variant="tight"
+        >
+          <ListPanel
+            items={implementationItems}
+            title={isCompactCreative ? undefined : "Core implementation"}
+          />
           <ListPanel items={caseStudy?.contributionNotes} title="Contribution boundary" />
           <TechnicalContext items={caseStudy?.techStack} />
+        </Section>
+      )}
+
+      {hasDecisions && isCompactCreative && (
+        <Section
+          eyebrow="Decisions"
+          id="decisions"
+          title="Three choices that shaped the work"
+          variant="tight"
+        >
+          <ListPanel items={decisionItems} />
         </Section>
       )}
 
@@ -416,47 +472,38 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       )}
 
-      <Section eyebrow="Evidence" id="evidence" title="Work in context" variant="tight">
-        {project.permissionsNote && (
-          <details className="evidence-disclosure">
-            <summary>Portfolio evidence note</summary>
-            <p>{project.permissionsNote}</p>
-          </details>
-        )}
-        <div className="screenshot-grid">
-          {project.screenshots?.map((screenshot) => (
-            <figure
-              className={`screenshot-card screenshot-card--${screenshotPresentation(screenshot)}`}
-              key={screenshot.src}
-            >
-              <div className="screenshot-card__media">
-                <Image
-                  alt={screenshot.alt}
-                  height={screenshot.height ?? 720}
-                  sizes="(max-width: 760px) 100vw, 50vw"
-                  src={screenshot.src}
-                  width={screenshot.width ?? 1280}
-                />
-              </div>
-              <figcaption>{screenshot.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-        {(project.liveUrl || project.archivedDemoUrl) && (
-          <div className="actions">
-            {project.liveUrl && (
-              <a className="button button--ghost" href={project.liveUrl} rel="noreferrer" target="_blank">
-                {project.liveUrlLabel ?? "View production site"} <ArrowUpRight aria-hidden="true" size={17} />
-              </a>
-            )}
-            {project.archivedDemoUrl && (
-              <a className="button button--ghost" href={project.archivedDemoUrl} rel="noreferrer" target="_blank">
-                Archived demo <ArrowUpRight aria-hidden="true" size={17} />
-              </a>
-            )}
-          </div>
-        )}
-      </Section>
+      {!isCompactCreative && (
+        <Section eyebrow="Evidence" id="evidence" title="Work in context" variant="tight">
+          {project.permissionsNote && (
+            <details className="evidence-disclosure">
+              <summary>Portfolio evidence note</summary>
+              <p>{project.permissionsNote}</p>
+            </details>
+          )}
+          {project.screenshots?.length ? (
+            <div className="screenshot-grid">
+              {project.screenshots.map((screenshot) => (
+                <figure
+                  className={`screenshot-card screenshot-card--${screenshotPresentation(screenshot)}`}
+                  key={screenshot.src}
+                >
+                  <div className="screenshot-card__media">
+                    <Image
+                      alt={screenshot.alt}
+                      height={screenshot.height ?? 720}
+                      sizes="(max-width: 760px) 100vw, 50vw"
+                      src={screenshot.src}
+                      width={screenshot.width ?? 1280}
+                    />
+                  </div>
+                  <figcaption>{screenshot.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          ) : null}
+          <ProjectEvidenceLinks project={project} />
+        </Section>
+      )}
 
       {isRedEye && (
         <Section
@@ -475,12 +522,31 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
       {project.interactiveDemoComponent && (
         <Section
-          eyebrow={isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true" ? "Product evidence" : "Interactive evidence"}
+          eyebrow={
+            isCompactCreative
+              ? "Selected work"
+              : isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true"
+                ? "Product evidence"
+                : "Interactive evidence"
+          }
           id="demos"
-          title={isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true" ? "Workflow captures" : "Workflow demo"}
+          title={
+            isCompactCreative
+              ? "Interaction recreation"
+              : isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true"
+                ? "Workflow captures"
+                : "Workflow demo"
+          }
           intro={demoIntro}
           variant="band"
         >
+          {isCompactCreative && project.permissionsNote ? (
+            <details className="evidence-disclosure">
+              <summary>Portfolio evidence note</summary>
+              <p>{project.permissionsNote}</p>
+            </details>
+          ) : null}
+          {isCompactCreative ? <ProjectEvidenceLinks project={project} /> : null}
           <DemoRenderer component={project.interactiveDemoComponent} />
         </Section>
       )}
@@ -497,9 +563,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       ) : null}
 
-      {lessonItems?.length ? (
+      {lessonItems?.length && !isCompactCreative ? (
         <Section eyebrow="Reflection" id="lessons" title="What I learned" variant="tight">
           <ListPanel items={lessonItems} title="Lessons" />
+        </Section>
+      ) : null}
+
+      {lessonItems?.length && isCompactCreative ? (
+        <Section eyebrow="Reflection" id="lessons" title="Creative translation" variant="tight">
+          <article className="case-panel case-panel--lead">
+            <p>{lessonItems[0]}</p>
+          </article>
         </Section>
       ) : null}
     </>

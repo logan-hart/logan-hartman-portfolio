@@ -87,8 +87,8 @@ export default function WorkPage() {
           </div>
 
           <div className="work-section-heading work-section-heading--supporting">
-            <p className="eyebrow">Design engineering and visual communication</p>
-            <h2>Design engineering and communication work</h2>
+            <p className="eyebrow">Creative engineering and visual communication</p>
+            <h2>Expressive interfaces and communication work</h2>
             <p>Selected work showing how I translate creative direction, information, and interaction concepts into polished digital experiences.</p>
           </div>
           <div className="work-list">

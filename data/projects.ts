@@ -22,6 +22,7 @@ export type Project = {
   slug: string;
   title: string;
   category: string;
+  caseStudyPresentation?: "standard" | "creative-compact";
   description: string;
   roleLabel?: string;
   period?: string;
@@ -546,63 +547,40 @@ export const projects: Project[] = [
   {
     slug: "cats-the-jellicle-ball",
     title: "CATS: The Jellicle Ball",
-    category: "Responsive Interaction System",
-    roleLabel: "Design engineering contributor",
-    engagementLabel: "Recreated demonstration",
-    statusLabels: ["Scoped contribution", "Recreated demonstration"],
-    demoStatus: "Archived interaction",
+    category: "Creative Engineering",
+    caseStudyPresentation: "creative-compact",
+    roleLabel: "Design engineering and front-end development",
+    engagementLabel: "Original production website",
+    statusLabels: ["Client work", "Production implementation"],
+    demoStatus: "Interactive recreation",
     description:
-      "Built select web graphics to match established marketing materials and preserved a theatrical carousel as a responsive interaction demo.",
-    tags: ["Design Engineering", "Responsive Behavior", "Interaction Design", "Implementation"],
+      "Built custom responsive interactions and campaign-aligned web graphics for an original Broadway website, translating the show’s playful advertising direction into a cohesive digital experience within WordPress.",
+    tags: ["Front-End Development", "Responsive UI", "WordPress", "Visual Design"],
     image: "/images/cats-live/cats-homepage-live.webp",
     imageAlt: "Live CATS: The Jellicle Ball homepage with production artwork and ticket navigation",
     liveUrl: "https://catsthejellicleball.com/",
     liveUrlLabel: "View production site",
     interactiveDemoComponent: "cats-carousel",
     permissionsNote:
-      "Permissioned portfolio case study using self-hosted copies of public production assets and a scoped recreation of the carousel interaction pattern. The production site is linked for context; this case study keeps contribution boundaries explicit.",
+      "The interactive demo recreates selected portions of my original front-end work so the behavior remains reviewable. The broader production site and campaign direction were collaborative client work, and some campaign assets were supplied.",
     caseStudy: {
       overview:
-        "This case study preserves a focused interaction contribution through a self-hosted demo based on the production carousel layout, visual system, and responsive behavior.",
-      problem:
-        "The work needed to preserve theatrical impact while keeping the interaction modular, responsive, and reviewable after the production site changed.",
-      constraints: [
-        "The public production site could change independently after launch.",
-        "Responsive behavior had to work across browser and mobile contexts.",
-        "The interaction needed to support the approved direction without turning the portfolio into an entertainment microsite.",
-      ],
-      role:
-        "Design engineering contributor responsible for the carousel interaction, responsive behavior, and select web graphics created to match established campaign marketing materials. The broader visual direction and production site were collaborative client work.",
-      usersAndWorkflows: [
-        "Audience visitors: browse feature moments without losing the theatrical tone",
-        "Creative and production teams: preserve approved direction across desktop and mobile",
-        "Site maintainers: keep interaction behavior modular and easier to update",
-      ],
-      contributionNotes: [
-        "Design engineering implementation",
-        "Select web graphics matched to established campaign marketing materials",
-        "Carousel interaction",
-        "Responsive behavior",
-        "Theatrical visual direction support",
-      ],
+        "CATS: The Jellicle Ball needed a website that felt connected to the production’s advertising and marketing—not like campaign artwork placed inside a conventional WordPress template. Working with marketing, client, and production stakeholders, I helped translate its playful, color-driven direction into an original digital experience through custom front-end behavior, responsive interactions, and web-specific graphics.",
       built: [
-        "Pure CSS marquee carousel with repeated image sets for a seamless loop",
-        "Select production-ready web graphics adapted from established marketing materials",
-        "Self-hosted production artwork and typography",
-        "Responsive browser and mobile presentation based on the live site layout",
-        "Self-hosted screenshots and demo fallback",
+        "Custom infinite content and image tracks",
+        "Responsive carousel sizing, spacing, and visible-content rules",
+        "Front-end customization beyond the standard WordPress presentation",
+        "Web-specific graphics created or reconstructed from campaign direction and supplied assets",
+        "Clear handoff from the campaign experience to the external ticketing destination",
       ],
       decisions: [
-        "Recreated the relevant live-site carousel section rather than embedding the full production site",
-        "Scoped the production visual language to the demo so it does not leak into the rest of the portfolio",
-        "Kept controls keyboard-accessible and responsive",
+        "Translated bold color, oversized type, contrast, and movement into web-specific compositions instead of reproducing individual advertising layouts.",
+        "Extended WordPress with custom layouts and front-end behavior where the campaign needed more movement, flexibility, and visual distinction.",
+        "Used repeated content tracks and responsive sizing to maintain continuous motion without a visible endpoint.",
       ],
       lessons: [
-        "For client work, the interaction pattern is often the transferable proof, not the full production page.",
-        "A focused demo can preserve contribution evidence even if the external site changes later.",
+        "This project reinforced that front-end engineering is an act of translation: identifying the visual and behavioral principles behind an evolving campaign, filling gaps in available assets, and turning that direction into a responsive experience within real platform constraints.",
       ],
-      shows:
-        "This project shows how I translate approved direction into precise, responsive product behavior.",
     },
   },
   {
