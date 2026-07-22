@@ -288,10 +288,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const caseStudy = project.caseStudy;
   const isRedEye = project.slug === "red-eye-tickets";
   const isCompactCreative = project.caseStudyPresentation === "creative-compact";
+  const isNeuralVisualizer = project.interactiveDemoComponent === "neural-visualizer";
   const demoIntro = isRedEye
     ? "Review audited Red Eye workflows through product captures and a portfolio-safe source snapshot."
     : isCompactCreative
       ? "Selected portions of the original front-end work, recreated so the responsive behavior remains reviewable."
+      : isNeuralVisualizer
+        ? "Explore an attributed public neuron morphology through a stripped-down version of the global controls and 3D navigation used in research visualization tools."
       : "Explore the preserved interaction without depending on a production site.";
   const caseMetricCards = isRedEye
     ? redEyeCaseMetrics
@@ -525,6 +528,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           eyebrow={
             isCompactCreative
               ? "Selected work"
+              : isNeuralVisualizer
+                ? "Three.js research demo"
               : isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true"
                 ? "Product evidence"
                 : "Interactive evidence"
@@ -533,6 +538,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           title={
             isCompactCreative
               ? "Interaction recreation"
+              : isNeuralVisualizer
+                ? "3D neuron morphology explorer"
               : isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true"
                 ? "Workflow captures"
                 : "Workflow demo"

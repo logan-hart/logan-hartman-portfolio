@@ -8,6 +8,7 @@ export type DemoComponentKey =
   | "red-eye-automation"
   | "cats-carousel"
   | "heartbeat"
+  | "neural-visualizer"
   | "generic-motion";
 
 export type Screenshot = {
@@ -664,23 +665,24 @@ export const projects: Project[] = [
     roleLabel: careerFacts.einstein.role,
     period: careerFacts.einstein.period,
     engagementLabel: "Scoped technical contribution",
-    statusLabels: ["Scoped contribution", "Representative visual"],
+    statusLabels: ["Scoped contribution", "Public-data recreation"],
     description:
       "Improved interface clarity, rendering behavior, and dataset loading inside an existing neuroscience visualization tool.",
     tags: ["Research Tools", "Technical UI", "Data Visualization", "Performance", "Three.js"],
     image: "/images/projects/einstein-research.svg",
     imageAlt: "Representative workflow diagram for neuroscience dataset loading, visualization, and interface refinement",
+    interactiveDemoComponent: "neural-visualizer",
     screenshots: [
       {
         src: "/images/projects/einstein-research.svg",
         alt: "Representative workflow diagram for research dataset loading, visualization, and interface refinement",
-        caption: "Representative portfolio visual. This is not the original research interface or research data.",
+        caption: "Representative workflow diagram. The interactive demo below uses a separate, attributed public neuron morphology.",
         width: 1280,
         height: 720,
       },
     ],
     permissionsNote:
-      "Representative portfolio visual. This is not the original research interface or research data. It was created solely to illustrate the visualization context in which the work occurred.",
+      "The original research interface and proprietary datasets are not shown. The interactive demo below is a simplified portfolio recreation using a separately published Virtual Fly Brain/FAFB morphology under CC BY-SA 4.0.",
     caseStudy: {
       overview:
         "This work refined research visualization interfaces and technical workflows used for neuroscience data exploration.",

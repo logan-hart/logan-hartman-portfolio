@@ -3003,3 +3003,409 @@ p {
     min-height: 360px;
   }
 }
+
+/* Albert Einstein College of Medicine — public neuron morphology recreation */
+.neural-visualizer__module-loading {
+  align-items: center;
+  background: #071525;
+  color: #45d6d1;
+  display: flex;
+  font-size: 0.74rem;
+  font-weight: 800;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  min-height: 660px;
+  text-transform: uppercase;
+}
+
+.neural-visualizer {
+  --neural-bg: #071525;
+  --neural-panel: #0d2034;
+  --neural-line: rgba(184, 255, 251, 0.17);
+  --neural-muted: rgba(224, 241, 246, 0.68);
+  --neural-path: #45d6d1;
+  --neural-branch: #ffa54f;
+  --neural-terminal: #e867ce;
+  background: var(--neural-bg);
+  border: 1px solid rgba(184, 255, 251, 0.12);
+  border-radius: 10px;
+  color: #f2fbfd;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.3fr) minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.neural-visualizer__header {
+  align-items: flex-end;
+  border-bottom: 1px solid var(--neural-line);
+  display: flex;
+  gap: 28px;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  padding: 22px 24px;
+}
+
+.neural-visualizer__header > div > span,
+.neural-visualizer__controls legend {
+  color: var(--neural-path);
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.neural-visualizer__header h3 {
+  color: #f2fbfd;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  margin: 5px 0 4px;
+}
+
+.neural-visualizer__header p,
+.neural-visualizer__source p {
+  color: var(--neural-muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.neural-visualizer__header dl {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(58px, auto));
+  margin: 0;
+}
+
+.neural-visualizer__header dl div {
+  display: grid;
+  gap: 2px;
+}
+
+.neural-visualizer__header dt {
+  color: var(--neural-muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.neural-visualizer__header dd {
+  color: #f2fbfd;
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.neural-visualizer__controls {
+  background: var(--neural-panel);
+  border-right: 1px solid var(--neural-line);
+  padding: 8px 22px 20px;
+}
+
+.neural-visualizer__controls fieldset {
+  border: 0;
+  border-bottom: 1px solid var(--neural-line);
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 19px 0 20px;
+}
+
+.neural-visualizer__controls fieldset:last-child {
+  border-bottom: 0;
+}
+
+.neural-visualizer__controls legend {
+  margin-bottom: 7px;
+  padding: 0;
+}
+
+.neural-visualizer__controls label {
+  align-items: center;
+  color: rgba(242, 251, 253, 0.88);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.73rem;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.neural-visualizer__controls label small {
+  color: var(--neural-muted);
+  margin-left: auto;
+}
+
+.neural-visualizer__controls input[type="checkbox"] {
+  accent-color: var(--neural-path);
+}
+
+.neural-legend {
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 10px;
+  width: 10px;
+}
+
+.neural-legend--path {
+  background: var(--neural-path);
+  height: 2px;
+  width: 12px;
+}
+
+.neural-legend--branch {
+  background: var(--neural-branch);
+  border-radius: 50%;
+}
+
+.neural-legend--terminal {
+  background: var(--neural-terminal);
+  transform: rotate(45deg) scale(0.76);
+}
+
+.neural-visualizer__button-row {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.neural-visualizer__controls button,
+.neural-visualizer__file {
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgba(184, 255, 251, 0.24);
+  border-radius: 4px;
+  color: rgba(242, 251, 253, 0.84);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.69rem;
+  font-weight: 750;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 9px;
+}
+
+.neural-visualizer__controls button:hover,
+.neural-visualizer__controls button:focus-visible,
+.neural-visualizer__file:hover,
+.neural-visualizer__file:focus-within {
+  background: rgba(69, 214, 209, 0.1);
+  border-color: var(--neural-path);
+  color: #fff;
+  outline: none;
+}
+
+.neural-visualizer__controls button[aria-pressed="true"] {
+  background: var(--neural-path);
+  border-color: var(--neural-path);
+  color: var(--neural-bg);
+}
+
+.neural-visualizer__range {
+  align-items: stretch !important;
+  display: grid !important;
+  gap: 5px !important;
+  margin-top: 4px;
+}
+
+.neural-visualizer__range span {
+  display: flex;
+  justify-content: space-between;
+}
+
+.neural-visualizer__range output {
+  color: var(--neural-path);
+  font-weight: 800;
+}
+
+.neural-visualizer__range input {
+  accent-color: var(--neural-path);
+  margin: 0;
+  width: 100%;
+}
+
+.neural-visualizer__reset {
+  justify-self: start;
+}
+
+.neural-visualizer__file {
+  position: relative;
+}
+
+.neural-visualizer__file input {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.neural-visualizer__controls fieldset > p {
+  color: var(--neural-muted);
+  font-size: 0.68rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.neural-visualizer__controls .neural-visualizer__error {
+  color: #ffb5aa;
+}
+
+.neural-visualizer__viewer {
+  min-height: 660px;
+  overflow: hidden;
+  position: relative;
+}
+
+.neural-visualizer__viewport,
+.neural-visualizer__viewport canvas {
+  display: block;
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.neural-visualizer__gesture {
+  background: rgba(7, 21, 37, 0.72);
+  border: 1px solid var(--neural-line);
+  border-radius: 999px;
+  color: var(--neural-muted);
+  font-size: 0.68rem;
+  left: 18px;
+  margin: 0;
+  padding: 7px 10px;
+  position: absolute;
+  top: 18px;
+}
+
+.neural-visualizer__selection {
+  align-items: start;
+  background: rgba(7, 21, 37, 0.88);
+  border: 1px solid var(--neural-line);
+  border-radius: 5px;
+  bottom: 18px;
+  display: grid;
+  gap: 3px;
+  left: 18px;
+  max-width: calc(100% - 36px);
+  padding: 10px 12px;
+  position: absolute;
+}
+
+.neural-visualizer__selection strong {
+  color: #fff;
+  font-size: 0.72rem;
+}
+
+.neural-visualizer__selection span {
+  color: var(--neural-muted);
+  font-size: 0.68rem;
+}
+
+.neural-visualizer__loading,
+.neural-visualizer__drop {
+  align-items: center;
+  background: rgba(7, 21, 37, 0.9);
+  color: var(--neural-path);
+  display: flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  inset: 0;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  position: absolute;
+  text-transform: uppercase;
+  z-index: 3;
+}
+
+.neural-visualizer__viewer-error {
+  color: #ffb5aa;
+}
+
+.neural-visualizer__drop {
+  background: rgba(7, 21, 37, 0.82);
+  border: 2px dashed var(--neural-path);
+  inset: 14px;
+}
+
+.neural-visualizer__source {
+  border-top: 1px solid var(--neural-line);
+  grid-column: 1 / -1;
+  padding: 13px 22px;
+}
+
+.neural-visualizer__source a {
+  color: var(--neural-path);
+  font-weight: 750;
+}
+
+.neural-visualizer__source a:hover,
+.neural-visualizer__source a:focus-visible {
+  color: #fff;
+  outline: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 820px) {
+  .neural-visualizer {
+    grid-template-columns: 1fr;
+  }
+
+  .neural-visualizer__header {
+    align-items: start;
+  }
+
+  .neural-visualizer__controls {
+    border-bottom: 1px solid var(--neural-line);
+    border-right: 0;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 8px 20px 18px;
+  }
+
+  .neural-visualizer__controls fieldset {
+    border-bottom: 0;
+  }
+
+  .neural-visualizer__viewer {
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 620px) {
+  .neural-visualizer__header {
+    display: grid;
+  }
+
+  .neural-visualizer__header dl {
+    width: 100%;
+  }
+
+  .neural-visualizer__controls {
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .neural-visualizer__controls fieldset {
+    border-bottom: 1px solid var(--neural-line);
+  }
+
+  .neural-visualizer__viewer {
+    min-height: 500px;
+  }
+
+  .neural-visualizer__gesture {
+    left: 10px;
+    right: 10px;
+    text-align: center;
+    top: 10px;
+  }
+
+  .neural-visualizer__selection {
+    bottom: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+  }
+}
