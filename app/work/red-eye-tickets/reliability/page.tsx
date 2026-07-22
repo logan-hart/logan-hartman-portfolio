@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function ReliabilityPage() {
   return (
     <EvidencePage
-      eyebrow="Reliability engineering"
+      eyebrow="Local prototype"
       title="Make operational judgment testable"
       intro="Three tools address real operating risks in Red Eye: unsafe repair decisions, fragmented incident context, and incomplete event configuration before launch."
       meta={["Local working prototypes", "Real read-only adapters", "No production credentials used"]}

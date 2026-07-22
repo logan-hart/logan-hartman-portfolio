@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function UnicodePdfPostmortemPage() {
   return (
     <EvidencePage
-      eyebrow="Production postmortem"
+      eyebrow="Production incident"
       title="An unexpected event title exposed a hidden assumption in our PDF pipeline"
       intro="A producer used an emoji in an event title. The product accepted the title, but the ticket renderer had a narrower character contract. The input triggered the incident; the system mismatch caused it."
       meta={["Incident class: document generation", "Committed remediation", "Blameless review"]}

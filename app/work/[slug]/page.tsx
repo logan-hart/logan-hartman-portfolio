@@ -1,4 +1,16 @@
-import { ArrowLeft, ArrowUpRight, ScanLine, ShieldCheck, Ticket, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  CalendarRange,
+  Headphones,
+  MapPin,
+  MessagesSquare,
+  ScanLine,
+  ShieldCheck,
+  Ticket,
+  UserRound,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,6 +39,7 @@ const redEyeCaseMetrics = ["events", "buyers", "tickets", "gpv"].map((key) =>
 );
 
 const userWorkflowIcons = [Ticket, UserRound, ShieldCheck, ScanLine];
+const discoveryIcons = [CalendarRange, Headphones, MessagesSquare, MapPin];
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -46,7 +59,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       title: `${project.title} | Logan Hartman`,
       description: project.description,
       url: `/work/${project.slug}/`,
-      images: [{ url: project.image, alt: project.title }],
+      images: [{ url: project.image, alt: project.imageAlt }],
     },
   };
 }
@@ -125,6 +138,41 @@ function UserWorkflowGrid({ items }: { items?: string[] }) {
   );
 }
 
+function FieldDiscovery({
+  discovery,
+}: {
+  discovery: NonNullable<NonNullable<(typeof projects)[number]["caseStudy"]>["discovery"]>;
+}) {
+  return (
+    <section className="field-discovery" id="discovery">
+      <div className="field-discovery__intro">
+        <p className="eyebrow">Field discovery</p>
+        <h2>How I learned the workflow</h2>
+        <p>{discovery.intro}</p>
+      </div>
+      <div className="field-discovery__channels">
+        {discovery.channels.map((channel, index) => {
+          const Icon = discoveryIcons[index] ?? MessagesSquare;
+          return (
+            <article key={channel.title}>
+              <Icon aria-hidden="true" size={20} strokeWidth={1.8} />
+              <h3>{channel.title}</h3>
+              <p>{channel.description}</p>
+            </article>
+          );
+        })}
+      </div>
+      <div className="field-discovery__result" aria-label="Discovery to implementation loop">
+        <span>Observed workflow</span>
+        <ArrowRight aria-hidden="true" size={16} />
+        <span>Product decisions</span>
+        <ArrowRight aria-hidden="true" size={16} />
+        <span>Production iteration</span>
+      </div>
+    </section>
+  );
+}
+
 function TechnicalContext({ items }: { items?: string[] }) {
   if (!items?.length) return null;
 
@@ -141,13 +189,17 @@ function TechnicalContext({ items }: { items?: string[] }) {
 }
 
 function ProductArtifactCard({ artifact }: { artifact: ProductArtifact }) {
+  const workflowLabel = artifact.title.toLowerCase().endsWith("workflow")
+    ? artifact.title
+    : `${artifact.title} workflow`;
+
   return (
     <article className="artifact-card">
       <div>
         <h3>{artifact.title}</h3>
         <p className="artifact-card__context">{artifact.context}</p>
       </div>
-      <div aria-label={`${artifact.title} workflow`} className="artifact-flow">
+      <div aria-label={workflowLabel} className="artifact-flow">
         {artifact.flow.map((step) => (
           <span key={step}>{step}</span>
         ))}
@@ -160,6 +212,28 @@ function ProductArtifactCard({ artifact }: { artifact: ProductArtifact }) {
         <strong>Outcome</strong>
         <p>{artifact.outcome}</p>
       </div>
+    </article>
+  );
+}
+
+function SecondaryArtifactCard({
+  artifact,
+}: {
+  artifact: ProductArtifact & { status: string; evidenceLimit?: string };
+}) {
+  return (
+    <article className="secondary-artifact" id="publishing">
+      <span className="status-badge">{artifact.status}</span>
+      <h3>{artifact.title}</h3>
+      <p>{artifact.context}</p>
+      <div className="artifact-flow" aria-label={`${artifact.title} workflow`}>
+        {artifact.flow.map((step) => <span key={step}>{step}</span>)}
+      </div>
+      <dl>
+        <div><dt>Decision</dt><dd>{artifact.decision}</dd></div>
+        <div><dt>Outcome</dt><dd>{artifact.outcome}</dd></div>
+      </dl>
+      {artifact.evidenceLimit ? <small>Evidence limit: {artifact.evidenceLimit}</small> : null}
     </article>
   );
 }
@@ -202,6 +276,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     project.roleLabel ? { label: "Role", value: project.roleLabel } : null,
     project.period ? { label: "Period", value: project.period } : null,
     project.engagementLabel ? { label: "Evidence", value: project.engagementLabel } : null,
+    project.launchLabel ? { label: "Launch", value: project.launchLabel } : null,
   ].filter((item): item is { label: string; value: string } => Boolean(item));
 
   return (
@@ -224,6 +299,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </span>
                 ))}
               </div>
+              <div className="status-list" aria-label="Project status and provenance">
+                {project.statusLabels.map((status) => <span key={status}>{status}</span>)}
+              </div>
               {caseHeroFacts.length ? (
                 <dl className="case-hero-facts">
                   {caseHeroFacts.map((fact) => (
@@ -237,7 +315,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
             <figure className="case-hero-media">
               <Image
-                alt={`${project.title} case study preview`}
+                alt={project.imageAlt}
                 height={720}
                 priority
                 sizes="(max-width: 900px) 100vw, 44vw"
@@ -280,6 +358,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <h2>Overview</h2>
             <p>{caseStudy.overview}</p>
           </article>
+          {caseStudy.discovery ? <FieldDiscovery discovery={caseStudy.discovery} /> : null}
           {caseStudy.usersAndWorkflows?.length ? <p className="eyebrow case-section-label">Users</p> : null}
           <UserWorkflowGrid items={caseStudy.usersAndWorkflows} />
           <div className="case-overview-grid case-overview-grid--three">
@@ -304,7 +383,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <Section
           eyebrow="Decisions"
           id="decisions"
-          title="Three decisions that shaped the work"
+          title="Decisions that shaped the work"
           variant="tight"
         >
           {decisionArtifacts?.length ? (
@@ -387,6 +466,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           intro="The artifacts below expose the reasoning and failure handling behind the interface—not just the finished screens."
           variant="tight"
         >
+          {caseStudy?.secondaryArtifacts?.map((artifact) => (
+            <SecondaryArtifactCard artifact={artifact} key={artifact.title} />
+          ))}
           <EvidenceCards />
         </Section>
       )}

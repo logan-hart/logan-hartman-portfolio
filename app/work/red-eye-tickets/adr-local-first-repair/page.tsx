@@ -32,7 +32,7 @@ const options = [
 export default function LocalFirstAdrPage() {
   return (
     <EvidencePage
-      eyebrow="Architecture decision record"
+      eyebrow="Accepted architecture decision"
       title="Keep production repair local-first and release-gated"
       intro="Red Eye can use agents to investigate and prepare bounded fixes, but production authority stays outside the agent loop. Evidence comes in; reviewed changes go out through existing gates."
       meta={["ADR status: accepted", "Decision owner: CTO", "Documented: July 2026"]}

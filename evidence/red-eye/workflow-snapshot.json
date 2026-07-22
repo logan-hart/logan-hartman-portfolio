@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "classification": "portfolio_safe_reconstruction",
+    "asOf": "2026-07-21",
+    "containsProductionData": false,
+    "identifierNamespace": "demo_"
+  },
+  "workflows": [
+    {
+      "id": "demo_payment_capture",
+      "maturity": "production_behavior_reconstruction",
+      "actors": ["buyer", "payment_gateway", "application"],
+      "states": ["checkout_ready", "capture_pending", "paid", "capture_failed", "refunded"],
+      "recoveryPaths": ["idempotent_replay", "gateway_reconciliation", "support_review"],
+      "invariants": [
+        "one buyer action may create at most one successful charge",
+        "tickets are issued only after reconciled paid state",
+        "a late pending event cannot downgrade a paid order",
+        "refund state remains connected to ticket validity"
+      ]
+    },
+    {
+      "id": "demo_live_admission",
+      "maturity": "production_behavior_reconstruction",
+      "actors": ["door_staff", "scanner", "application"],
+      "states": ["ready", "validating", "admitted", "already_used", "invalid", "manual_lookup"],
+      "recoveryPaths": ["manual_lookup", "scanner_resume", "admin_escalation"],
+      "invariants": [
+        "the server remains authoritative for admission state",
+        "manual lookup remains available when camera scanning is unavailable",
+        "event-scoped credentials constrain door-staff access",
+        "refund and prior-use state cannot be overridden by scanner feedback"
+      ]
+    }
+  ],
+  "excludedDataClasses": [
+    "customer_identity",
+    "contact_information",
+    "payment_credentials",
+    "ticket_tokens",
+    "order_identifiers",
+    "internal_endpoints",
+    "raw_telemetry"
+  ]
+}

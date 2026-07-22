@@ -1,4 +1,7 @@
+import { careerFacts } from "@/data/careerFacts";
 import { redEyeMetrics } from "@/data/redEyeMetrics";
+
+const redEyeFacts = careerFacts.redEye;
 
 export type DemoComponentKey =
   | "red-eye-workflows"
@@ -23,9 +26,13 @@ export type Project = {
   roleLabel?: string;
   period?: string;
   engagementLabel?: string;
+  launchLabel?: string;
+  statusLabels: string[];
+  demoStatus?: string;
   tags: string[];
   metrics?: string[];
   image: string;
+  imageAlt: string;
   featured?: boolean;
   liveUrl?: string;
   liveUrlLabel?: string;
@@ -36,6 +43,10 @@ export type Project = {
   permissionsNote?: string;
   caseStudy?: {
     overview: string;
+    discovery?: {
+      intro: string;
+      channels: Array<{ title: string; description: string }>;
+    };
     problem?: string;
     constraints?: string[];
     role?: string;
@@ -46,6 +57,7 @@ export type Project = {
     decisions?: string[];
     architectureNotes?: string[];
     productArtifacts?: ProductArtifact[];
+    secondaryArtifacts?: Array<ProductArtifact & { status: string; evidenceLimit?: string }>;
     techStack?: string[];
     outcomes?: string[];
     shows?: string;
@@ -138,10 +150,10 @@ export const productThinkingArticles = [
 export const impactMetrics = redEyeMetrics.map(({ value, label }) => ({ value, label }));
 
 export const proofPoints = [
-  "Production ticketing platform serving 15K+ buyer identities",
+  `Production ticketing platform serving ${redEyeFacts.metrics.buyerIdentities.value} buyer identities`,
   "Payments, refunds, ticketing, and admissions workflows",
   "Research visualization and technical UI refinement",
-  "Stakeholder communication systems",
+  "Visual communication for product and sales teams",
   "AI-assisted delivery with release gates",
 ];
 
@@ -151,19 +163,23 @@ export const projects: Project[] = [
     title: "Red Eye Tickets",
     category: "Event Commerce Workflow Platform",
     roleLabel: "Co-Founder & CTO",
-    period: "March 2025–present",
+    period: careerFacts.redEye.rolePeriod,
     engagementLabel: "Production platform",
+    launchLabel: `Custom platform launched ${careerFacts.redEye.customPlatformLaunchLabel}`,
+    statusLabels: ["Production", "Owned product"],
+    demoStatus: "Captured production evidence",
     description:
       "Built the platform behind a live ticketing business, spanning checkout, payments, admissions, producer tools, refunds, and reporting.",
     tags: ["Product Engineering", "Workflow Design", "Payments", "Operations", "Rails", "React"],
     metrics: [
-      "Served 15K+ buyer identities across the platform",
-      "Processed 19K+ completed orders",
-      "Issued 29K+ tickets across 240+ ticketed events",
-      "Handled $900K+ in gross payment volume",
+      `Served ${redEyeFacts.metrics.buyerIdentities.value} buyer identities across the platform`,
+      `Processed ${redEyeFacts.metrics.completedOrders.value} completed orders`,
+      `Issued ${redEyeFacts.metrics.ticketsIssued.value} tickets across ${redEyeFacts.metrics.ticketedEvents.value} ticketed events`,
+      `Processed ${redEyeFacts.metrics.grossPaymentVolume.value} in gross payment volume since the ${redEyeFacts.customPlatformLaunchLabel} custom-platform launch`,
       "Expanded checkout with Apple Pay and Google Pay wallet payment flows",
     ],
     image: "/images/red-eye/social-preview.webp",
+    imageAlt: "Red Eye admin, producer, buyer, and check-in workflow overview",
     featured: true,
     interactiveDemoComponent: "red-eye-workflows",
     screenshots: [
@@ -187,6 +203,28 @@ export const projects: Project[] = [
     caseStudy: {
       overview:
         "Red Eye started as a ticketing business with a WordPress-based MVP. That validated demand, but it could not support the reliability, operational control, or workflow specificity the business needed. I rebuilt the product as a full-stack platform around buyers, producers, admins, and door staff.",
+      discovery: {
+        intro:
+          "I was the sole technical contributor, but the product was shaped through continuous contact with the people operating it. I met weekly with my co-founders, worked directly with a four-person admin and operations team, spoke with producers, and attended live events. Those inputs became requirements, interface changes, operational tools, and support workflows.",
+        channels: [
+          {
+            title: "Weekly operating reviews",
+            description: "Co-founder priorities, business constraints, and feature tradeoffs.",
+          },
+          {
+            title: "Admin and support feedback",
+            description: "Refunds, corrections, accounting, producer communication, and recurring support problems.",
+          },
+          {
+            title: "Producer conversations",
+            description: "Event setup, inventory, reporting, access, and lifecycle needs.",
+          },
+          {
+            title: "Onsite door observation",
+            description: "Scanning, manual lookup, staff training, device constraints, line pressure, and recovery paths.",
+          },
+        ],
+      },
       problem:
         "The original stack made checkout reliability, payment options, event operations, and support work too hard to change. The business needed a system that matched live-event operations instead of forcing teams through generic commerce tools.",
       constraints: [
@@ -196,7 +234,7 @@ export const projects: Project[] = [
         "The system had to improve while real events, orders, and support issues continued running.",
       ],
       role:
-        "Co-Founder and CTO responsible for product direction, architecture, full-stack implementation, payment workflows, operational tooling, and ongoing iteration with producers and event staff.",
+        "Co-Founder and CTO, sole technical contributor, and primary technical point of contact. I owned product direction, workflow discovery, architecture, full-stack implementation, operational tooling, production support, and technical iteration.",
       usersAndWorkflows: [
         "Ticket buyers: clear checkout, mobile tickets, trust, confirmations",
         "Producers: event setup, visibility, sales reporting, inventory control",
@@ -221,11 +259,11 @@ export const projects: Project[] = [
         "Local prototype: AI-assisted triage with planner, executor, reviewer, policy gate, proof, rollback, and PR evidence artifacts",
       ],
       improvements: [
-        "Served 15K+ buyer identities across 240+ ticketed events",
-        "Handled $900K+ in gross payment volume",
+        `Served ${redEyeFacts.metrics.buyerIdentities.value} buyer identities across ${redEyeFacts.metrics.ticketedEvents.value} ticketed events`,
+        `Processed more than ${redEyeFacts.metrics.grossPaymentVolume.value} in gross payment volume since the custom platform launched in ${redEyeFacts.customPlatformLaunchLabel}`,
         "Added Apple Pay and Google Pay as provider-specific checkout paths",
-        "Replaced the original WordPress experience with a custom application and faster homepage delivery",
-        "Processed 19K+ completed orders and issued 29K+ tickets",
+        "Replaced the WordPress MVP with a custom application built around event-commerce operations",
+        `Processed ${redEyeFacts.metrics.completedOrders.value} completed orders and issued ${redEyeFacts.metrics.ticketsIssued.value} tickets`,
         "Improved reliability and confidence for door staff working live events",
       ],
       decisions: [
@@ -295,6 +333,21 @@ export const projects: Project[] = [
             "The local prototype made CI candidates easier to inspect and prioritize, especially when a failure was not safe for unattended mutation.",
         },
       ],
+      secondaryArtifacts: [
+        {
+          status: "Production",
+          title: "Event publishing and search discovery",
+          context:
+            "Approved events needed to reach the static public frontend without requiring a manual deployment for every listing.",
+          flow: ["Event approved", "Controlled rebuild", "Public event page", "Metadata and discovery surfaces"],
+          decision:
+            "Trigger a controlled frontend rebuild from the event approval workflow so public pages and metadata stay aligned with operational state.",
+          outcome:
+            "Approved events can be published through the product workflow instead of a separate manual release step.",
+          evidenceLimit:
+            "Public evidence does not yet include deployment-time, failure-rate, or search-indexing measurements.",
+        },
+      ],
       techStack: [
         "Rails",
         "React",
@@ -311,11 +364,11 @@ export const projects: Project[] = [
         "AI-assisted development workflows",
       ],
       outcomes: [
-        "15K+ buyer identities served",
-        "19K+ completed orders processed",
-        "29K+ tickets issued",
-        "$900K+ gross payment volume handled",
-        "240+ ticketed events supported",
+        `${redEyeFacts.metrics.buyerIdentities.value} buyer identities served`,
+        `${redEyeFacts.metrics.completedOrders.value} completed orders processed`,
+        `${redEyeFacts.metrics.ticketsIssued.value} tickets issued`,
+        `${redEyeFacts.metrics.grossPaymentVolume.value} gross payment volume processed since the ${redEyeFacts.customPlatformLaunchLabel} platform launch`,
+        `${redEyeFacts.metrics.ticketedEvents.value} ticketed events supported`,
         "More reliable checkout and buyer payment options",
         "Operational control for event setup, support, reporting, refunds, and check-in",
       ],
@@ -331,13 +384,15 @@ export const projects: Project[] = [
   {
     slug: "spotlight-strategies",
     title: "Spotlight Strategies",
-    category: "Client Workflow & Communication Systems",
+    category: "Client Discovery & Digital Delivery",
     roleLabel: "Founder",
-    engagementLabel: "Self-owned client practice",
+    engagementLabel: "Project-based creative technology studio",
+    statusLabels: ["Scoped contribution"],
     description:
-      "Turned unclear client goals into structured messaging, decision-ready artifacts, and implementation plans.",
-    tags: ["Discovery", "Workflow Mapping", "Stakeholder Communication", "Implementation", "Systems Thinking"],
+      "Led client projects from early discovery through launch, turning unclear goals into websites, presentation systems, messaging structures, and audience-facing digital experiences.",
+    tags: ["Client Discovery", "UX Strategy", "Frontend Implementation"],
     image: "/images/projects/spotlight-studio.svg",
+    imageAlt: "Spotlight Strategies discovery, content structure, and digital delivery workflow",
     screenshots: [
       {
         src: "/images/spotlight/spotlight-banner.webp",
@@ -358,14 +413,13 @@ export const projects: Project[] = [
       "Self-owned Spotlight Strategies materials. Client-specific confidential details are summarized at the workflow and deliverable level.",
     caseStudy: {
       overview:
-        "Spotlight Strategies was a project-based practice for clients who needed help turning unclear goals into usable communication systems and implementation-ready plans.",
+        "Spotlight Strategies was a project-based studio for clients who needed to clarify an offer, organize the story, and carry that direction into a website or presentation system.",
       problem:
-        "Clients often arrived with scattered materials, vague positioning, and too many disconnected deliverables. The work was to clarify the decision path before designing or building anything.",
+        "Clients often arrived with scattered source material and an unclear way to explain what they offered. The work was to establish the audience, message, proof, and next action before designing or building.",
       constraints: [
-        "Client inputs were often incomplete, subjective, or owned by multiple stakeholders.",
+        "Source material was often incomplete or distributed across several contributors.",
         "Deliverables had to be useful after handoff, not dependent on ongoing interpretation.",
         "Public examples needed to avoid confidential client details.",
-        "The work had to connect strategy, copy, structure, and implementation without becoming a pure branding exercise.",
       ],
       role:
         "Founder responsible for discovery, positioning, content structure, visual direction, implementation planning, delivery, and client communication.",
@@ -375,10 +429,32 @@ export const projects: Project[] = [
         "Internal teams: use reusable language, decks, and web assets",
       ],
       built: [
-        "Discovery workflows and message hierarchy",
-        "Reusable copy, page structures, decks, and presentation systems",
-        "Implementation-ready website and content plans",
-        "Client-ready digital materials that connected story, design, and delivery",
+        "Discovery interviews and message hierarchy",
+        "Website structure, copy, and frontend implementation",
+        "Presentation systems and launch materials",
+        "Editable assets clients could maintain after handoff",
+      ],
+      productArtifacts: [
+        {
+          title: "AI Optics launch materials",
+          context:
+            "The company needed a coherent launch story across web and presentation materials.",
+          flow: ["Discovery", "Audience and offer", "Message hierarchy", "Website and launch materials"],
+          decision:
+            "Clarify the technical offer and supporting proof before moving into page design.",
+          outcome:
+            "Delivered a consistent launch narrative across the website and presentation materials.",
+        },
+        {
+          title: "Seven Castle Coaching",
+          context:
+            "The business needed one clear direction across its brand, content, photography, and website.",
+          flow: ["Positioning", "Content", "Photography", "Website"],
+          decision:
+            "Treat the touchpoints as one customer-facing experience rather than separate creative tasks.",
+          outcome:
+            "Delivered a coordinated set of brand, content, photography, and website materials.",
+        },
       ],
       decisions: [
         "Started with audience, offer, and proof before visual styling",
@@ -386,9 +462,9 @@ export const projects: Project[] = [
         "Used AI-assisted drafting and iteration where it accelerated structure without replacing judgment",
       ],
       outcomes: [
-        "Clearer client messaging and digital presence",
-        "More coherent stakeholder-ready presentation materials",
-        "Reusable systems for ongoing communication and engagement",
+        "Launch websites and audience-facing digital materials",
+        "Presentation systems organized around a clear message and next decision",
+        "Editable content and visual assets clients could continue using",
       ],
       lessons: [
         "Most client work is a workflow problem before it is a design problem.",
@@ -401,13 +477,17 @@ export const projects: Project[] = [
   {
     slug: "the-season-flyer",
     title: "The Season / Flyer",
-    category: "Launch Workflow & Interaction Systems",
+    category: "Interactive Frontend & Launch Delivery",
     roleLabel: "Design engineering contributor",
-    engagementLabel: "Composite contribution case",
+    period: careerFacts.theSeason.period,
+    engagementLabel: "Scoped contribution",
+    statusLabels: ["Scoped contribution", "Recreated demonstration"],
+    demoStatus: "Live interactive demo",
     description:
-      "Implemented responsive launch systems for entertainment teams under firm creative, stakeholder, and release constraints.",
-    tags: ["Design Engineering", "Launch Systems", "Interaction Design", "Implementation", "Stakeholders"],
+      "Translated approved creative direction into responsive entertainment websites, custom motion, and interactive frontend experiences under fixed launch timelines.",
+    tags: ["Design Engineering", "Responsive Frontend", "Interaction Design"],
     image: "/images/projects/season-flyer.svg",
+    imageAlt: "Responsive entertainment launch work across desktop, mobile, and motion states",
     screenshots: [
       {
         src: "/images/projects/season-flyer.svg",
@@ -424,18 +504,18 @@ export const projects: Project[] = [
       overview:
         "The Season / Flyer represents implementation work for entertainment launches where approved direction, audience expectations, and release timelines all mattered.",
       problem:
-        "Entertainment launch teams need pages that feel polished, adapt responsively, and survive late-stage stakeholder changes without breaking the experience.",
+        "Entertainment launch teams need pages that feel polished, adapt responsively, and survive late-stage creative, content, and approval changes without breaking the experience.",
       constraints: [
         "Approved direction needed precise execution.",
         "Launch timelines required quick iteration without fragile implementation.",
-        "Pages needed to support editors and stakeholders after launch.",
+        "Pages needed to remain maintainable for the teams updating them after launch.",
         "Portfolio evidence had to be self-hosted because production sites can change.",
       ],
       role:
         "Design engineering and interaction implementation support, translating approved direction into responsive behavior.",
       usersAndWorkflows: [
         "Marketing teams: launch and update campaign pages",
-        "Producers and stakeholders: review polished, on-brand experiences",
+        "Producers, creative teams, and agency partners: review polished, on-brand experiences",
         "Audiences: understand the show, feel the tone, and find the next action quickly",
         "Site editors: maintain content without breaking the experience",
       ],
@@ -460,7 +540,7 @@ export const projects: Project[] = [
         "The best launch work makes the approved direction feel effortless while staying practical for teams who maintain it.",
       ],
       shows:
-        "This work shows design engineering judgment and the ability to support high-visibility, stakeholder-driven launches.",
+        "This work shows design engineering judgment and the ability to support high-visibility entertainment launches.",
     },
   },
   {
@@ -468,11 +548,14 @@ export const projects: Project[] = [
     title: "CATS: The Jellicle Ball",
     category: "Responsive Interaction System",
     roleLabel: "Design engineering contributor",
-    engagementLabel: "Scoped production contribution",
+    engagementLabel: "Recreated demonstration",
+    statusLabels: ["Scoped contribution", "Recreated demonstration"],
+    demoStatus: "Archived interaction",
     description:
       "Preserved a theatrical carousel as a responsive, self-hosted interaction demo with clear contribution boundaries.",
     tags: ["Design Engineering", "Responsive Behavior", "Interaction Design", "Implementation"],
     image: "/images/projects/cats-hero.svg",
+    imageAlt: "CATS: The Jellicle Ball theatrical carousel and responsive production artwork",
     screenshots: [
       {
         src: "/images/cats-live/cats-combo.webp",
@@ -507,7 +590,7 @@ export const projects: Project[] = [
         "Design engineering contributor responsible for the carousel interaction and responsive behavior. The broader visual direction and production site were collaborative client work.",
       usersAndWorkflows: [
         "Audience visitors: browse feature moments without losing the theatrical tone",
-        "Stakeholders: preserve approved direction across desktop and mobile",
+        "Creative and production teams: preserve approved direction across desktop and mobile",
         "Site maintainers: keep interaction behavior modular and easier to update",
       ],
       contributionNotes: [
@@ -540,11 +623,14 @@ export const projects: Project[] = [
     title: "The Heart",
     category: "Purposeful Motion System",
     roleLabel: "Interaction engineering contributor",
-    engagementLabel: "Archived production contribution",
+    engagementLabel: "Recreated demonstration",
+    statusLabels: ["Scoped contribution", "Recreated demonstration"],
+    demoStatus: "Live interactive demo",
     description:
       "Recreated a heartbeat motion system that supports tone and hierarchy while respecting reduced-motion preferences.",
     tags: ["Design Engineering", "Motion", "Interaction Design", "Accessibility"],
     image: "/images/projects/the-heart-homepage.svg",
+    imageAlt: "The Heart heartbeat motion and waveform interaction",
     screenshots: [
       {
         src: "/images/the-heart/the-heart-splash.webp",
@@ -578,7 +664,7 @@ export const projects: Project[] = [
         "Interaction engineering contributor responsible for heartbeat timing, reveal behavior, and responsive motion. This portfolio version is a self-hosted reconstruction of that contribution.",
       usersAndWorkflows: [
         "Audience visitors: understand the emotional rhythm of the page quickly",
-        "Stakeholders: see motion support the concept without overwhelming content",
+        "Creative and production teams: see motion support the concept without overwhelming content",
         "Future reviewers: inspect preserved interaction behavior even if the live site changes",
       ],
       motionNotes: [
@@ -607,23 +693,27 @@ export const projects: Project[] = [
   {
     slug: "albert-einstein-college-of-medicine",
     title: "Albert Einstein College of Medicine",
-    category: "Research Workflow Visualization",
-    roleLabel: "Technical UI contributor",
+    category: "Research Tool UI & Visualization Refinement",
+    roleLabel: careerFacts.einstein.role,
+    period: careerFacts.einstein.period,
     engagementLabel: "Scoped technical contribution",
+    statusLabels: ["Scoped contribution", "Representative visual"],
     description:
       "Improved interface clarity, rendering behavior, and dataset loading inside an existing neuroscience visualization tool.",
     tags: ["Research Tools", "Technical UI", "Data Visualization", "Performance", "Three.js"],
     image: "/images/projects/einstein-research.svg",
+    imageAlt: "Representative workflow diagram for neuroscience dataset loading, visualization, and interface refinement",
     screenshots: [
       {
         src: "/images/projects/einstein-research.svg",
-        alt: "Research visualization interface case-study visual",
-        caption: "Self-hosted research visualization artifact with proprietary data excluded.",
+        alt: "Representative workflow diagram for research dataset loading, visualization, and interface refinement",
+        caption: "Representative portfolio visual. This is not the original research interface or research data.",
         width: 1280,
         height: 720,
       },
     ],
-    permissionsNote: "Project summary uses a self-hosted visualization artifact with proprietary research data excluded.",
+    permissionsNote:
+      "Representative portfolio visual. This is not the original research interface or research data. It was created solely to illustrate the visualization context in which the work occurred.",
     caseStudy: {
       overview:
         "This work refined research visualization interfaces and technical workflows used for neuroscience data exploration.",
@@ -636,11 +726,11 @@ export const projects: Project[] = [
         "Changes needed to respect technical collaborators who maintained the rendering pipeline.",
       ],
       role:
-        "Technical UI refinement and visualization support, improving usability, rendering behavior, and dataset load performance within an existing research tool context.",
+        "Contract Frontend Developer responsible for scoped interface refinement, rendering behavior, and dataset-load performance within an existing research tool.",
       usersAndWorkflows: [
         "Researchers: inspect visualized neuroscience data with less interface friction",
         "Technical collaborators: maintain rendering and interface behavior",
-        "Project stakeholders: evaluate progress through clearer UI states and performance improvements",
+        "Research collaborators: evaluate progress through clearer UI states and performance improvements",
       ],
       built: [
         "Interface refinements",
@@ -653,9 +743,9 @@ export const projects: Project[] = [
         "Improved existing workflows instead of forcing a new interface model",
       ],
       outcomes: [
-        "Improved usability for research visualization workflows",
-        "Better interface rendering behavior",
-        "Clearer self-hosted explanation of technical contribution",
+        "Reduced dataset load time by approximately 20%",
+        "Improved navigation and interface clarity for research workflows",
+        "Refined rendering behavior within an existing visualization tool",
       ],
       lessons: [
         "Technical tools need UX judgment just as much as consumer-facing sites do.",
@@ -668,51 +758,53 @@ export const projects: Project[] = [
   {
     slug: "steve-madden",
     title: "Steve Madden",
-    category: "Stakeholder Communication System",
-    roleLabel: "Visual communication contributor",
-    period: "SS 2022 archive",
-    engagementLabel: "Historical contribution",
+    category: "Visual Communication & Presentation Design",
+    roleLabel: careerFacts.steveMadden.role,
+    period: careerFacts.steveMadden.period,
+    engagementLabel: "Original presentation materials",
+    statusLabels: ["Scoped contribution", "Original materials"],
     description:
-      "Translated product direction into decision-ready sales decks, CAD assets, packaging concepts, and stakeholder materials.",
-    tags: ["Visual Communication", "Stakeholder Systems", "Presentation Design", "Product Direction"],
+      "Created sales decks, CAD assets, packaging concepts, and visual materials that helped product, merchandising, and sales teams communicate direction clearly.",
+    tags: ["Visual Communication", "Presentation Design", "Product Direction"],
     image: "/images/projects/steve-madden.svg",
+    imageAlt: "Steve Madden sales decks, CAD assets, packaging concepts, and presentation materials",
     screenshots: [
       {
         src: "/images/madden/madden-nyc-cover.webp",
         alt: "Steve Madden NYC sales deck cover",
-        caption: "Self-hosted sales deck cover from Logan's presentation design archive.",
+        caption: "Original sales-deck cover I created to establish the Spring/Summer 2022 story for sales and buyer review; confidential details are excluded.",
         width: 1800,
         height: 1391,
       },
       {
         src: "/images/madden/madden-sales-slide.webp",
         alt: "Steve Madden sales presentation slide",
-        caption: "Presentation slide demonstrating product direction and sales-story structure.",
+        caption: "Original slide I created to prioritize product direction for sales and buyer review; confidential details are excluded.",
         width: 1800,
         height: 1391,
       },
       {
         src: "/images/madden/madden-brand-board.webp",
         alt: "Steve Madden brand and trend board",
-        caption: "Brand and trend board used to communicate direction, tone, and merchandising context.",
+        caption: "Original board I created to align product and merchandising teams around direction, tone, and market context.",
         width: 1800,
         height: 1390,
       },
       {
         src: "/images/madden/madden-packaging.webp",
         alt: "Steve Madden packaging concept board",
-        caption: "Packaging and merchandising concept board used for stakeholder communication.",
+        caption: "Original concept board I created to organize packaging options for product and merchandising review; confidential details are excluded.",
         width: 1800,
         height: 1390,
       },
     ],
     permissionsNote:
-      "Self-owned presentation archive excerpts. Confidential business details are excluded and the case study focuses on communication craft and stakeholder workflow.",
+      `Original presentation archive excerpts. Confidential business details are excluded. Selected materials were created during Logan's ${careerFacts.steveMadden.period} employment for the ${careerFacts.steveMadden.salesCycle} sales cycle.`,
     caseStudy: {
       overview:
-        "This work translated product and brand direction into sales materials, CAD assets, packaging concepts, and stakeholder-ready decks.",
+        "This work translated product and brand direction into sales materials, CAD assets, packaging concepts, and review-ready decks.",
       problem:
-        "Sales and product teams needed materials that made product direction clear enough for buyers, internal stakeholders, and external partners to evaluate quickly.",
+        "Sales and product teams needed materials that made product direction clear enough for buyers, merchandising teams, and external partners to evaluate quickly.",
       constraints: [
         "Artifacts had to be persuasive without exposing confidential business details.",
         "Different audiences needed different levels of detail and context.",
@@ -722,7 +814,7 @@ export const projects: Project[] = [
         "Visual communication and presentation design support across sales, packaging, CAD, and client-facing materials.",
       usersAndWorkflows: [
         "Sales teams: present product direction clearly",
-        "Buyers and stakeholders: evaluate concepts quickly",
+        "Buyers and merchandising teams: evaluate concepts quickly",
         "Internal teams: align around product, packaging, and brand details",
       ],
       built: [
@@ -732,12 +824,12 @@ export const projects: Project[] = [
         "Client-facing visual materials",
       ],
       decisions: [
-        "Prioritized clarity and stakeholder comprehension",
+        "Prioritized the product information each audience needed to evaluate",
         "Kept confidential materials out of public portfolio artifacts",
         "Used visual hierarchy to make product direction easier to evaluate",
       ],
       outcomes: [
-        "Clearer stakeholder-ready presentations",
+        "Clearer sales and product presentations",
         "More organized visual communication around product and brand direction",
         "Reusable artifacts for buyer and internal review workflows",
       ],
@@ -746,7 +838,7 @@ export const projects: Project[] = [
         "Visual communication skills transfer directly into product and implementation work.",
       ],
       shows:
-        "This work shows communication, stakeholder translation, and the visual judgment behind decision-ready product artifacts.",
+        "This work shows visual communication judgment across product, sales, and merchandising materials.",
     },
   },
 ];
@@ -755,23 +847,20 @@ export const featuredProject = projects.find((project) => project.slug === "red-
 export const selectedProjects = projects.filter((project) =>
   [
     "red-eye-tickets",
-    "spotlight-strategies",
-    "albert-einstein-college-of-medicine",
     "cats-the-jellicle-ball",
+    "spotlight-strategies",
   ].includes(project.slug),
 ).sort(
   (a, b) =>
     [
       "red-eye-tickets",
-      "spotlight-strategies",
-      "albert-einstein-college-of-medicine",
       "cats-the-jellicle-ball",
+      "spotlight-strategies",
     ].indexOf(a.slug) -
     [
       "red-eye-tickets",
-      "spotlight-strategies",
-      "albert-einstein-college-of-medicine",
       "cats-the-jellicle-ball",
+      "spotlight-strategies",
     ].indexOf(b.slug),
 );
 export const clientDemoProjects = projects.filter((project) => project.interactiveDemoComponent);
@@ -788,7 +877,7 @@ export const workGroups = [
     eyebrow: "Design engineering",
     title: "Interaction systems under launch constraints",
     intro:
-      "Focused implementation work where the important proof is interaction behavior, responsive execution, and stakeholder-ready delivery.",
+      "Focused implementation work where the important proof is interaction behavior, responsive execution, and launch-ready delivery.",
     projectSlugs: ["the-season-flyer", "cats-the-jellicle-ball", "the-heart"],
   },
   {
@@ -800,9 +889,9 @@ export const workGroups = [
   },
   {
     eyebrow: "Communication systems",
-    title: "Discovery, structure, and decision-ready artifacts",
+    title: "Discovery, structure, and visual communication",
     intro:
-      "Work that turns loose goals, brand direction, and client needs into usable systems for decisions and handoffs.",
+      "Work that turns loose goals, brand direction, and client needs into clear websites, presentations, and handoff materials.",
     projectSlugs: ["spotlight-strategies", "steve-madden"],
   },
 ];
@@ -811,11 +900,11 @@ export const beforeAfterCards = [
   {
     title: "Performance",
     before: "Early WordPress-based site with slower first loads.",
-    after: "Custom application architecture with faster homepage delivery.",
+    after: "Custom application delivery with explicit caching, asset, and release control.",
   },
   {
     title: "Checkout Reliability",
-    before: "Higher checkout payment failure.",
+    before: "Card-only checkout with limited recovery paths.",
     after: "Added provider-specific Apple Pay and Google Pay paths with explicit readiness and recovery behavior.",
   },
   {
