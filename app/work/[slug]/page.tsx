@@ -287,6 +287,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   const caseStudy = project.caseStudy;
   const isRedEye = project.slug === "red-eye-tickets";
+  const isCats = project.slug === "cats-the-jellicle-ball";
   const isCompactCreative = project.caseStudyPresentation === "creative-compact";
   const isNeuralVisualizer = project.interactiveDemoComponent === "neural-visualizer";
   const demoIntro = isRedEye
@@ -322,7 +323,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <>
       <section className="page-hero">
         <div className="container">
-          <div className="case-hero-grid">
+          <div className={`case-hero-grid ${isCats ? "case-hero-grid--copy-only" : ""}`}>
             <div className="case-hero-copy">
               <Link className="back-link" href="/work/">
                 <ArrowLeft aria-hidden="true" size={15} />
@@ -352,16 +353,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </dl>
               ) : null}
             </div>
-            <figure className="case-hero-media">
-              <Image
-                alt={project.imageAlt}
-                height={720}
-                priority
-                sizes="(max-width: 900px) 100vw, 44vw"
-                src={project.image}
-                width={1280}
-              />
-            </figure>
+            {!isCats ? (
+              <figure className="case-hero-media">
+                <Image
+                  alt={project.imageAlt}
+                  height={720}
+                  priority
+                  sizes="(max-width: 900px) 100vw, 44vw"
+                  src={project.image}
+                  width={1280}
+                />
+              </figure>
+            ) : null}
           </div>
           {caseMetricCards?.length ? (
             <div className="case-metric-strip" aria-label={`${project.title} impact metrics`}>

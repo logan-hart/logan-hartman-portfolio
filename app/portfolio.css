@@ -1233,6 +1233,14 @@ p {
   grid-template-columns: minmax(0, 0.9fr) minmax(380px, 0.8fr);
 }
 
+.case-hero-grid--copy-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.case-hero-grid--copy-only .case-hero-copy {
+  max-width: 1080px;
+}
+
 .case-hero-media {
   aspect-ratio: 16 / 10;
   background: rgba(255, 255, 255, 0.04);

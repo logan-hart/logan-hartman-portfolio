@@ -119,6 +119,47 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           </span>
         </header>
 
+        <div className="cats-live-buzz-ticker" aria-label="Animated press quotes">
+          <div className="cats-live-buzz-ticker-viewport">
+            <div className="cats-live-buzz-ticker-track">
+              {[0, 1].map((setIndex) => (
+                <div aria-hidden={setIndex === 1} className="cats-live-buzz-ticker-group" key={setIndex}>
+                  {buzzQuotes.map((quote) => (
+                    <span className="cats-live-buzz-ticker-item" key={`${setIndex}-${quote.quote}`}>
+                      {quote.stars ? <b aria-label="Four stars">{quote.stars}</b> : null}
+                      <strong>“{quote.quote}”</strong>
+                      <small>—{quote.outlet}</small>
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="cats-live-buzz-masthead">
+          <Image
+            alt="The Buzz"
+            className="cats-live-buzz-hero cats-live-buzz-hero--desktop"
+            height={753}
+            sizes="100vw"
+            src="/images/cats-live/cats-buzz-hero.webp"
+            width={1692}
+          />
+          <Image
+            alt="The Buzz"
+            className="cats-live-buzz-hero cats-live-buzz-hero--mobile"
+            height={753}
+            sizes="100vw"
+            src="/images/cats-live/cats-buzz-hero-mobile.webp"
+            width={700}
+          />
+        </div>
+
+        <section className="cats-live-marquee-section" aria-label="CATS carousel demo">
+          <CatsMarquee />
+        </section>
+
         <section className="cats-live-hero" aria-label="CATS homepage hero recreation">
           <Image
             alt="Critical quote artwork"
@@ -139,47 +180,7 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           />
         </section>
 
-        <section className="cats-live-marquee-section" aria-label="CATS carousel demo">
-          <CatsMarquee />
-        </section>
-
-        <div className="cats-live-buzz-ticker" aria-label="Animated press quotes">
-          <div className="cats-live-buzz-ticker-viewport">
-            <div className="cats-live-buzz-ticker-track">
-              {[0, 1].map((setIndex) => (
-                <div aria-hidden={setIndex === 1} className="cats-live-buzz-ticker-group" key={setIndex}>
-                  {buzzQuotes.map((quote) => (
-                    <span className="cats-live-buzz-ticker-item" key={`${setIndex}-${quote.quote}`}>
-                      {quote.stars ? <b aria-label="Four stars">{quote.stars}</b> : null}
-                      <strong>“{quote.quote}”</strong>
-                      <small>—{quote.outlet}</small>
-                    </span>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         <section className="cats-live-buzz" aria-label="The Buzz editorial system">
-          <div className="cats-live-buzz-masthead">
-            <Image
-              alt="The Buzz"
-              className="cats-live-buzz-hero cats-live-buzz-hero--desktop"
-              height={753}
-              sizes="100vw"
-              src="/images/cats-live/cats-buzz-hero.webp"
-              width={1692}
-            />
-            <Image
-              alt="The Buzz"
-              className="cats-live-buzz-hero cats-live-buzz-hero--mobile"
-              height={753}
-              sizes="100vw"
-              src="/images/cats-live/cats-buzz-hero-mobile.webp"
-              width={700}
-            />
-          </div>
 
           <div className="cats-live-buzz-features" aria-label="Press feature carousel">
             <button aria-label="Previous press features" className="cats-live-buzz-feature-arrow cats-live-buzz-feature-arrow--previous" onClick={() => scrollBuzzFeatures(-1)} type="button">
