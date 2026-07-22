@@ -178,8 +178,8 @@ export const projects: Project[] = [
       `Processed ${redEyeFacts.metrics.grossPaymentVolume.value} in gross payment volume since the ${redEyeFacts.customPlatformLaunchLabel} custom-platform launch`,
       "Expanded checkout with Apple Pay and Google Pay wallet payment flows",
     ],
-    image: "/images/red-eye/social-preview.webp",
-    imageAlt: "Red Eye admin, producer, buyer, and check-in workflow overview",
+    image: "/images/red-eye/footer-logo-on-black.webp",
+    imageAlt: "Red Eye Tickets footer logo on a black background",
     featured: true,
     interactiveDemoComponent: "red-eye-workflows",
     screenshots: [
@@ -554,8 +554,8 @@ export const projects: Project[] = [
     description:
       "Preserved a theatrical carousel as a responsive, self-hosted interaction demo with clear contribution boundaries.",
     tags: ["Design Engineering", "Responsive Behavior", "Interaction Design", "Implementation"],
-    image: "/images/projects/cats-hero.svg",
-    imageAlt: "CATS: The Jellicle Ball theatrical carousel and responsive production artwork",
+    image: "/images/cats-live/cats-homepage-live.webp",
+    imageAlt: "Live CATS: The Jellicle Ball homepage with production artwork and ticket navigation",
     screenshots: [
       {
         src: "/images/cats-live/cats-combo.webp",
@@ -623,33 +623,28 @@ export const projects: Project[] = [
     title: "The Heart",
     category: "Purposeful Motion System",
     roleLabel: "Interaction engineering contributor",
-    engagementLabel: "Recreated demonstration",
-    statusLabels: ["Scoped contribution", "Recreated demonstration"],
+    engagementLabel: "CodePen-sourced demonstration",
+    statusLabels: ["Scoped contribution", "Original source adapted"],
     demoStatus: "Live interactive demo",
     description:
-      "Recreated a heartbeat motion system that supports tone and hierarchy while respecting reduced-motion preferences.",
+      "Adapted the original heartbeat and point-wave CodePen studies into an accessible, self-hosted motion system.",
     tags: ["Design Engineering", "Motion", "Interaction Design", "Accessibility"],
-    image: "/images/projects/the-heart-homepage.svg",
-    imageAlt: "The Heart heartbeat motion and waveform interaction",
+    image: "/images/the-heart/heart-globe-codepen.png",
+    imageAlt: "The Heart point-cloud globe from the original HeartBeat CodePen",
+    liveUrl: "https://codepen.io/logan-hart/pen/ZYQGqpg",
+    liveUrlLabel: "View original HeartBeat CodePen",
     screenshots: [
       {
-        src: "/images/the-heart/the-heart-splash.webp",
-        alt: "The Heart homepage mockup",
-        caption: "Self-hosted homepage mockup showing the page rhythm, media sections, and theatrical visual system.",
-        width: 584,
-        height: 2200,
-      },
-      {
-        src: "/images/the-heart/the-heart-mark.webp",
-        alt: "The Heart motion mark",
-        caption: "The Heart visual mark used to preserve the heartbeat and waveform motion language.",
-        width: 1800,
-        height: 1643,
+        src: "/images/the-heart/heart-globe-codepen.png",
+        alt: "The Heart point-cloud globe",
+        caption: "Original point-cloud globe asset loaded by the HeartBeat CodePen and self-hosted here for the portfolio demo.",
+        width: 803,
+        height: 800,
       },
     ],
     interactiveDemoComponent: "heartbeat",
     permissionsNote:
-      "Self-hosted animation recreation using original interaction principles and approved local project assets.",
+      "Self-hosted adaptation of Logan Hart's public HeartBeat and The Wave CodePens using the original globe asset, authored palette, timing, and wave parameters.",
     caseStudy: {
       overview:
         "This self-hosted case study preserves the animation language and interaction logic behind a production experience without relying on an external site remaining unchanged.",

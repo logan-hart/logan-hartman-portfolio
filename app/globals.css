@@ -1840,91 +1840,169 @@ h3 {
 }
 
 .heart-demo {
-  background:
-    linear-gradient(135deg, rgba(20, 33, 61, 0.98), rgba(20, 33, 61, 0.92));
-  color: var(--white);
-  min-height: 360px;
+  background: #0b0b0b;
+  color: #fff;
+  min-height: 760px;
   overflow: hidden;
-  padding: 32px;
   position: relative;
 }
 
-.heart-demo__grid {
+.heart-demo__toolbar {
   align-items: center;
-  display: grid;
-  gap: 24px;
-  grid-template-columns: minmax(0, 0.8fr) minmax(260px, 1fr);
-  min-height: 296px;
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  padding: 18px 22px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 6;
 }
 
-.heart-demo__art {
-  animation: heartbeat 2800ms ease-in-out infinite;
-  aspect-ratio: 1 / 0.92;
+.heart-demo__toolbar > span {
+  color: #d7c2ff;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.heart-demo__hero {
   display: grid;
+  min-height: 480px;
   place-items: center;
   position: relative;
 }
 
-.heart-demo__art img {
-  display: block;
-  filter: drop-shadow(0 0 20px rgba(247, 127, 0, 0.2));
-  height: auto;
-  max-width: min(460px, 100%);
-  width: 100%;
-}
-
-.heart-mark {
-  background: linear-gradient(90deg, transparent, rgba(247, 127, 0, 0.72), transparent);
-  content: "";
-  height: 58px;
-  left: -10%;
-  opacity: 0.82;
+.heart-demo__globe {
+  animation: heartCodepenBeat 5.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  aspect-ratio: 1;
+  display: grid;
+  max-width: 520px;
+  place-items: center;
   position: absolute;
-  right: -10%;
-  top: 48%;
-  transform: translateY(-50%);
+  width: min(64vw, 520px);
+  z-index: 1;
 }
 
-.heart-wave {
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 8px;
+.heart-demo__globe img {
   display: block;
-  height: 118px;
-  overflow: hidden;
+  filter: brightness(1.01) drop-shadow(0 0 14px rgba(255, 255, 255, 0.12));
+  height: 100%;
+  object-fit: contain;
   width: 100%;
 }
 
-.heart-wave__line {
-  animation: waveform 2600ms ease-in-out infinite;
-  fill: none;
-  stroke: var(--orange);
-  stroke-dasharray: 680;
-  stroke-dashoffset: 680;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 8;
+.heart-demo__hero h3 {
+  color: #fff;
+  font-size: clamp(3.7rem, 10vw, 7.5rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 0.82;
+  margin: 0;
+  pointer-events: none;
+  position: absolute;
+  text-align: center;
+  text-shadow: 0 0 4px #8a2be2, 0 0 8px #8a2be2, 0 0 16px #8a2be2, 0 0 28px #6b21a8;
+  z-index: 3;
+}
+
+.heart-demo__vignette {
+  background: radial-gradient(circle at center, transparent 52%, rgba(0, 0, 0, 0.72) 100%);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 4;
+}
+
+.heart-demo__wave {
+  min-height: 320px;
+  overflow: hidden;
+  position: relative;
+}
+
+.heart-dot-wave {
+  display: block;
+  height: 320px;
+  inset: 0;
+  position: absolute;
+  width: 100%;
 }
 
 .heart-demo .icon-button {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.22);
-  color: var(--white);
+  background: rgba(138, 43, 226, 0.14);
+  border-color: rgba(243, 69, 208, 0.54);
+  color: #f7eaff;
 }
 
 .heart-demo .icon-button:hover,
 .heart-demo .icon-button:focus-visible {
-  background: rgba(247, 127, 0, 0.18);
+  background: rgba(243, 69, 208, 0.22);
+  border-color: #f345d0;
 }
 
-.heart-copy strong {
+.heart-copy {
+  backdrop-filter: blur(10px);
+  background: rgba(11, 11, 11, 0.74);
+  border-left: 2px solid #f345d0;
+  bottom: 24px;
+  left: clamp(20px, 4vw, 52px);
+  max-width: 520px;
+  padding: 14px 18px;
+  position: absolute;
+  z-index: 3;
+}
+
+.heart-copy span {
+  color: #fff;
   display: block;
-  font-size: clamp(2rem, 5vw, 4.8rem);
+  font-size: clamp(1.75rem, 4vw, 3.6rem);
+  font-weight: 500;
   line-height: 0.92;
+  text-shadow: 0 0 18px rgba(138, 43, 226, 0.82);
 }
 
 .heart-copy p {
-  color: var(--muted);
+  color: #d7c2ff;
   margin-bottom: 0;
+}
+
+@media (max-width: 720px) {
+  .heart-demo {
+    min-height: 650px;
+  }
+
+  .heart-demo__toolbar {
+    padding: 14px 16px;
+  }
+
+  .heart-demo__toolbar > span {
+    font-size: 0.67rem;
+    max-width: 220px;
+  }
+
+  .heart-demo__hero {
+    min-height: 400px;
+  }
+
+  .heart-demo__globe {
+    width: min(94vw, 420px);
+  }
+
+  .heart-demo__wave,
+  .heart-dot-wave {
+    min-height: 250px;
+  }
+
+  .heart-dot-wave {
+    height: 250px;
+  }
+
+  .heart-copy {
+    bottom: 18px;
+    left: 18px;
+    max-width: calc(100% - 36px);
+  }
 }
 
 .motion-showcase {
@@ -2754,6 +2832,44 @@ h3 {
   }
 }
 
+@keyframes heartCodepenBeat {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.08));
+    transform: scale(1);
+  }
+  4% {
+    filter: brightness(1.01) drop-shadow(0 0 12px rgba(255, 255, 255, 0.16));
+    transform: scale(1.04) translateZ(18px);
+  }
+  8% {
+    transform: scale(1.01) translateZ(10px);
+  }
+  12% {
+    filter: brightness(1.012) drop-shadow(0 0 14px rgba(255, 255, 255, 0.18));
+    transform: scale(1.065) translateZ(28px);
+  }
+  30%,
+  48% {
+    transform: scale(1);
+  }
+  52% {
+    filter: brightness(1.01) drop-shadow(0 0 12px rgba(255, 255, 255, 0.16));
+    transform: scale(1.04) translateZ(18px);
+  }
+  56% {
+    transform: scale(1.01) translateZ(10px);
+  }
+  60% {
+    filter: brightness(1.012) drop-shadow(0 0 14px rgba(255, 255, 255, 0.18));
+    transform: scale(1.065) translateZ(28px);
+  }
+  78% {
+    filter: brightness(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.08));
+    transform: scale(1);
+  }
+}
+
 @keyframes waveform {
   0% {
     stroke-dashoffset: 680;
@@ -2827,7 +2943,6 @@ h3 {
 @media (max-width: 980px) {
   .section-heading,
   .featured-layout,
-  .heart-demo__grid,
   .motion-showcase,
   .case-overview-grid,
   .automation-demo__intro,
