@@ -187,6 +187,18 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           <Image alt="MEOW" height={1246} sizes="100vw" src="/images/cats-live/cats-meow.webp" width={2560} />
         </section>
 
+        <div className="cats-live-footer-mark">
+          <Image className="cats-live-footer-logo" alt="CATS logo" height={158} sizes="(max-width: 760px) 60vw, 420px" src="/images/cats-live/cats-logo-yellow.webp" width={1024} />
+          <Image
+            alt="Music by Andrew Lloyd Webber, based on Old Possum’s Book of Practical Cats by T. S. Eliot; choreography by Omari Wiles and Arturo Lyons; directed by Zhailon Levingston and Bill Rauch"
+            className="cats-live-footer-credits"
+            height={106}
+            sizes="(max-width: 760px) 94vw, 1100px"
+            src="/images/cats-live/cats-credits-yellow.webp"
+            width={1137}
+          />
+        </div>
+
         <section className="cats-live-buzz" aria-label="The Buzz editorial system">
           <div className="cats-live-buzz-features" aria-label="Press feature carousel">
             <button aria-label="Previous press features" className="cats-live-buzz-feature-arrow cats-live-buzz-feature-arrow--previous" onClick={() => scrollBuzzFeatures(-1)} type="button">
@@ -228,18 +240,6 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
             />
           </div>
         </section>
-
-        <div className="cats-live-footer-mark">
-          <Image className="cats-live-footer-logo" alt="CATS logo" height={158} sizes="(max-width: 760px) 60vw, 420px" src="/images/cats-live/cats-logo-yellow.webp" width={1024} />
-          <Image
-            alt="Music by Andrew Lloyd Webber, based on Old Possum’s Book of Practical Cats by T. S. Eliot; choreography by Omari Wiles and Arturo Lyons; directed by Zhailon Levingston and Bill Rauch"
-            className="cats-live-footer-credits"
-            height={106}
-            sizes="(max-width: 760px) 94vw, 1100px"
-            src="/images/cats-live/cats-credits-yellow.webp"
-            width={1137}
-          />
-        </div>
       </div>
     </div>
   );
