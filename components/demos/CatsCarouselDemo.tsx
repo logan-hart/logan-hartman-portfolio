@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { BrowserFrame } from "@/components/demos/BrowserFrame";
 
 const carouselImages = [
@@ -98,7 +98,6 @@ function CatsMarquee() {
 }
 
 export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
-  const [buzzTickerPaused, setBuzzTickerPaused] = useState(false);
   const buzzFeatureTrack = useRef<HTMLDivElement>(null);
 
   const scrollBuzzFeatures = (direction: -1 | 1) => {
@@ -115,7 +114,6 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
             <span />
             <span />
           </span>
-          <strong className="cats-live-closing">Final performance August 8</strong>
           <span aria-label="Ticketing link omitted from archived demo" className="cats-live-ticket" title="Ticketing link omitted from archived demo">
             Tickets
           </span>
@@ -145,6 +143,24 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           <CatsMarquee />
         </section>
 
+        <div className="cats-live-buzz-ticker" aria-label="Animated press quotes">
+          <div className="cats-live-buzz-ticker-viewport">
+            <div className="cats-live-buzz-ticker-track">
+              {[0, 1].map((setIndex) => (
+                <div aria-hidden={setIndex === 1} className="cats-live-buzz-ticker-group" key={setIndex}>
+                  {buzzQuotes.map((quote) => (
+                    <span className="cats-live-buzz-ticker-item" key={`${setIndex}-${quote.quote}`}>
+                      {quote.stars ? <b aria-label="Four stars">{quote.stars}</b> : null}
+                      <strong>“{quote.quote}”</strong>
+                      <small>—{quote.outlet}</small>
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <section className="cats-live-buzz" aria-label="The Buzz editorial system">
           <div className="cats-live-buzz-masthead">
             <Image
@@ -163,33 +179,6 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
               src="/images/cats-live/cats-buzz-hero-mobile.webp"
               width={700}
             />
-          </div>
-
-          <div className="cats-live-buzz-ticker" aria-label="Animated press quotes">
-            <div className="cats-live-buzz-ticker-viewport">
-              <div className={`cats-live-buzz-ticker-track ${buzzTickerPaused ? "cats-live-buzz-ticker-track--paused" : ""}`}>
-                {[0, 1].map((setIndex) => (
-                  <div aria-hidden={setIndex === 1} className="cats-live-buzz-ticker-group" key={setIndex}>
-                    {buzzQuotes.map((quote) => (
-                      <span className="cats-live-buzz-ticker-item" key={`${setIndex}-${quote.quote}`}>
-                        {quote.stars ? <b aria-label="Four stars">{quote.stars}</b> : null}
-                        <strong>“{quote.quote}”</strong>
-                        <small>—{quote.outlet}</small>
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <button
-              aria-label={buzzTickerPaused ? "Play press quote carousel" : "Pause press quote carousel"}
-              className="cats-live-buzz-ticker-control"
-              onClick={() => setBuzzTickerPaused((paused) => !paused)}
-              type="button"
-            >
-              {buzzTickerPaused ? <Play aria-hidden="true" size={15} /> : <Pause aria-hidden="true" size={15} />}
-              <span>{buzzTickerPaused ? "Play" : "Pause"}</span>
-            </button>
           </div>
 
           <div className="cats-live-buzz-features" aria-label="Press feature carousel">
@@ -245,13 +234,13 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
             />
           </article>
           <article>
-            <h4>Tony Awards Performance</h4>
+            <h4>Tony Awards Spotlight</h4>
             <iframe
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               loading="lazy"
-              src="https://www.youtube-nocookie.com/embed/imo3g7aJuTY?rel=0"
-              title="CATS: The Jellicle Ball at the 79th Annual Tony Awards"
+              src="https://www.youtube-nocookie.com/embed/NlUEbYQkDFU?rel=0"
+              title="CATS: The Jellicle Ball — 2026 Tony Award nominee"
             />
           </article>
         </section>

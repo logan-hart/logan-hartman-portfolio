@@ -1470,7 +1470,7 @@ h3 {
   color: var(--cats-black);
   display: grid;
   gap: 18px;
-  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-columns: 48px minmax(0, 1fr);
   min-height: 58px;
   padding: 10px 18px;
 }
@@ -1488,22 +1488,13 @@ h3 {
   width: 100%;
 }
 
-.cats-live-closing {
-  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
-  font-size: clamp(0.82rem, 2.1vw, 1.5rem);
-  justify-self: center;
-  letter-spacing: 0.02em;
-  line-height: 0.9;
-  text-align: center;
-  text-transform: uppercase;
-}
-
 .cats-live-ticket {
   background: var(--cats-black);
   color: var(--cats-yellow);
   display: inline-flex;
   font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
   font-size: 0.72rem;
+  justify-self: end;
   justify-content: center;
   letter-spacing: 0.04em;
   padding: 11px 14px 10px;
@@ -1604,7 +1595,7 @@ h3 {
   border-top: 2px solid var(--cats-yellow);
   color: var(--cats-yellow);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   letter-spacing: 0.05em;
   overflow: hidden;
   text-transform: uppercase;
@@ -1616,23 +1607,21 @@ h3 {
 }
 
 .cats-live-buzz-ticker-track {
+  align-items: center;
   animation: cats-marquee-rtl 60s linear infinite;
   display: flex;
   width: max-content;
   will-change: transform;
 }
 
-.cats-live-buzz-ticker-track--paused {
-  animation-play-state: paused;
-}
-
 .cats-live-buzz-ticker-group {
+  align-items: center;
   display: flex;
   flex-shrink: 0;
 }
 
 .cats-live-buzz-ticker-item {
-  align-items: baseline;
+  align-items: center;
   display: inline-flex;
   flex-shrink: 0;
   gap: 10px;
@@ -1651,29 +1640,6 @@ h3 {
   font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
   font-size: clamp(0.48rem, 0.9vw, 0.68rem);
   letter-spacing: 0.01em;
-}
-
-.cats-live-buzz-ticker-control {
-  align-items: center;
-  background: var(--cats-black);
-  border: 0;
-  border-left: 2px solid var(--cats-yellow);
-  color: var(--cats-yellow);
-  cursor: pointer;
-  display: inline-flex;
-  font: inherit;
-  font-size: 0.68rem;
-  font-weight: 800;
-  gap: 6px;
-  justify-content: center;
-  padding: 0 14px;
-  text-transform: uppercase;
-  z-index: 2;
-}
-
-.cats-live-buzz-ticker-control:focus-visible {
-  outline: 3px solid var(--cats-yellow);
-  outline-offset: -4px;
 }
 
 .cats-live-buzz-features {
@@ -1871,7 +1837,7 @@ h3 {
 
 .phone-frame .cats-live-nav {
   gap: 10px;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
+  grid-template-columns: 34px minmax(0, 1fr);
   min-height: 46px;
   padding: 8px 10px;
 }
@@ -1888,10 +1854,6 @@ h3 {
 .phone-frame .cats-live-ticket {
   font-size: 0.48rem;
   padding: 8px 9px 7px;
-}
-
-.phone-frame .cats-live-closing {
-  font-size: 0.58rem;
 }
 
 .phone-frame .cats-live-hero {
@@ -1932,7 +1894,7 @@ h3 {
 }
 
 .phone-frame .cats-live-buzz-ticker {
-  grid-template-columns: minmax(0, 1fr) 42px;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .phone-frame .cats-live-buzz-ticker-item {
@@ -1947,14 +1909,6 @@ h3 {
 
 .phone-frame .cats-live-buzz-ticker-item small {
   font-size: 0.4rem;
-}
-
-.phone-frame .cats-live-buzz-ticker-control {
-  padding: 0;
-}
-
-.phone-frame .cats-live-buzz-ticker-control span {
-  display: none;
 }
 
 .phone-frame .cats-live-buzz-grid {
@@ -3355,7 +3309,7 @@ h3 {
 
   .cats-live-nav {
     gap: 10px;
-    grid-template-columns: 34px minmax(0, 1fr) auto;
+    grid-template-columns: 34px minmax(0, 1fr);
     min-height: 46px;
     padding: 8px 10px;
   }
@@ -3372,10 +3326,6 @@ h3 {
   .cats-live-ticket {
     font-size: 0.48rem;
     padding: 8px 9px 7px;
-  }
-
-  .cats-live-closing {
-    font-size: 0.58rem;
   }
 
   .cats-live-hero {
@@ -3416,7 +3366,7 @@ h3 {
   }
 
   .cats-live-buzz-ticker {
-    grid-template-columns: minmax(0, 1fr) 42px;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .cats-live-buzz-ticker-item {
@@ -3431,14 +3381,6 @@ h3 {
 
   .cats-live-buzz-ticker-item small {
     font-size: 0.4rem;
-  }
-
-  .cats-live-buzz-ticker-control {
-    padding: 0;
-  }
-
-  .cats-live-buzz-ticker-control span {
-    display: none;
   }
 
   .cats-live-buzz-grid {
