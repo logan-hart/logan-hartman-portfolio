@@ -3,6 +3,8 @@
 [![Build](https://github.com/logan-hart/logan-hartman-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/logan-hart/logan-hartman-portfolio/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
+[View the live portfolio](https://logan-hartman-portfolio.onrender.com) · [Explore the Red Eye case study](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/)
+
 Product-engineering portfolio for Logan Hartman, built with Next.js, TypeScript, and static export. It documents how I turn operational complexity into usable systems across event commerce, payments, admissions, workflow design, reliability automation, and high-craft digital experiences.
 
 The portfolio uses self-hosted case studies and interaction demos so the relevant product and implementation work remains understandable even when an external production site changes.
