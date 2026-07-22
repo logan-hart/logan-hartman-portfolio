@@ -28,6 +28,9 @@ export type Project = {
   roleLabel?: string;
   period?: string;
   engagementLabel?: string;
+  collaborationLabel?: string;
+  platformLabel?: string;
+  projectTypeLabel?: string;
   launchLabel?: string;
   statusLabels: string[];
   demoStatus?: string;
@@ -47,6 +50,8 @@ export type Project = {
   permissionsNote?: string;
   caseStudy?: {
     overview: string;
+    contextNotes?: string[];
+    implementationNotes?: string[];
     discovery?: {
       intro: string;
       channels: Array<{ title: string; description: string }>;
@@ -553,12 +558,15 @@ export const projects: Project[] = [
     category: "Creative Engineering",
     caseStudyPresentation: "creative-compact",
     roleLabel: "Design engineering and front-end development",
-    engagementLabel: "Original production website",
-    statusLabels: ["Client work", "Production implementation"],
+    engagementLabel: "Production client work",
+    collaborationLabel: "Client, marketing, advertising, and production teams",
+    platformLabel: "WordPress, custom JavaScript, and CSS",
+    projectTypeLabel: "Production client work",
+    statusLabels: ["Production client work"],
     demoStatus: "Interactive recreation",
     description:
-      "Built custom responsive interactions and campaign-aligned web graphics for an original Broadway website, translating the show’s playful advertising direction into a cohesive digital experience within WordPress.",
-    tags: ["Front-End Development", "Responsive UI", "WordPress", "Visual Design"],
+      "Front-end and visual implementation for the original Broadway production website, translating the show’s bold color, oversized typography, and kinetic editorial language into a responsive WordPress experience through custom JavaScript, bespoke layouts, campaign graphics, and a direct path to ticketing.",
+    tags: ["Front-End Engineering", "Interaction Design", "Responsive Systems", "WordPress"],
     image: "/images/cats-live/cats-homepage-live.webp",
     imageAlt: "Live CATS: The Jellicle Ball homepage with production artwork and ticket navigation",
     thumbnailImage: "/images/cats-live/cats-meow.webp",
@@ -570,21 +578,20 @@ export const projects: Project[] = [
       "The interactive demo recreates selected portions of my original front-end work so the behavior remains reviewable. The broader production site and campaign direction were collaborative client work, and some campaign assets were supplied.",
     caseStudy: {
       overview:
-        "CATS: The Jellicle Ball needed a website that felt connected to the production’s advertising and marketing—not like campaign artwork placed inside a conventional WordPress template. Working with marketing, client, and production stakeholders, I helped translate its playful, color-driven direction into an original digital experience through custom front-end behavior, responsive interactions, and web-specific graphics.",
+        "The campaign arrived with a developed creative direction and a distinctive visual language. The design-engineering challenge was to make that direction function as an interactive system—not place approved campaign artwork inside a conventional WordPress presentation.",
+      contextNotes: [
+        "The site extended the campaign’s theatrical energy through continuous motion, editorial composition, responsive image treatment, and web-specific graphics while maintaining a clear path from the campaign experience to external ticketing.",
+      ],
       built: [
-        "Custom infinite content and image tracks",
-        "Responsive carousel sizing, spacing, and visible-content rules",
-        "Front-end customization beyond the standard WordPress presentation",
-        "Web-specific graphics created or reconstructed from campaign direction and supplied assets",
-        "Clear handoff from the campaign experience to the external ticketing destination",
+        "Wrote custom JavaScript for continuous content and image carousels",
+        "Extended the existing WordPress presentation with custom layouts and front-end behavior",
+        "Defined responsive rules for item scale, spacing, crop, and visible content",
+        "Created and reconstructed web graphics from established campaign direction and supplied assets",
+        "Connected campaign calls to action to the external ticketing destination",
       ],
-      decisions: [
-        "Translated bold color, oversized type, contrast, and movement into web-specific compositions instead of reproducing individual advertising layouts.",
-        "Extended WordPress with custom layouts and front-end behavior where the campaign needed more movement, flexibility, and visual distinction.",
-        "Used repeated content tracks and responsive sizing to maintain continuous motion without a visible endpoint.",
-      ],
-      lessons: [
-        "This project reinforced that front-end engineering is an act of translation: identifying the visual and behavioral principles behind an evolving campaign, filling gaps in available assets, and turning that direction into a responsive experience within real platform constraints.",
+      implementationNotes: [
+        "The carousel system used repeated content tracks and custom JavaScript to create continuous movement without a visible endpoint. Item sizing, spacing, cropping, and visible content changed across viewport sizes so the interaction retained its editorial rhythm rather than becoming a reduced version of the desktop layout.",
+        "The visual direction was already established. My role was to interpret that system for the web: identifying how its typography, color, image treatment, density, and playfulness should behave across layouts, interactions, and screen sizes.",
       ],
     },
   },

@@ -19,7 +19,7 @@ const homepageImpactMetrics = impactMetrics.filter((metric) =>
 
 const featuredLabels: Record<string, string> = {
   "red-eye-tickets": "Product Systems",
-  "cats-the-jellicle-ball": "Production Design Engineering",
+  "cats-the-jellicle-ball": "Creative Engineering",
   "the-season-flyer": "Design Engineering",
   "albert-einstein-college-of-medicine": "Technical Tools",
   "spotlight-strategies": "Communication Systems",

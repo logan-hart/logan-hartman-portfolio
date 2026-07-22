@@ -85,6 +85,7 @@ function CaseTabs({
   hasLessons,
   hasOutcomes,
   isCompactCreative,
+  isCats,
   isRedEye,
 }: {
   hasDecisions: boolean;
@@ -92,10 +93,18 @@ function CaseTabs({
   hasLessons: boolean;
   hasOutcomes: boolean;
   isCompactCreative: boolean;
+  isCats: boolean;
   isRedEye: boolean;
 }) {
   const tabs = (
-    isCompactCreative
+    isCats
+      ? [
+          { href: "#overview", label: "Context", show: true },
+          { href: "#demos", label: "Demo", show: true },
+          { href: "#implementation", label: "Contribution", show: hasImplementation },
+          { href: "#implementation-notes", label: "Implementation", show: true },
+        ]
+      : isCompactCreative
       ? [
           { href: "#overview", label: "Overview", show: true },
           { href: "#implementation", label: "Contribution", show: hasImplementation },
@@ -311,12 +320,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const hasDecisions = Boolean(decisionArtifacts?.length || decisionItems?.length);
   const hasImplementation = Boolean(implementationItems?.length);
   const caseHeroFacts = [
-    project.roleLabel ? { label: "Role", value: project.roleLabel } : null,
-    project.period ? { label: "Period", value: project.period } : null,
-    project.engagementLabel
-      ? { label: isCompactCreative ? "Context" : "Evidence", value: project.engagementLabel }
-      : null,
-    project.launchLabel ? { label: "Launch", value: project.launchLabel } : null,
+    ...(isCats
+      ? [
+          project.roleLabel ? { label: "Role", value: project.roleLabel } : null,
+          project.collaborationLabel
+            ? { label: "Collaboration", value: project.collaborationLabel }
+            : null,
+          project.platformLabel ? { label: "Platform", value: project.platformLabel } : null,
+          project.projectTypeLabel
+            ? { label: "Project type", value: project.projectTypeLabel }
+            : null,
+        ]
+      : [
+          project.roleLabel ? { label: "Role", value: project.roleLabel } : null,
+          project.period ? { label: "Period", value: project.period } : null,
+          project.engagementLabel
+            ? { label: isCompactCreative ? "Context" : "Evidence", value: project.engagementLabel }
+            : null,
+          project.launchLabel ? { label: "Launch", value: project.launchLabel } : null,
+        ]),
   ].filter((item): item is { label: string; value: string } => Boolean(item));
 
   return (
@@ -333,15 +355,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <h1>{project.title}</h1>
               <p>{project.description}</p>
               <div className="tag-list" aria-label={`${project.title} tags`}>
-                {project.tags.slice(0, 3).map((tag) => (
+                {project.tags.slice(0, isCats ? 4 : 3).map((tag) => (
                   <span className="tag" key={tag}>
                     {tag}
                   </span>
                 ))}
               </div>
-              <div className="status-list" aria-label="Project status and provenance">
-                {project.statusLabels.map((status) => <span key={status}>{status}</span>)}
-              </div>
+              {!isCats ? (
+                <div className="status-list" aria-label="Project status and provenance">
+                  {project.statusLabels.map((status) => <span key={status}>{status}</span>)}
+                </div>
+              ) : null}
               {caseHeroFacts.length ? (
                 <dl className="case-hero-facts">
                   {caseHeroFacts.map((fact) => (
@@ -389,13 +413,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               hasLessons={Boolean(lessonItems?.length)}
               hasOutcomes={Boolean(outcomeItems?.length)}
               isCompactCreative={isCompactCreative}
+              isCats={isCats}
               isRedEye={isRedEye}
             />
           )}
         </div>
       </section>
 
-      {caseStudy && (
+      {caseStudy && !isCats && (
         <Section id="overview" variant="tight">
           <article className="case-panel case-panel--lead">
             <h2>Overview</h2>
@@ -422,6 +447,36 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       )}
 
+      {caseStudy && isCats ? (
+        <Section id="overview" title="Project context" variant="tight">
+          <article className="case-panel case-panel--lead cats-case-prose">
+            <p>{caseStudy.overview}</p>
+            {caseStudy.contextNotes?.map((note) => <p key={note}>{note}</p>)}
+          </article>
+        </Section>
+      ) : null}
+
+      {isCats && project.interactiveDemoComponent ? (
+        <Section id="demos" variant="band">
+          <ProjectEvidenceLinks project={project} />
+          <DemoRenderer component={project.interactiveDemoComponent} />
+        </Section>
+      ) : null}
+
+      {isCats && hasImplementation ? (
+        <Section id="implementation" title="Selected contribution" variant="tight">
+          <ListPanel items={implementationItems} />
+        </Section>
+      ) : null}
+
+      {isCats && caseStudy?.implementationNotes?.length ? (
+        <Section id="implementation-notes" title="Implementation" variant="tight">
+          <article className="case-panel case-panel--lead cats-case-prose">
+            {caseStudy.implementationNotes.map((note) => <p key={note}>{note}</p>)}
+          </article>
+        </Section>
+      ) : null}
+
       {hasDecisions && !isCompactCreative && (
         <Section
           eyebrow="Decisions"
@@ -439,7 +494,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       )}
 
-      {hasImplementation && (
+      {hasImplementation && !isCats && (
         <Section
           eyebrow={isCompactCreative ? "Creative engineering" : "Implementation"}
           id="implementation"
@@ -455,7 +510,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       )}
 
-      {hasDecisions && isCompactCreative && (
+      {hasDecisions && isCompactCreative && !isCats && (
         <Section
           eyebrow="Decisions"
           id="decisions"
@@ -526,7 +581,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       )}
 
-      {project.interactiveDemoComponent && (
+      {project.interactiveDemoComponent && !isCats && (
         <Section
           eyebrow={
             isCompactCreative
@@ -579,7 +634,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </Section>
       ) : null}
 
-      {lessonItems?.length && isCompactCreative ? (
+      {lessonItems?.length && isCompactCreative && !isCats ? (
         <Section eyebrow="Reflection" id="lessons" title="Creative translation" variant="tight">
           <article className="case-panel case-panel--lead">
             <p>{lessonItems[0]}</p>
