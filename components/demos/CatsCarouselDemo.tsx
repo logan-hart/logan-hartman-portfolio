@@ -75,12 +75,12 @@ const buzzFeatures = [
   },
 ];
 
-function CatsMarquee({ paused }: { paused: boolean }) {
+function CatsMarquee() {
   const repeatedImages = [...carouselImages, ...carouselImages];
 
   return (
     <div className="cats-marquee-outer" role="region" aria-label="Image Carousel">
-      <div className={`cats-marquee-track ${paused ? "cats-marquee-track--paused" : ""}`}>
+      <div className="cats-marquee-track">
         {repeatedImages.map((image, index) => (
           <Image
             alt=""
@@ -98,7 +98,6 @@ function CatsMarquee({ paused }: { paused: boolean }) {
 }
 
 export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
-  const [marqueePaused, setMarqueePaused] = useState(false);
   const [buzzTickerPaused, setBuzzTickerPaused] = useState(false);
   const buzzFeatureTrack = useRef<HTMLDivElement>(null);
 
@@ -142,22 +141,8 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           />
         </section>
 
-        <section className="cats-live-calendar-band" aria-label="CATS performance callout">
-          <h3>Archived production snapshot</h3>
-          <p>Interaction and visual direction preserved from the implementation period</p>
-        </section>
-
         <section className="cats-live-marquee-section" aria-label="CATS carousel demo">
-          <button
-            aria-label={marqueePaused ? "Play carousel animation" : "Pause carousel animation"}
-            className="cats-marquee-control"
-            onClick={() => setMarqueePaused((paused) => !paused)}
-            type="button"
-          >
-            {marqueePaused ? <Play aria-hidden="true" size={15} /> : <Pause aria-hidden="true" size={15} />}
-            {marqueePaused ? "Play" : "Pause"}
-          </button>
-          <CatsMarquee paused={marqueePaused} />
+          <CatsMarquee />
         </section>
 
         <section className="cats-live-buzz" aria-label="The Buzz editorial system">
@@ -251,16 +236,22 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
         <section className="cats-live-video-grid" aria-label="CATS media layout demo">
           <article>
             <h4>Forever. And Now.</h4>
-            <Image alt="CATS video thumbnail" height={575} sizes="(max-width: 760px) 100vw, 45vw" src="/images/cats-live/video-thumbnail-1.webp" width={1024} />
+            <iframe
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+              src="https://www.youtube-nocookie.com/embed/f3ksQtW2smo?rel=0"
+              title="Forever. And Now. — CATS: The Jellicle Ball"
+            />
           </article>
           <article>
             <h4>Tony Awards Performance</h4>
-            <Image
-              alt="Tony Awards performance thumbnail"
-              height={575}
-              sizes="(max-width: 760px) 100vw, 45vw"
-              src="/images/cats-live/tony-video-cats.webp"
-              width={1024}
+            <iframe
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+              src="https://www.youtube-nocookie.com/embed/imo3g7aJuTY?rel=0"
+              title="CATS: The Jellicle Ball at the 79th Annual Tony Awards"
             />
           </article>
         </section>
@@ -270,7 +261,15 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
         </section>
 
         <div className="cats-live-footer-mark">
-          <Image alt="CATS logo" height={158} sizes="(max-width: 760px) 60vw, 420px" src="/images/cats-live/cats-logo-yellow.webp" width={1024} />
+          <Image className="cats-live-footer-logo" alt="CATS logo" height={158} sizes="(max-width: 760px) 60vw, 420px" src="/images/cats-live/cats-logo-yellow.webp" width={1024} />
+          <Image
+            alt="Music by Andrew Lloyd Webber, based on Old Possum’s Book of Practical Cats by T. S. Eliot; choreography by Omari Wiles and Arturo Lyons; directed by Zhailon Levingston and Bill Rauch"
+            className="cats-live-footer-credits"
+            height={106}
+            sizes="(max-width: 760px) 94vw, 1100px"
+            src="/images/cats-live/cats-credits-yellow.webp"
+            width={1137}
+          />
         </div>
       </div>
     </div>

@@ -1537,56 +1537,11 @@ h3 {
   width: 31%;
 }
 
-.cats-live-calendar-band {
-  background: var(--cats-yellow);
-  color: var(--cats-black);
-  padding: 22px 18px 18px;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.cats-live-calendar-band h3 {
-  font-family: "Cats Antarctica Condensed", Impact, sans-serif;
-  font-size: clamp(2.65rem, 8vw, 5.8rem);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 0.78;
-  margin: 0;
-}
-
-.cats-live-calendar-band p {
-  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
-  font-size: clamp(1rem, 2.5vw, 1.72rem);
-  letter-spacing: 0.03em;
-  margin: 12px 0 0;
-}
-
 .cats-live-marquee-section {
   background: var(--cats-yellow);
   overflow: hidden;
   padding: 18px 0 34px;
   position: relative;
-}
-
-.cats-marquee-control {
-  align-items: center;
-  background: var(--cats-black);
-  border: 0;
-  color: var(--cats-yellow);
-  cursor: pointer;
-  display: inline-flex;
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 800;
-  gap: 6px;
-  margin: 0 18px 12px;
-  padding: 8px 11px;
-  text-transform: uppercase;
-}
-
-.cats-marquee-control:focus-visible {
-  outline: 3px solid var(--cats-black);
-  outline-offset: 3px;
 }
 
 .cats-marquee-outer {
@@ -1601,10 +1556,6 @@ h3 {
   display: flex;
   width: max-content;
   will-change: transform;
-}
-
-.cats-marquee-track--paused {
-  animation-play-state: paused;
 }
 
 .cats-marquee-track img {
@@ -1864,8 +1815,10 @@ h3 {
   text-transform: uppercase;
 }
 
-.cats-live-video-grid img {
+.cats-live-video-grid iframe,
+.cats-live-video-grid video {
   aspect-ratio: 16 / 9;
+  border: 0;
   display: block;
   height: auto;
   object-fit: cover;
@@ -1890,16 +1843,26 @@ h3 {
 }
 
 .cats-live-footer-mark {
+  align-items: center;
   background: var(--cats-black);
   display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 5vw, 64px);
   justify-content: center;
-  padding: 0 24px 36px;
+  padding: 0 24px clamp(34px, 6vw, 76px);
 }
 
-.cats-live-footer-mark img {
+.cats-live-footer-mark .cats-live-footer-logo {
   display: block;
   height: auto;
   max-width: min(580px, 82%);
+}
+
+.cats-live-footer-mark .cats-live-footer-credits {
+  display: block;
+  height: auto;
+  max-width: min(1137px, 98%);
+  width: 100%;
 }
 
 .phone-frame .cats-stage {
@@ -1945,14 +1908,6 @@ h3 {
   left: 52%;
   top: -36%;
   width: 52%;
-}
-
-.phone-frame .cats-live-calendar-band h3 {
-  font-size: 3.35rem;
-}
-
-.phone-frame .cats-live-calendar-band p {
-  font-size: 0.86rem;
 }
 
 .phone-frame .cats-live-marquee-section {
@@ -3437,14 +3392,6 @@ h3 {
     left: 52%;
     top: -36%;
     width: 52%;
-  }
-
-  .cats-live-calendar-band h3 {
-    font-size: 3.35rem;
-  }
-
-  .cats-live-calendar-band p {
-    font-size: 0.86rem;
   }
 
   .cats-live-marquee-section {
