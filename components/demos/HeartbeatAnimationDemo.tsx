@@ -11,7 +11,7 @@ export function HeartbeatAnimationDemo() {
   return (
     <section className="heart-demo" aria-label="The Heart motion demo">
       <div className="heart-demo__toolbar">
-        <span>The Heart / original CodePen study</span>
+        <span>The Heart / live homepage study</span>
         <button
           aria-label={playing ? "Pause heartbeat animation" : "Play heartbeat animation"}
           className="icon-button"
@@ -23,16 +23,19 @@ export function HeartbeatAnimationDemo() {
         </button>
       </div>
       <div className="heart-demo__hero">
+        <div aria-hidden="true" className="heart-demo__signal">
+          <Image alt="" height={800} priority src="/images/the-heart/heart-homepage-wave.png" width={1695} />
+        </div>
         <div className="heart-demo__globe" style={{ animationPlayState: playing ? "running" : "paused" }}>
           <Image
-            alt="The Heart point-cloud globe from the original CodePen"
-            height={800}
+            alt="The Heart point-cloud globe from the live musical homepage"
+            height={797}
             priority
-            src="/images/the-heart/heart-globe-codepen.png"
-            width={803}
+            src="/images/the-heart/heart-homepage-globe.png"
+            width={800}
           />
         </div>
-        <h3>
+        <h3 style={{ animationPlayState: playing ? "running" : "paused" }}>
           THE
           <br />
           HEART
@@ -43,7 +46,7 @@ export function HeartbeatAnimationDemo() {
         <HeartWaveCanvas playing={playing} />
         <div className="heart-copy">
           <span>Pulse in motion</span>
-          <p>Original point-wave palette and heartbeat rhythm, adapted from Logan Hart&apos;s CodePen studies.</p>
+          <p>Live homepage hero assets and heartbeat timing, with the original CodePen point-wave study below.</p>
         </div>
       </div>
     </section>
