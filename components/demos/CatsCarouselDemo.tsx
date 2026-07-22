@@ -18,6 +18,12 @@ const carouselImages = [
   { src: "/images/cats-live/hero-car-2.webp", width: 720, height: 840 },
 ];
 
+const buzzQuotes = [
+  { stars: "★★★★", quote: "A raucous success!", outlet: "The New York Post" },
+  { quote: "A lightning strike!", outlet: "The New York Times" },
+  { quote: "Paris is purring.", outlet: "Time Out New York" },
+];
+
 function CatsMarquee({ paused }: { paused: boolean }) {
   const repeatedImages = [...carouselImages, ...carouselImages];
 
@@ -42,6 +48,7 @@ function CatsMarquee({ paused }: { paused: boolean }) {
 
 export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
   const [marqueePaused, setMarqueePaused] = useState(false);
+  const [buzzTickerPaused, setBuzzTickerPaused] = useState(false);
   const demo = (
     <div className="cats-stage">
       <div className="cats-live-site">
@@ -51,58 +58,30 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
             <span />
             <span />
           </span>
-          <Image
-            alt="CATS: The Jellicle Ball"
-            className="cats-live-logo"
-            height={88}
-            sizes="(max-width: 760px) 200px, 300px"
-            src="/images/cats-live/cats-web-logo.webp"
-            width={600}
-          />
+          <strong className="cats-live-closing">Final performance August 8</strong>
           <span aria-label="Ticketing link omitted from archived demo" className="cats-live-ticket" title="Ticketing link omitted from archived demo">
             Tickets
           </span>
         </header>
 
-        <section className="cats-live-hero" aria-label="CATS hero layout demo">
-          <div className="cats-live-quote-panel">
-            <Image
-              alt=""
-              aria-hidden="true"
-              className="cats-live-disco"
-              height={2154}
-              sizes="(max-width: 760px) 45vw, 28vw"
-              src="/images/cats-live/disco-ball-string.webp"
-              width={1089}
-            />
-            <Image
-              alt="Critical quote artwork"
-              className="cats-live-wide-quote"
-              height={771}
-              sizes="(max-width: 760px) 90vw, 44vw"
-              src="/images/cats-live/new-quote-1.webp"
-              width={1671}
-            />
-          </div>
-          <div className="cats-live-art-panel">
-            <Image
-              alt="CATS Jellicle Ball title artwork"
-              className="cats-live-combo"
-              height={1363}
-              sizes="(max-width: 760px) 90vw, 44vw"
-              src="/images/cats-live/cats-combo.webp"
-              width={1671}
-            />
-            <Image
-              alt=""
-              aria-hidden="true"
-              className="cats-live-side-quote"
-              height={2099}
-              sizes="(max-width: 760px) 42vw, 20vw"
-              src="/images/cats-live/quote-cats-new.webp"
-              width={1671}
-            />
-          </div>
+        <section className="cats-live-hero" aria-label="CATS homepage hero recreation">
+          <Image
+            alt="Critical quote artwork"
+            className="cats-live-home-quote"
+            height={2099}
+            sizes="(max-width: 760px) 58vw, 32vw"
+            src="/images/cats-live/quote-cats-new.webp"
+            width={1671}
+          />
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="cats-live-home-disco"
+            height={2154}
+            sizes="(max-width: 760px) 54vw, 31vw"
+            src="/images/cats-live/disco-ball-string.webp"
+            width={1089}
+          />
         </section>
 
         <section className="cats-live-calendar-band" aria-label="CATS performance callout">
@@ -143,10 +122,31 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
             />
           </div>
 
-          <div className="cats-live-buzz-ticker" aria-hidden="true">
-            <span>THE REVIEWS ARE IN</span>
-            <span>THE REVIEWS ARE IN</span>
-            <span>THE REVIEWS ARE IN</span>
+          <div className="cats-live-buzz-ticker" aria-label="Animated press quotes">
+            <div className="cats-live-buzz-ticker-viewport">
+              <div className={`cats-live-buzz-ticker-track ${buzzTickerPaused ? "cats-live-buzz-ticker-track--paused" : ""}`}>
+                {[0, 1].map((setIndex) => (
+                  <div aria-hidden={setIndex === 1} className="cats-live-buzz-ticker-group" key={setIndex}>
+                    {buzzQuotes.map((quote) => (
+                      <span className="cats-live-buzz-ticker-item" key={`${setIndex}-${quote.quote}`}>
+                        {quote.stars ? <b aria-label="Four stars">{quote.stars}</b> : null}
+                        <strong>“{quote.quote}”</strong>
+                        <small>—{quote.outlet}</small>
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button
+              aria-label={buzzTickerPaused ? "Play press quote carousel" : "Pause press quote carousel"}
+              className="cats-live-buzz-ticker-control"
+              onClick={() => setBuzzTickerPaused((paused) => !paused)}
+              type="button"
+            >
+              {buzzTickerPaused ? <Play aria-hidden="true" size={15} /> : <Pause aria-hidden="true" size={15} />}
+              <span>{buzzTickerPaused ? "Play" : "Pause"}</span>
+            </button>
           </div>
 
           <div className="cats-live-buzz-grid">

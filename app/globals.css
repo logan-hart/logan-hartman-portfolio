@@ -1488,12 +1488,14 @@ h3 {
   width: 100%;
 }
 
-.cats-live-logo {
-  display: block;
-  height: auto;
+.cats-live-closing {
+  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
+  font-size: clamp(0.82rem, 2.1vw, 1.5rem);
   justify-self: center;
-  max-width: min(330px, 54vw);
-  width: 100%;
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .cats-live-ticket {
@@ -1511,55 +1513,28 @@ h3 {
 
 .cats-live-hero {
   background: var(--cats-black);
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  min-height: 440px;
+  min-height: clamp(360px, 35vw, 520px);
   overflow: hidden;
   position: relative;
 }
 
-.cats-live-quote-panel,
-.cats-live-art-panel {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  min-width: 0;
-  position: relative;
-}
-
-.cats-live-disco {
+.cats-live-home-quote {
   height: auto;
-  left: 50%;
+  left: 8%;
   max-width: none;
-  opacity: 0.95;
   position: absolute;
-  top: -265px;
-  transform: translateX(-50%);
-  width: min(275px, 34vw);
+  top: 14%;
+  width: 31%;
 }
 
-.cats-live-wide-quote {
+.cats-live-home-disco {
   height: auto;
-  margin-top: 106px;
-  max-width: min(560px, 78%);
-  position: relative;
-  z-index: 1;
-}
-
-.cats-live-combo {
-  height: auto;
-  max-width: min(650px, 92%);
-  position: relative;
-  z-index: 2;
-}
-
-.cats-live-side-quote {
-  bottom: 18px;
-  height: auto;
-  max-width: 33%;
+  left: 56%;
+  max-width: none;
+  opacity: 0.98;
   position: absolute;
-  right: 24px;
-  z-index: 3;
+  top: -54%;
+  width: 31%;
 }
 
 .cats-live-calendar-band {
@@ -1673,26 +1648,81 @@ h3 {
 }
 
 .cats-live-buzz-ticker {
-  align-items: center;
   background: var(--cats-black);
   border-bottom: 2px solid var(--cats-yellow);
   border-top: 2px solid var(--cats-yellow);
   color: var(--cats-yellow);
-  display: flex;
-  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
-  font-size: clamp(0.78rem, 1.6vw, 1.22rem);
-  gap: 5vw;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   letter-spacing: 0.05em;
   overflow: hidden;
-  padding: 12px 18px 10px;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.cats-live-buzz-ticker span::before {
-  content: "★";
-  margin-right: 5vw;
+.cats-live-buzz-ticker-viewport {
+  overflow: hidden;
+}
+
+.cats-live-buzz-ticker-track {
+  animation: cats-marquee-rtl 60s linear infinite;
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.cats-live-buzz-ticker-track--paused {
+  animation-play-state: paused;
+}
+
+.cats-live-buzz-ticker-group {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.cats-live-buzz-ticker-item {
+  align-items: baseline;
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 10px;
+  padding: 12px clamp(24px, 3vw, 46px) 10px;
+}
+
+.cats-live-buzz-ticker-item b,
+.cats-live-buzz-ticker-item strong {
+  font-family: "Cats Antarctica Condensed", Impact, sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cats-live-buzz-ticker-item small {
+  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
+  font-size: clamp(0.48rem, 0.9vw, 0.68rem);
+  letter-spacing: 0.01em;
+}
+
+.cats-live-buzz-ticker-control {
+  align-items: center;
+  background: var(--cats-black);
+  border: 0;
+  border-left: 2px solid var(--cats-yellow);
+  color: var(--cats-yellow);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  gap: 6px;
+  justify-content: center;
+  padding: 0 14px;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.cats-live-buzz-ticker-control:focus-visible {
+  outline: 3px solid var(--cats-yellow);
+  outline-offset: -4px;
 }
 
 .cats-live-buzz-grid {
@@ -1837,41 +1867,24 @@ h3 {
   padding: 8px 9px 7px;
 }
 
-.phone-frame .cats-live-logo {
-  max-width: 170px;
+.phone-frame .cats-live-closing {
+  font-size: 0.58rem;
 }
 
 .phone-frame .cats-live-hero {
-  grid-template-columns: 1fr;
-  min-height: 520px;
-}
-
-.phone-frame .cats-live-quote-panel {
-  min-height: 180px;
-}
-
-.phone-frame .cats-live-art-panel {
   min-height: 330px;
 }
 
-.phone-frame .cats-live-disco {
-  top: -230px;
-  width: 168px;
+.phone-frame .cats-live-home-quote {
+  left: 3%;
+  top: 30%;
+  width: 58%;
 }
 
-.phone-frame .cats-live-wide-quote {
-  margin-top: 70px;
-  max-width: 86%;
-}
-
-.phone-frame .cats-live-combo {
-  max-width: 94%;
-}
-
-.phone-frame .cats-live-side-quote {
-  bottom: 6px;
-  max-width: 42%;
-  right: 10px;
+.phone-frame .cats-live-home-disco {
+  left: 52%;
+  top: -36%;
+  width: 52%;
 }
 
 .phone-frame .cats-live-calendar-band h3 {
@@ -1904,10 +1917,29 @@ h3 {
 }
 
 .phone-frame .cats-live-buzz-ticker {
-  font-size: 0.58rem;
-  gap: 22px;
-  justify-content: flex-start;
-  padding: 9px 10px 8px;
+  grid-template-columns: minmax(0, 1fr) 42px;
+}
+
+.phone-frame .cats-live-buzz-ticker-item {
+  gap: 7px;
+  padding: 9px 18px 8px;
+}
+
+.phone-frame .cats-live-buzz-ticker-item b,
+.phone-frame .cats-live-buzz-ticker-item strong {
+  font-size: 0.88rem;
+}
+
+.phone-frame .cats-live-buzz-ticker-item small {
+  font-size: 0.4rem;
+}
+
+.phone-frame .cats-live-buzz-ticker-control {
+  padding: 0;
+}
+
+.phone-frame .cats-live-buzz-ticker-control span {
+  display: none;
 }
 
 .phone-frame .cats-live-buzz-grid {
@@ -3316,41 +3348,24 @@ h3 {
     padding: 8px 9px 7px;
   }
 
-  .cats-live-logo {
-    max-width: 170px;
+  .cats-live-closing {
+    font-size: 0.58rem;
   }
 
   .cats-live-hero {
-    grid-template-columns: 1fr;
-    min-height: 520px;
-  }
-
-  .cats-live-quote-panel {
-    min-height: 180px;
-  }
-
-  .cats-live-art-panel {
     min-height: 330px;
   }
 
-  .cats-live-disco {
-    top: -230px;
-    width: 168px;
+  .cats-live-home-quote {
+    left: 3%;
+    top: 30%;
+    width: 58%;
   }
 
-  .cats-live-wide-quote {
-    margin-top: 70px;
-    max-width: 86%;
-  }
-
-  .cats-live-combo {
-    max-width: 94%;
-  }
-
-  .cats-live-side-quote {
-    bottom: 6px;
-    max-width: 42%;
-    right: 10px;
+  .cats-live-home-disco {
+    left: 52%;
+    top: -36%;
+    width: 52%;
   }
 
   .cats-live-calendar-band h3 {
@@ -3383,10 +3398,29 @@ h3 {
   }
 
   .cats-live-buzz-ticker {
-    font-size: 0.58rem;
-    gap: 22px;
-    justify-content: flex-start;
-    padding: 9px 10px 8px;
+    grid-template-columns: minmax(0, 1fr) 42px;
+  }
+
+  .cats-live-buzz-ticker-item {
+    gap: 7px;
+    padding: 9px 18px 8px;
+  }
+
+  .cats-live-buzz-ticker-item b,
+  .cats-live-buzz-ticker-item strong {
+    font-size: 0.88rem;
+  }
+
+  .cats-live-buzz-ticker-item small {
+    font-size: 0.4rem;
+  }
+
+  .cats-live-buzz-ticker-control {
+    padding: 0;
+  }
+
+  .cats-live-buzz-ticker-control span {
+    display: none;
   }
 
   .cats-live-buzz-grid {
