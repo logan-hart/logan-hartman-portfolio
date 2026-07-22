@@ -1725,48 +1725,108 @@ h3 {
   outline-offset: -4px;
 }
 
+.cats-live-buzz-features {
+  padding: clamp(28px, 5vw, 64px) clamp(34px, 4.5vw, 68px);
+  position: relative;
+}
+
 .cats-live-buzz-grid {
-  display: grid;
-  gap: clamp(14px, 2.2vw, 28px);
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  padding: clamp(28px, 5vw, 64px);
+  display: flex;
+  gap: clamp(22px, 3.4vw, 54px);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: inline mandatory;
+  scrollbar-width: none;
+}
+
+.cats-live-buzz-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .cats-live-buzz-grid article {
   align-self: start;
+  flex: 0 0 clamp(235px, 25vw, 336px);
   min-width: 0;
+  scroll-snap-align: start;
 }
 
-.cats-live-buzz-grid img {
-  aspect-ratio: 0.72;
+.cats-live-buzz-card-image {
+  aspect-ratio: 336 / 400;
   display: block;
   height: auto;
   object-fit: cover;
   width: 100%;
 }
 
-.cats-live-buzz-grid p {
+.cats-live-buzz-card-caption {
+  align-content: center;
   background: var(--cats-yellow);
   color: var(--cats-black);
   display: grid;
-  gap: 3px;
-  margin: 0;
-  min-height: 72px;
-  padding: 10px 12px 9px;
-  text-transform: uppercase;
+  gap: 5px;
+  min-height: 112px;
+  padding: 14px 16px 13px;
+  text-align: center;
 }
 
-.cats-live-buzz-grid strong {
-  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
-  font-size: clamp(0.66rem, 1.2vw, 0.92rem);
-  letter-spacing: 0.03em;
+.cats-live-buzz-card-caption strong {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.76rem, 1.05vw, 1rem);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.cats-live-buzz-card-caption time {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.72rem, 1vw, 0.94rem);
   line-height: 1;
 }
 
-.cats-live-buzz-grid span {
-  font-family: "Cats Antarctica Condensed", Impact, sans-serif;
-  font-size: clamp(1.08rem, 2.2vw, 1.7rem);
-  line-height: 0.9;
+.cats-live-buzz-outlet {
+  align-items: center;
+  display: flex;
+  height: 56px;
+  justify-content: center;
+  padding: 12px 8px 8px;
+}
+
+.cats-live-buzz-outlet img {
+  display: block;
+  height: auto;
+  max-height: 34px;
+  max-width: 78%;
+  object-fit: contain;
+  width: auto;
+}
+
+.cats-live-buzz-feature-arrow {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--cats-yellow);
+  cursor: pointer;
+  display: flex;
+  height: 48px;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  top: calc(clamp(28px, 5vw, 64px) + 176px);
+  width: 34px;
+  z-index: 2;
+}
+
+.cats-live-buzz-feature-arrow--previous {
+  left: 3px;
+}
+
+.cats-live-buzz-feature-arrow--next {
+  right: 3px;
+}
+
+.cats-live-buzz-feature-arrow:focus-visible {
+  outline: 3px solid var(--cats-yellow);
+  outline-offset: 2px;
 }
 
 .cats-live-buzz-primary {
@@ -1943,20 +2003,31 @@ h3 {
 }
 
 .phone-frame .cats-live-buzz-grid {
-  grid-template-columns: 1fr;
-  padding: 24px 18px 28px;
+  gap: 18px;
 }
 
-.phone-frame .cats-live-buzz-grid p {
-  min-height: 60px;
+.phone-frame .cats-live-buzz-features {
+  padding: 24px 36px 28px;
 }
 
-.phone-frame .cats-live-buzz-grid strong {
-  font-size: 0.7rem;
+.phone-frame .cats-live-buzz-grid article {
+  flex-basis: 100%;
 }
 
-.phone-frame .cats-live-buzz-grid span {
-  font-size: 1.35rem;
+.phone-frame .cats-live-buzz-card-caption {
+  min-height: 96px;
+}
+
+.phone-frame .cats-live-buzz-card-caption strong {
+  font-size: 0.72rem;
+}
+
+.phone-frame .cats-live-buzz-card-caption time {
+  font-size: 0.68rem;
+}
+
+.phone-frame .cats-live-buzz-feature-arrow {
+  top: 152px;
 }
 
 .phone-frame .cats-live-meow {
@@ -3424,20 +3495,31 @@ h3 {
   }
 
   .cats-live-buzz-grid {
-    grid-template-columns: 1fr;
-    padding: 24px 18px 28px;
+    gap: 18px;
   }
 
-  .cats-live-buzz-grid p {
-    min-height: 60px;
+  .cats-live-buzz-features {
+    padding: 24px 36px 28px;
   }
 
-  .cats-live-buzz-grid strong {
-    font-size: 0.7rem;
+  .cats-live-buzz-grid article {
+    flex-basis: 100%;
   }
 
-  .cats-live-buzz-grid span {
-    font-size: 1.35rem;
+  .cats-live-buzz-card-caption {
+    min-height: 96px;
+  }
+
+  .cats-live-buzz-card-caption strong {
+    font-size: 0.72rem;
+  }
+
+  .cats-live-buzz-card-caption time {
+    font-size: 0.68rem;
+  }
+
+  .cats-live-buzz-feature-arrow {
+    top: 152px;
   }
 
   .cats-live-meow {

@@ -1,8 +1,8 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { BrowserFrame } from "@/components/demos/BrowserFrame";
 
 const carouselImages = [
@@ -22,6 +22,57 @@ const buzzQuotes = [
   { stars: "★★★★", quote: "A raucous success!", outlet: "The New York Post" },
   { quote: "A lightning strike!", outlet: "The New York Times" },
   { quote: "Paris is purring.", outlet: "Time Out New York" },
+];
+
+const buzzFeatures = [
+  {
+    alt: "CATS: The Jellicle Ball performs on Good Morning America",
+    date: "April 21, 2026",
+    headline: "Cats: The Jellicle Ball performs on GMA",
+    image: "/images/cats-live/cats-buzz-gma.webp",
+    imageHeight: 400,
+    imageWidth: 336,
+    outlet: "Good Morning America",
+    outletHeight: 30,
+    outletImage: "/images/cats-live/cats-outlet-gma.webp",
+    outletWidth: 336,
+  },
+  {
+    alt: "CATS: The Jellicle Ball company onstage",
+    date: "April 17, 2026",
+    headline: "For the Team Behind Cats: The Jellicle Ball, Bringing Ballroom to Broadway Is Personal",
+    image: "/images/cats-live/cats-buzz-them.webp",
+    imageHeight: 400,
+    imageWidth: 336,
+    outlet: "them",
+    outletHeight: 34,
+    outletImage: "/images/cats-live/cats-outlet-them.webp",
+    outletWidth: 104,
+  },
+  {
+    alt: "André De Shields performing in CATS: The Jellicle Ball",
+    date: "April 15, 2025",
+    headline: "A reimagined ‘Cats’ on Broadway features a special cat — an actor from the original 1980s musical",
+    image: "/images/cats-live/cats-buzz-ap.webp",
+    imageHeight: 1024,
+    imageWidth: 650,
+    outlet: "Associated Press",
+    outletHeight: 30,
+    outletImage: "/images/cats-live/cats-outlet-ap.webp",
+    outletWidth: 336,
+  },
+  {
+    alt: "CATS: The Jellicle Ball rehearsal footage",
+    date: "April 14, 2026",
+    headline: "Broadway meets the runway in the retelling of ‘Cats’",
+    image: "/images/cats-live/cats-buzz-morning-joe.webp",
+    imageHeight: 400,
+    imageWidth: 336,
+    outlet: "Morning Joe",
+    outletHeight: 30,
+    outletImage: "/images/cats-live/cats-outlet-morning-joe.webp",
+    outletWidth: 336,
+  },
 ];
 
 function CatsMarquee({ paused }: { paused: boolean }) {
@@ -49,6 +100,13 @@ function CatsMarquee({ paused }: { paused: boolean }) {
 export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
   const [marqueePaused, setMarqueePaused] = useState(false);
   const [buzzTickerPaused, setBuzzTickerPaused] = useState(false);
+  const buzzFeatureTrack = useRef<HTMLDivElement>(null);
+
+  const scrollBuzzFeatures = (direction: -1 | 1) => {
+    const track = buzzFeatureTrack.current;
+    if (!track) return;
+    track.scrollBy({ behavior: "smooth", left: direction * Math.max(260, track.clientWidth * 0.72) });
+  };
   const demo = (
     <div className="cats-stage">
       <div className="cats-live-site">
@@ -149,19 +207,34 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
             </button>
           </div>
 
-          <div className="cats-live-buzz-grid">
-            <article>
-              <Image alt="CATS television press appearance" height={1024} sizes="(max-width: 760px) 86vw, 29vw" src="/images/cats-live/cats-buzz-fallon.webp" width={774} />
-              <p><strong>The Tonight Show</strong><span>Television feature</span></p>
-            </article>
-            <article>
-              <Image alt="CATS performance press photography" height={1024} sizes="(max-width: 760px) 86vw, 29vw" src="/images/cats-live/cats-buzz-ap.webp" width={650} />
-              <p><strong>Associated Press</strong><span>Performance coverage</span></p>
-            </article>
-            <article>
-              <Image alt="CATS ballroom portrait" height={540} sizes="(max-width: 760px) 86vw, 29vw" src="/images/cats-live/cats-buzz-vogue.webp" width={380} />
-              <p><strong>Vogue</strong><span>Editorial feature</span></p>
-            </article>
+          <div className="cats-live-buzz-features" aria-label="Press feature carousel">
+            <button aria-label="Previous press features" className="cats-live-buzz-feature-arrow cats-live-buzz-feature-arrow--previous" onClick={() => scrollBuzzFeatures(-1)} type="button">
+              <ChevronLeft aria-hidden="true" />
+            </button>
+            <div className="cats-live-buzz-grid" ref={buzzFeatureTrack}>
+              {buzzFeatures.map((feature) => (
+                <article key={feature.headline}>
+                  <Image
+                    alt={feature.alt}
+                    className="cats-live-buzz-card-image"
+                    height={feature.imageHeight}
+                    sizes="(max-width: 760px) 82vw, 28vw"
+                    src={feature.image}
+                    width={feature.imageWidth}
+                  />
+                  <div className="cats-live-buzz-card-caption">
+                    <strong>{feature.headline}</strong>
+                    <time>{feature.date}</time>
+                  </div>
+                  <div className="cats-live-buzz-outlet">
+                    <Image alt={feature.outlet} height={feature.outletHeight} src={feature.outletImage} width={feature.outletWidth} />
+                  </div>
+                </article>
+              ))}
+            </div>
+            <button aria-label="Next press features" className="cats-live-buzz-feature-arrow cats-live-buzz-feature-arrow--next" onClick={() => scrollBuzzFeatures(1)} type="button">
+              <ChevronRight aria-hidden="true" />
+            </button>
           </div>
 
           <div className="cats-live-buzz-primary">
