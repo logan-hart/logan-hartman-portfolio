@@ -1692,6 +1692,106 @@ h3 {
   }
 }
 
+.cats-live-buzz {
+  background: var(--cats-black);
+  overflow: hidden;
+}
+
+.cats-live-buzz-masthead {
+  background: var(--cats-yellow);
+  line-height: 0;
+  padding: 20px 0 0;
+}
+
+.cats-live-buzz-hero {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.cats-live-buzz-hero--mobile {
+  display: none;
+}
+
+.cats-live-buzz-ticker {
+  align-items: center;
+  background: var(--cats-black);
+  border-bottom: 2px solid var(--cats-yellow);
+  border-top: 2px solid var(--cats-yellow);
+  color: var(--cats-yellow);
+  display: flex;
+  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
+  font-size: clamp(0.78rem, 1.6vw, 1.22rem);
+  gap: 5vw;
+  justify-content: space-around;
+  letter-spacing: 0.05em;
+  overflow: hidden;
+  padding: 12px 18px 10px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cats-live-buzz-ticker span::before {
+  content: "★";
+  margin-right: 5vw;
+}
+
+.cats-live-buzz-grid {
+  display: grid;
+  gap: clamp(14px, 2.2vw, 28px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: clamp(28px, 5vw, 64px);
+}
+
+.cats-live-buzz-grid article {
+  align-self: start;
+  min-width: 0;
+}
+
+.cats-live-buzz-grid img {
+  aspect-ratio: 0.72;
+  display: block;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+.cats-live-buzz-grid p {
+  background: var(--cats-yellow);
+  color: var(--cats-black);
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  min-height: 72px;
+  padding: 10px 12px 9px;
+  text-transform: uppercase;
+}
+
+.cats-live-buzz-grid strong {
+  font-family: "Cats Antarctica Expanded", Arial Black, sans-serif;
+  font-size: clamp(0.66rem, 1.2vw, 0.92rem);
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.cats-live-buzz-grid span {
+  font-family: "Cats Antarctica Condensed", Impact, sans-serif;
+  font-size: clamp(1.08rem, 2.2vw, 1.7rem);
+  line-height: 0.9;
+}
+
+.cats-live-buzz-primary {
+  background: var(--cats-yellow);
+  line-height: 0;
+  overflow: hidden;
+}
+
+.cats-live-buzz-primary img {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
 .cats-live-video-grid {
   background: var(--cats-black);
   display: grid;
@@ -1720,6 +1820,23 @@ h3 {
   display: block;
   height: auto;
   object-fit: cover;
+  width: 100%;
+}
+
+.cats-live-meow {
+  align-items: center;
+  background: var(--cats-black);
+  display: flex;
+  justify-content: center;
+  min-height: 300px;
+  overflow: hidden;
+  padding: clamp(34px, 7vw, 96px) 0;
+}
+
+.cats-live-meow img {
+  display: block;
+  height: auto;
+  max-width: none;
   width: 100%;
 }
 
@@ -1813,6 +1930,47 @@ h3 {
 .phone-frame .cats-marquee-track img {
   height: 260px;
   margin-right: 20px;
+}
+
+.phone-frame .cats-live-buzz-masthead {
+  padding-top: 8px;
+}
+
+.phone-frame .cats-live-buzz-hero--desktop {
+  display: none;
+}
+
+.phone-frame .cats-live-buzz-hero--mobile {
+  display: block;
+}
+
+.phone-frame .cats-live-buzz-ticker {
+  font-size: 0.58rem;
+  gap: 22px;
+  justify-content: flex-start;
+  padding: 9px 10px 8px;
+}
+
+.phone-frame .cats-live-buzz-grid {
+  grid-template-columns: 1fr;
+  padding: 24px 18px 28px;
+}
+
+.phone-frame .cats-live-buzz-grid p {
+  min-height: 60px;
+}
+
+.phone-frame .cats-live-buzz-grid strong {
+  font-size: 0.7rem;
+}
+
+.phone-frame .cats-live-buzz-grid span {
+  font-size: 1.35rem;
+}
+
+.phone-frame .cats-live-meow {
+  min-height: 170px;
+  padding: 30px 0;
 }
 
 .phone-frame .cats-live-video-grid {
@@ -3251,6 +3409,47 @@ h3 {
   .cats-marquee-track img {
     height: 260px;
     margin-right: 20px;
+  }
+
+  .cats-live-buzz-masthead {
+    padding-top: 8px;
+  }
+
+  .cats-live-buzz-hero--desktop {
+    display: none;
+  }
+
+  .cats-live-buzz-hero--mobile {
+    display: block;
+  }
+
+  .cats-live-buzz-ticker {
+    font-size: 0.58rem;
+    gap: 22px;
+    justify-content: flex-start;
+    padding: 9px 10px 8px;
+  }
+
+  .cats-live-buzz-grid {
+    grid-template-columns: 1fr;
+    padding: 24px 18px 28px;
+  }
+
+  .cats-live-buzz-grid p {
+    min-height: 60px;
+  }
+
+  .cats-live-buzz-grid strong {
+    font-size: 0.7rem;
+  }
+
+  .cats-live-buzz-grid span {
+    font-size: 1.35rem;
+  }
+
+  .cats-live-meow {
+    min-height: 170px;
+    padding: 30px 0;
   }
 
   .cats-live-video-grid {

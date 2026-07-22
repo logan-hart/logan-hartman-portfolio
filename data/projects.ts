@@ -556,25 +556,27 @@ export const projects: Project[] = [
     tags: ["Design Engineering", "Responsive Behavior", "Interaction Design", "Implementation"],
     image: "/images/cats-live/cats-homepage-live.webp",
     imageAlt: "Live CATS: The Jellicle Ball homepage with production artwork and ticket navigation",
+    liveUrl: "https://catsthejellicleball.com/",
+    liveUrlLabel: "View production site",
     screenshots: [
       {
-        src: "/images/cats-live/cats-combo.webp",
-        alt: "CATS: The Jellicle Ball hero artwork",
-        caption: "Self-hosted hero artwork from the production visual system.",
-        width: 1671,
-        height: 1363,
+        src: "/images/cats-live/cats-buzz-hero.webp",
+        alt: "The Buzz editorial masthead from the CATS production site",
+        caption: "Production editorial system: oversized typography, monochrome portraiture, and the show’s signature yellow.",
+        width: 1692,
+        height: 753,
       },
       {
-        src: "/images/cats-live/cats-image-2.webp",
-        alt: "CATS carousel artwork",
-        caption: "Carousel image treatment preserved in the self-hosted demo.",
-        width: 720,
-        height: 840,
+        src: "/images/cats-live/cats-meow.webp",
+        alt: "Large MEOW production artwork from the CATS homepage",
+        caption: "The homepage’s theatrical MEOW end-cap, preserved alongside the responsive interaction demo.",
+        width: 2560,
+        height: 1246,
       },
     ],
     interactiveDemoComponent: "cats-carousel",
     permissionsNote:
-      "Permissioned portfolio case study using self-hosted copies of public production assets and a scoped recreation of the carousel interaction pattern. The self-hosted archive is canonical because the former public production URL is no longer reliable.",
+      "Permissioned portfolio case study using self-hosted copies of public production assets and a scoped recreation of the carousel interaction pattern. The production site is linked for context; this case study keeps contribution boundaries explicit.",
     caseStudy: {
       overview:
         "This case study preserves a focused interaction contribution through a self-hosted demo based on the production carousel layout, visual system, and responsive behavior.",

@@ -123,6 +123,58 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           <CatsMarquee paused={marqueePaused} />
         </section>
 
+        <section className="cats-live-buzz" aria-label="The Buzz editorial system">
+          <div className="cats-live-buzz-masthead">
+            <Image
+              alt="The Buzz"
+              className="cats-live-buzz-hero cats-live-buzz-hero--desktop"
+              height={753}
+              sizes="100vw"
+              src="/images/cats-live/cats-buzz-hero.webp"
+              width={1692}
+            />
+            <Image
+              alt="The Buzz"
+              className="cats-live-buzz-hero cats-live-buzz-hero--mobile"
+              height={753}
+              sizes="100vw"
+              src="/images/cats-live/cats-buzz-hero-mobile.webp"
+              width={700}
+            />
+          </div>
+
+          <div className="cats-live-buzz-ticker" aria-hidden="true">
+            <span>THE REVIEWS ARE IN</span>
+            <span>THE REVIEWS ARE IN</span>
+            <span>THE REVIEWS ARE IN</span>
+          </div>
+
+          <div className="cats-live-buzz-grid">
+            <article>
+              <Image alt="CATS television press appearance" height={1024} sizes="(max-width: 760px) 86vw, 29vw" src="/images/cats-live/cats-buzz-fallon.webp" width={774} />
+              <p><strong>The Tonight Show</strong><span>Television feature</span></p>
+            </article>
+            <article>
+              <Image alt="CATS performance press photography" height={1024} sizes="(max-width: 760px) 86vw, 29vw" src="/images/cats-live/cats-buzz-ap.webp" width={650} />
+              <p><strong>Associated Press</strong><span>Performance coverage</span></p>
+            </article>
+            <article>
+              <Image alt="CATS ballroom portrait" height={540} sizes="(max-width: 760px) 86vw, 29vw" src="/images/cats-live/cats-buzz-vogue.webp" width={380} />
+              <p><strong>Vogue</strong><span>Editorial feature</span></p>
+            </article>
+          </div>
+
+          <div className="cats-live-buzz-primary">
+            <Image
+              alt="CATS performer in black-and-white production portrait"
+              height={873}
+              sizes="100vw"
+              src="/images/cats-live/cats-buzz-primary.webp"
+              width={2073}
+            />
+          </div>
+        </section>
+
         <section className="cats-live-video-grid" aria-label="CATS media layout demo">
           <article>
             <h4>Forever. And Now.</h4>
@@ -138,6 +190,10 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
               width={1024}
             />
           </article>
+        </section>
+
+        <section className="cats-live-meow" aria-label="MEOW production artwork">
+          <Image alt="MEOW" height={1246} sizes="100vw" src="/images/cats-live/cats-meow.webp" width={2560} />
         </section>
 
         <div className="cats-live-footer-mark">
