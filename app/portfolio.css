@@ -561,9 +561,25 @@ p {
   width: 100%;
 }
 
+.project-media--contain-black {
+  background: #000;
+}
+
+.project-media--contain-black img {
+  object-fit: contain;
+  object-position: center;
+}
+
 .home-project:hover .home-project__media img,
 .home-project:focus-visible .home-project__media img {
   transform: scale(1.018);
+}
+
+.home-project:hover .project-media--contain-black img,
+.home-project:focus-visible .project-media--contain-black img,
+.work-row:hover .project-media--contain-black img,
+.work-row:focus-within .project-media--contain-black img {
+  transform: none;
 }
 
 .home-project__body {

@@ -28,13 +28,17 @@ const supportingProjects = projects.filter((project) => !primarySlugs.includes(p
 function ProjectRow({ project, index, priority = false }: { project: Project; index: number; priority?: boolean }) {
   return (
     <article className="work-row">
-      <Link aria-label={`View ${project.title} case study`} className="work-row__media" href={`/work/${project.slug}/`}>
+      <Link
+        aria-label={`View ${project.title} case study`}
+        className={`work-row__media ${project.thumbnailPresentation === "contain-black" ? "project-media--contain-black" : ""}`}
+        href={`/work/${project.slug}/`}
+      >
         <Image
           alt=""
           height={720}
           priority={priority}
           sizes="(max-width: 720px) 100vw, 36vw"
-          src={project.image}
+          src={project.thumbnailImage ?? project.image}
           width={1280}
         />
       </Link>

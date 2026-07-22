@@ -35,6 +35,8 @@ export type Project = {
   metrics?: string[];
   image: string;
   imageAlt: string;
+  thumbnailImage?: string;
+  thumbnailPresentation?: "cover" | "contain-black";
   featured?: boolean;
   liveUrl?: string;
   liveUrlLabel?: string;
@@ -559,6 +561,8 @@ export const projects: Project[] = [
     tags: ["Front-End Development", "Responsive UI", "WordPress", "Visual Design"],
     image: "/images/cats-live/cats-homepage-live.webp",
     imageAlt: "Live CATS: The Jellicle Ball homepage with production artwork and ticket navigation",
+    thumbnailImage: "/images/cats-live/cats-meow.webp",
+    thumbnailPresentation: "contain-black",
     liveUrl: "https://catsthejellicleball.com/",
     liveUrlLabel: "View production site",
     interactiveDemoComponent: "cats-carousel",

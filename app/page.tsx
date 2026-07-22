@@ -121,13 +121,13 @@ export default function HomePage() {
                 href={`/work/${project.slug}/`}
                 key={project.slug}
               >
-                <div className="home-project__media">
+                <div className={`home-project__media ${project.thumbnailPresentation === "contain-black" ? "project-media--contain-black" : ""}`}>
                   <Image
                     alt=""
                     height={720}
                     priority={index === 0}
                     sizes={index === 0 ? "(max-width: 860px) 100vw, 58vw" : "(max-width: 860px) 100vw, 50vw"}
-                    src={project.image}
+                    src={project.thumbnailImage ?? project.image}
                     width={1280}
                   />
                 </div>
