@@ -552,7 +552,7 @@ export const projects: Project[] = [
     statusLabels: ["Scoped contribution", "Recreated demonstration"],
     demoStatus: "Archived interaction",
     description:
-      "Preserved a theatrical carousel as a responsive, self-hosted interaction demo with clear contribution boundaries.",
+      "Built select web graphics to match established marketing materials and preserved a theatrical carousel as a responsive interaction demo.",
     tags: ["Design Engineering", "Responsive Behavior", "Interaction Design", "Implementation"],
     image: "/images/cats-live/cats-homepage-live.webp",
     imageAlt: "Live CATS: The Jellicle Ball homepage with production artwork and ticket navigation",
@@ -589,7 +589,7 @@ export const projects: Project[] = [
         "The interaction needed to support the approved direction without turning the portfolio into an entertainment microsite.",
       ],
       role:
-        "Design engineering contributor responsible for the carousel interaction and responsive behavior. The broader visual direction and production site were collaborative client work.",
+        "Design engineering contributor responsible for the carousel interaction, responsive behavior, and select web graphics created to match established campaign marketing materials. The broader visual direction and production site were collaborative client work.",
       usersAndWorkflows: [
         "Audience visitors: browse feature moments without losing the theatrical tone",
         "Creative and production teams: preserve approved direction across desktop and mobile",
@@ -597,12 +597,14 @@ export const projects: Project[] = [
       ],
       contributionNotes: [
         "Design engineering implementation",
+        "Select web graphics matched to established campaign marketing materials",
         "Carousel interaction",
         "Responsive behavior",
         "Theatrical visual direction support",
       ],
       built: [
         "Pure CSS marquee carousel with repeated image sets for a seamless loop",
+        "Select production-ready web graphics adapted from established marketing materials",
         "Self-hosted production artwork and typography",
         "Responsive browser and mobile presentation based on the live site layout",
         "Self-hosted screenshots and demo fallback",
