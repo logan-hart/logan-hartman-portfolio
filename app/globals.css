@@ -1531,7 +1531,7 @@ h3 {
 .cats-live-marquee-section {
   background: var(--cats-yellow);
   overflow: hidden;
-  padding: 18px 0 34px;
+  padding: 18px 0 0;
   position: relative;
 }
 
@@ -1873,7 +1873,7 @@ h3 {
 }
 
 .phone-frame .cats-live-marquee-section {
-  padding: 14px 0 22px;
+  padding: 14px 0 0;
 }
 
 .phone-frame .cats-marquee-track img {
@@ -3345,7 +3345,7 @@ h3 {
   }
 
   .cats-live-marquee-section {
-    padding: 14px 0 22px;
+    padding: 14px 0 0;
   }
 
   .cats-marquee-track img {

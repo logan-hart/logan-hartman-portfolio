@@ -160,24 +160,27 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
           <CatsMarquee />
         </section>
 
-        <section className="cats-live-hero" aria-label="CATS homepage hero recreation">
-          <Image
-            alt="Critical quote artwork"
-            className="cats-live-home-quote"
-            height={2099}
-            sizes="(max-width: 760px) 58vw, 32vw"
-            src="/images/cats-live/quote-cats-new.webp"
-            width={1671}
-          />
-          <Image
-            alt=""
-            aria-hidden="true"
-            className="cats-live-home-disco"
-            height={2154}
-            sizes="(max-width: 760px) 54vw, 31vw"
-            src="/images/cats-live/disco-ball-string.webp"
-            width={1089}
-          />
+        <section className="cats-live-video-grid" aria-label="CATS media layout demo">
+          <article>
+            <h4>Forever. And Now.</h4>
+            <iframe
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+              src="https://www.youtube-nocookie.com/embed/f3ksQtW2smo?rel=0"
+              title="Forever. And Now. — CATS: The Jellicle Ball"
+            />
+          </article>
+          <article>
+            <h4>Tony Awards Spotlight</h4>
+            <iframe
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+              src="https://www.youtube-nocookie.com/embed/NlUEbYQkDFU?rel=0"
+              title="CATS: The Jellicle Ball — 2026 Tony Award nominee"
+            />
+          </article>
         </section>
 
         <section className="cats-live-buzz" aria-label="The Buzz editorial system">
@@ -221,29 +224,6 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
               width={2073}
             />
           </div>
-        </section>
-
-        <section className="cats-live-video-grid" aria-label="CATS media layout demo">
-          <article>
-            <h4>Forever. And Now.</h4>
-            <iframe
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              loading="lazy"
-              src="https://www.youtube-nocookie.com/embed/f3ksQtW2smo?rel=0"
-              title="Forever. And Now. — CATS: The Jellicle Ball"
-            />
-          </article>
-          <article>
-            <h4>Tony Awards Spotlight</h4>
-            <iframe
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              loading="lazy"
-              src="https://www.youtube-nocookie.com/embed/NlUEbYQkDFU?rel=0"
-              title="CATS: The Jellicle Ball — 2026 Tony Award nominee"
-            />
-          </article>
         </section>
 
         <section className="cats-live-meow" aria-label="MEOW production artwork">
