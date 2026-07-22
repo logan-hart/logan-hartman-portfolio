@@ -13,7 +13,7 @@ export function GenericMotionShowcase() {
   const [mode, setMode] = useState<(typeof modes)[number]["key"]>("stagger");
 
   return (
-    <BrowserFrame urlLabel="portfolio demo / motion-showcase">
+    <BrowserFrame>
       <div className="demo-panel">
         <div className="motion-showcase">
           <div>

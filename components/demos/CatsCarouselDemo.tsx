@@ -207,5 +207,5 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
     return demo;
   }
 
-  return <BrowserFrame urlLabel="portfolio evidence / cats-carousel">{demo}</BrowserFrame>;
+  return <BrowserFrame>{demo}</BrowserFrame>;
 }

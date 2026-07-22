@@ -83,7 +83,7 @@ export function RedEyeAutomationDemo() {
   const StageIcon = stage.icon;
 
   return (
-    <BrowserFrame urlLabel="portfolio demo / red-eye-controlled-repair">
+    <BrowserFrame>
       <div className="automation-demo">
         <section className="automation-demo__intro">
           <div>

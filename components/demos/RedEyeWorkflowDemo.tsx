@@ -149,7 +149,7 @@ export function RedEyeWorkflowDemo() {
           </button>
         ))}
       </div>
-      <BrowserFrame urlLabel={liveDemoEnabled ? demoUrl : `evidence://red-eye/${activeDemo.key}`}>
+      <BrowserFrame>
         {liveDemoEnabled ? (
           <iframe
             allow="clipboard-read; clipboard-write"

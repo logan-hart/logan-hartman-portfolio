@@ -977,47 +977,6 @@ h3 {
   overflow: hidden;
 }
 
-.browser-frame__bar {
-  align-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  gap: 8px;
-  min-height: 42px;
-  padding: 0 13px;
-}
-
-.browser-frame__dot {
-  border-radius: 50%;
-  height: 10px;
-  width: 10px;
-}
-
-.browser-frame__dot:nth-child(1) {
-  background: var(--orange);
-}
-
-.browser-frame__dot:nth-child(2) {
-  background: var(--gray);
-}
-
-.browser-frame__dot:nth-child(3) {
-  background: var(--white);
-}
-
-.browser-frame__url {
-  background: rgba(20, 33, 61, 0.84);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--subtle);
-  font-size: 0.78rem;
-  margin-left: 8px;
-  overflow: hidden;
-  padding: 5px 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .browser-frame__content {
   min-height: 360px;
   overflow: hidden;
