@@ -184,6 +184,16 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
         </section>
 
         <section className="cats-live-buzz" aria-label="The Buzz editorial system">
+          <div className="cats-live-buzz-primary">
+            <Image
+              alt="CATS performer in black-and-white production portrait"
+              height={873}
+              sizes="100vw"
+              src="/images/cats-live/cats-buzz-primary.webp"
+              width={2073}
+            />
+          </div>
+
           <div className="cats-live-buzz-features" aria-label="Press feature carousel">
             <button aria-label="Previous press features" className="cats-live-buzz-feature-arrow cats-live-buzz-feature-arrow--previous" onClick={() => scrollBuzzFeatures(-1)} type="button">
               <ChevronLeft aria-hidden="true" />
@@ -212,16 +222,6 @@ export function CatsCarouselDemo({ compact = false }: { compact?: boolean }) {
             <button aria-label="Next press features" className="cats-live-buzz-feature-arrow cats-live-buzz-feature-arrow--next" onClick={() => scrollBuzzFeatures(1)} type="button">
               <ChevronRight aria-hidden="true" />
             </button>
-          </div>
-
-          <div className="cats-live-buzz-primary">
-            <Image
-              alt="CATS performer in black-and-white production portrait"
-              height={873}
-              sizes="100vw"
-              src="/images/cats-live/cats-buzz-primary.webp"
-              width={2073}
-            />
           </div>
         </section>
 
