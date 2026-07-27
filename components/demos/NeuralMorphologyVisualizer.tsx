@@ -1,31 +1,41 @@
 "use client";
 
-import type { ChangeEvent, DragEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Eye,
+  EyeOff,
+  Focus,
+  Maximize2,
+  Minimize2,
+  Palette,
+  RotateCcw,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-type SwcNode = {
-  id: number;
-  type: number;
-  x: number;
-  y: number;
-  z: number;
-  radius: number;
-  parent: number;
-};
-
-type NeuronDataset = {
-  nodes: SwcNode[];
-  edges: number;
-  roots: number;
-};
-
-type SelectedNode = SwcNode & {
-  kind: "Branch point" | "Terminal point";
-};
+import {
+  H01_CELLS,
+  H01_DATASET_URL,
+  H01_LICENSE_URL,
+  H01_MODEL_URL,
+  H01_PAPER_URL,
+  type H01CellDefinition,
+} from "@/components/demos/h01MorphologyData";
 
 type ViewPreset = "Front" | "Side" | "Top";
+type DragMode = "rotate" | "pan";
+
+type VolumeDisplayState = {
+  color: string;
+  muted: boolean;
+  visible: boolean;
+};
+
+type RuntimeVolume = {
+  group: THREE.Group;
+  surfaceMaterial: THREE.MeshPhysicalMaterial;
+  wireMaterial: THREE.MeshBasicMaterial;
+};
 
 type VisualizerRuntime = {
   three: typeof import("three");
@@ -33,80 +43,232 @@ type VisualizerRuntime = {
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   controls: OrbitControls;
+  volumes: Map<string, RuntimeVolume>;
   model?: THREE.Group;
-  branchMesh?: THREE.InstancedMesh;
-  terminalMesh?: THREE.InstancedMesh;
   distance: number;
 };
 
-const SAMPLE_URL = "/data/vfb-da1-lpn-r3.swc";
-const SAMPLE_NAME = "DA1 projection-neuron skeleton";
-const SAMPLE_ID = "VFB_00101204 · FAFB 61221";
-const MAX_LOCAL_FILE_SIZE = 5 * 1024 * 1024;
+const VOLUMES = H01_CELLS;
+const DEFAULT_SELECTED_ID = VOLUMES[0].id;
+const NORMALIZED_MODEL_RADIUS = 58;
 
-function parseSwc(text: string): NeuronDataset {
-  const nodes = text
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"))
-    .map((line) => line.split(/\s+/).map(Number))
-    .filter((row) => row.length >= 7 && row.slice(0, 7).every(Number.isFinite))
-    .map(([id, type, x, y, z, radius, parent]) => ({ id, type, x, y, z, radius, parent }));
+function createInitialVolumeStates(): Record<string, VolumeDisplayState> {
+  return Object.fromEntries(
+    VOLUMES.map((volume) => [
+      volume.id,
+      {
+        color: volume.color,
+        muted: false,
+        visible: true,
+      },
+    ]),
+  );
+}
 
-  if (nodes.length < 2) {
-    throw new Error("This file does not contain enough valid SWC nodes.");
-  }
-
-  const ids = new Set(nodes.map((node) => node.id));
-  const edges = nodes.filter((node) => node.parent > 0 && ids.has(node.parent)).length;
-
-  if (!edges) {
-    throw new Error("This SWC file does not contain any connected parent-child nodes.");
-  }
-
-  return {
-    nodes,
-    edges,
-    roots: nodes.filter((node) => node.parent < 0).length,
-  };
+function seededValue(seed: number, index: number) {
+  const value = Math.sin(seed * 91.17 + index * 43.73) * 43758.5453;
+  return value - Math.floor(value);
 }
 
 function disposeObject(object: THREE.Object3D, three: typeof import("three")) {
+  const geometries = new Set<THREE.BufferGeometry>();
+  const materials = new Set<THREE.Material>();
+
   object.traverse((child) => {
     if ("geometry" in child && child.geometry instanceof three.BufferGeometry) {
-      child.geometry.dispose();
+      geometries.add(child.geometry);
     }
 
     if ("material" in child) {
       const material = child.material as THREE.Material | THREE.Material[];
-      (Array.isArray(material) ? material : [material]).forEach((item) => item.dispose());
+      (Array.isArray(material) ? material : [material]).forEach((item) => materials.add(item));
     }
   });
+
+  geometries.forEach((geometry) => geometry.dispose());
+  materials.forEach((material) => material.dispose());
+}
+
+function createRuntimeVolume(
+  three: typeof import("three"),
+  definition: H01CellDefinition,
+) {
+  const group = new three.Group();
+  group.name = definition.id;
+
+  const surfaceMaterial = new three.MeshPhysicalMaterial({
+    clearcoat: 0.28,
+    clearcoatRoughness: 0.48,
+    color: definition.color,
+    depthWrite: false,
+    metalness: 0.04,
+    opacity: 0.42,
+    roughness: 0.32,
+    side: three.DoubleSide,
+    transparent: true,
+  });
+  const wireMaterial = new three.MeshBasicMaterial({
+    color: definition.color,
+    depthWrite: false,
+    opacity: 0.12,
+    transparent: true,
+    wireframe: true,
+  });
+  surfaceMaterial.forceSinglePass = true;
+
+  return { group, surfaceMaterial, wireMaterial };
+}
+
+function sourceObjectMatchesCell(
+  object: THREE.Object3D,
+  sourceRoot: THREE.Object3D,
+  sourceId: string,
+) {
+  let current: THREE.Object3D | null = object;
+
+  while (current && current !== sourceRoot.parent) {
+    if (current.name.includes(sourceId)) return true;
+    if (current === sourceRoot) break;
+    current = current.parent;
+  }
+
+  return false;
+}
+
+function createH01Model(
+  three: typeof import("three"),
+  sourceScene: THREE.Group,
+) {
+  const model = new three.Group();
+  model.name = "h01-demo-model";
+  model.rotation.set(-0.08, -0.18, -0.04);
+
+  const normalizedRoot = new three.Group();
+  normalizedRoot.name = "h01-normalized-root";
+  const coordinateRoot = new three.Group();
+  coordinateRoot.name = "h01-shared-coordinate-root";
+  normalizedRoot.add(coordinateRoot);
+  model.add(normalizedRoot);
+
+  const volumes = new Map<string, RuntimeVolume>(
+    VOLUMES.map((definition) => {
+      const volume = createRuntimeVolume(three, definition);
+      coordinateRoot.add(volume.group);
+      return [definition.id, volume] as const;
+    }),
+  );
+
+  sourceScene.updateMatrixWorld(true);
+  sourceScene.traverse((object) => {
+    if (!(object instanceof three.Mesh) || !(object.geometry instanceof three.BufferGeometry)) {
+      return;
+    }
+
+    const definition = VOLUMES.find((candidate) =>
+      sourceObjectMatchesCell(object, sourceScene, candidate.sourceId),
+    );
+    if (!definition) return;
+
+    const volume = volumes.get(definition.id);
+    if (!volume) return;
+
+    const geometry = object.geometry.clone();
+    geometry.applyMatrix4(object.matrixWorld);
+    if (!geometry.getAttribute("normal")) geometry.computeVertexNormals();
+
+    const surface = new three.Mesh(geometry, volume.surfaceMaterial);
+    surface.name = `${definition.id}-surface`;
+    surface.userData.volumeId = definition.id;
+    volume.group.add(surface);
+
+    const wireframe = new three.Mesh(geometry, volume.wireMaterial);
+    wireframe.name = `${definition.id}-wire`;
+    wireframe.renderOrder = 10;
+    volume.group.add(wireframe);
+  });
+
+  const missingCells = VOLUMES.filter(
+    (definition) => volumes.get(definition.id)?.group.children.length === 0,
+  );
+  if (missingCells.length) {
+    disposeObject(model, three);
+    throw new Error(`H01 model is missing cell meshes: ${missingCells.map((cell) => cell.sourceId).join(", ")}`);
+  }
+
+  const sourceBox = new three.Box3().setFromObject(coordinateRoot);
+  if (sourceBox.isEmpty()) {
+    disposeObject(model, three);
+    throw new Error("H01 model does not contain renderable geometry.");
+  }
+
+  const sourceSphere = sourceBox.getBoundingSphere(new three.Sphere());
+  coordinateRoot.position.copy(sourceSphere.center).multiplyScalar(-1);
+  normalizedRoot.scale.setScalar(
+    NORMALIZED_MODEL_RADIUS / Math.max(sourceSphere.radius, Number.EPSILON),
+  );
+
+  return { model, volumes };
+}
+
+function createAmbientParticles(three: typeof import("three")) {
+  const positions: number[] = [];
+
+  for (let index = 0; index < 180; index += 1) {
+    positions.push(
+      (seededValue(101, index * 3) - 0.5) * 150,
+      (seededValue(101, index * 3 + 1) - 0.5) * 110,
+      (seededValue(101, index * 3 + 2) - 0.5) * 95,
+    );
+  }
+
+  const geometry = new three.BufferGeometry();
+  geometry.setAttribute("position", new three.Float32BufferAttribute(positions, 3));
+  return new three.Points(
+    geometry,
+    new three.PointsMaterial({
+      color: 0xa6d7e7,
+      opacity: 0.16,
+      size: 0.45,
+      transparent: true,
+    }),
+  );
 }
 
 export function NeuralMorphologyVisualizer() {
+  const visualizerRef = useRef<HTMLElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<VisualizerRuntime | null>(null);
-  const pointScaleRef = useRef(1);
-  const showPathsRef = useRef(true);
-  const showBranchesRef = useRef(true);
-  const showTerminalsRef = useRef(true);
-  const [dataset, setDataset] = useState<NeuronDataset | null>(null);
-  const [datasetName, setDatasetName] = useState(SAMPLE_NAME);
-  const [datasetId, setDatasetId] = useState(SAMPLE_ID);
-  const [isPublicSample, setIsPublicSample] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const dragModeRef = useRef<DragMode>("rotate");
+  const [shouldInitialize, setShouldInitialize] = useState(false);
   const [isRendererReady, setIsRendererReady] = useState(false);
+  const [isModelReady, setIsModelReady] = useState(false);
   const [viewerError, setViewerError] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [showPaths, setShowPaths] = useState(true);
-  const [showBranches, setShowBranches] = useState(true);
-  const [showTerminals, setShowTerminals] = useState(true);
-  const [pointScale, setPointScale] = useState(1);
+  const [volumeStates, setVolumeStates] = useState(createInitialVolumeStates);
+  const [selectedId, setSelectedId] = useState(DEFAULT_SELECTED_ID);
+  const [globalOpacity, setGlobalOpacity] = useState(0.42);
   const [autoRotate, setAutoRotate] = useState(false);
-  const [activeView, setActiveView] = useState<ViewPreset>("Front");
-  const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null);
-  const [isDragActive, setIsDragActive] = useState(false);
+  const [activeView, setActiveView] = useState<ViewPreset | null>("Front");
+  const [dragMode, setDragMode] = useState<DragMode>("rotate");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenSupported, setFullscreenSupported] = useState(false);
+  const [fullscreenStatus, setFullscreenStatus] = useState("");
+
+  const selectedVolume = useMemo(
+    () => VOLUMES.find((volume) => volume.id === selectedId) ?? VOLUMES[0],
+    [selectedId],
+  );
+
+  const selectVolume = useCallback((volumeId: string) => {
+    setSelectedId(volumeId);
+    setVolumeStates((current) => ({
+      ...current,
+      [volumeId]: {
+        ...current[volumeId],
+        muted: false,
+        visible: true,
+      },
+    }));
+  }, []);
 
   const applyView = useCallback((preset: ViewPreset) => {
     const runtime = runtimeRef.current;
@@ -129,56 +291,48 @@ export function NeuralMorphologyVisualizer() {
     setActiveView(preset);
   }, []);
 
-  const loadFile = async (file: File) => {
-    if (file.size > MAX_LOCAL_FILE_SIZE) {
-      setError("Choose an SWC file smaller than 5 MB.");
-      return;
-    }
-
-    if (!file.name.toLowerCase().endsWith(".swc")) {
-      setError("Choose a neuron morphology file ending in .swc.");
-      return;
-    }
-
-    try {
-      const parsed = parseSwc(await file.text());
-      setDataset(parsed);
-      setDatasetName(file.name);
-      setDatasetId("Local SWC");
-      setIsPublicSample(false);
-      setSelectedNode(null);
-      setError(null);
-    } catch (fileError) {
-      setError(fileError instanceof Error ? fileError.message : "Unable to read this SWC file.");
-    }
-  };
-
-  const restoreSample = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(SAMPLE_URL);
-      if (!response.ok) throw new Error("The public sample could not be loaded.");
-      setDataset(parseSwc(await response.text()));
-      setDatasetName(SAMPLE_NAME);
-      setDatasetId(SAMPLE_ID);
-      setIsPublicSample(true);
-      setSelectedNode(null);
-    } catch (sampleError) {
-      setError(sampleError instanceof Error ? sampleError.message : "The public sample could not be loaded.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    void restoreSample();
-  }, [restoreSample]);
+    const syncFullscreenState = () => {
+      const visualizer = visualizerRef.current;
+      setFullscreenSupported(
+        Boolean(document.fullscreenEnabled && visualizer?.requestFullscreen),
+      );
+      setIsFullscreen(Boolean(visualizer && document.fullscreenElement === visualizer));
+    };
+
+    syncFullscreenState();
+    document.addEventListener("fullscreenchange", syncFullscreenState);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", syncFullscreenState);
+    };
+  }, []);
 
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldInitialize(true);
+      return;
+    }
+
+    const loadObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setShouldInitialize(true);
+        loadObserver.disconnect();
+      },
+      { rootMargin: "500px 0px", threshold: 0 },
+    );
+    loadObserver.observe(viewport);
+
+    return () => loadObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport || !shouldInitialize) return;
 
     let cancelled = false;
     let cleanup = () => {};
@@ -190,69 +344,175 @@ export function NeuralMorphologyVisualizer() {
       ]);
       if (cancelled) return;
 
-      const { OrbitControls: OrbitControlsRuntime } = controlsModule;
-
       const scene = new three.Scene();
-      scene.background = new three.Color(0x071525);
-      scene.fog = new three.FogExp2(0x071525, 0.0018);
+      scene.background = new three.Color(0x061321);
+      scene.fog = new three.FogExp2(0x061321, 0.0024);
 
-      const camera = new three.PerspectiveCamera(42, 1, 0.1, 2000);
-      camera.position.set(0, 0, 240);
+      const camera = new three.PerspectiveCamera(40, 1, 0.1, 1200);
+      camera.position.set(0, 0, 180);
 
-      const renderer = new three.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+      const renderer = new three.WebGLRenderer({
+        alpha: false,
+        antialias: true,
+        powerPreference: "high-performance",
+      });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.outputColorSpace = three.SRGBColorSpace;
       renderer.domElement.setAttribute("aria-hidden", "true");
       viewport.replaceChildren(renderer.domElement);
 
-      const controls = new OrbitControlsRuntime(camera, renderer.domElement);
-      controls.enableDamping = true;
+      const controls = new controlsModule.OrbitControls(camera, renderer.domElement);
+      controls.autoRotateSpeed = 0.72;
       controls.dampingFactor = 0.06;
-      controls.minDistance = 45;
-      controls.maxDistance = 700;
-      controls.rotateSpeed = 0.65;
-      controls.panSpeed = 0.65;
-      controls.autoRotateSpeed = 0.7;
+      controls.enableDamping = true;
+      controls.maxDistance = 1400;
+      controls.minDistance = 8;
+      controls.panSpeed = 0.62;
+      controls.rotateSpeed = 0.62;
+      controls.screenSpacePanning = true;
+      controls.zoomToCursor = true;
 
-      const runtime: VisualizerRuntime = { three, scene, camera, renderer, controls, distance: 240 };
+      scene.add(new three.HemisphereLight(0xc5efff, 0x142033, 1.65));
+      const keyLight = new three.DirectionalLight(0xffffff, 2.2);
+      keyLight.position.set(55, 70, 90);
+      scene.add(keyLight);
+      const rimLight = new three.PointLight(0x46dcd2, 90, 230, 2);
+      rimLight.position.set(-60, -20, 60);
+      scene.add(rimLight);
+      scene.add(createAmbientParticles(three));
+
+      const grid = new three.GridHelper(150, 12, 0x335b70, 0x1b3445);
+      grid.position.y = -47;
+      (grid.material as THREE.Material).transparent = true;
+      (grid.material as THREE.Material).opacity = 0.22;
+      scene.add(grid);
+
+      const runtime: VisualizerRuntime = {
+        camera,
+        controls,
+        distance: 180,
+        renderer,
+        scene,
+        three,
+        volumes: new Map(),
+      };
       runtimeRef.current = runtime;
       setIsRendererReady(true);
 
       const raycaster = new three.Raycaster();
       const pointer = new three.Vector2();
       let pointerStart = { x: 0, y: 0 };
+      let pointerIsDown = false;
 
-      const handlePointerDown = (event: PointerEvent) => {
-        pointerStart = { x: event.clientX, y: event.clientY };
-      };
-
-      const handlePointerUp = (event: PointerEvent) => {
-        if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 5) return;
-
-        const targets = [runtime.branchMesh, runtime.terminalMesh].filter(
-          (mesh): mesh is THREE.InstancedMesh => Boolean(mesh?.visible),
-        );
-        if (!targets.length) return;
-
+      const updatePointer = (event: PointerEvent) => {
         const rect = renderer.domElement.getBoundingClientRect();
         pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
         raycaster.setFromCamera(pointer, camera);
+      };
 
-        const hit = raycaster.intersectObjects(targets, false)[0];
-        if (!hit || hit.instanceId === undefined) {
-          setSelectedNode(null);
+      const getVisibleHit = () => {
+        const targets = Array.from(runtime.volumes.values())
+          .filter((volume) => volume.group.visible)
+          .flatMap((volume) => volume.group.children)
+          .filter((child): child is THREE.Mesh => child instanceof three.Mesh && Boolean(child.userData.volumeId));
+        return raycaster.intersectObjects(targets, false)[0];
+      };
+
+      const handlePointerDown = (event: PointerEvent) => {
+        pointerStart = { x: event.clientX, y: event.clientY };
+        pointerIsDown = true;
+        renderer.domElement.style.cursor = "grabbing";
+      };
+
+      const handlePointerMove = (event: PointerEvent) => {
+        if (pointerIsDown && Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 5) {
+          setActiveView(null);
+        }
+        updatePointer(event);
+        renderer.domElement.style.cursor = pointerIsDown
+          ? "grabbing"
+          : dragModeRef.current === "pan"
+            ? "move"
+            : getVisibleHit()
+              ? "pointer"
+              : "grab";
+      };
+
+      const handlePointerUp = (event: PointerEvent) => {
+        pointerIsDown = false;
+        updatePointer(event);
+        renderer.domElement.style.cursor = dragModeRef.current === "pan"
+          ? "move"
+          : getVisibleHit()
+            ? "pointer"
+            : "grab";
+        if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 5) return;
+        const hit = getVisibleHit();
+        const volumeId = hit?.object.userData.volumeId as string | undefined;
+        if (volumeId) selectVolume(volumeId);
+      };
+
+      const handlePointerCancel = () => {
+        pointerIsDown = false;
+        renderer.domElement.style.cursor = dragModeRef.current === "pan" ? "move" : "grab";
+      };
+
+      const handleWheel = () => setActiveView(null);
+
+      const handleKeyDown = (event: KeyboardEvent) => {
+        const supportedKeys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-", "_"];
+        if (!supportedKeys.includes(event.key)) return;
+
+        event.preventDefault();
+        if (event.shiftKey && event.key.startsWith("Arrow")) {
+          const distance = camera.position.distanceTo(controls.target);
+          const panAmount = distance * 0.035;
+          const cameraRight = new three.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+          const cameraUp = new three.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+          const panOffset = new three.Vector3();
+
+          if (event.key === "ArrowLeft") panOffset.addScaledVector(cameraRight, -panAmount);
+          if (event.key === "ArrowRight") panOffset.addScaledVector(cameraRight, panAmount);
+          if (event.key === "ArrowUp") panOffset.addScaledVector(cameraUp, panAmount);
+          if (event.key === "ArrowDown") panOffset.addScaledVector(cameraUp, -panAmount);
+
+          camera.position.add(panOffset);
+          controls.target.add(panOffset);
+          controls.update();
+          setActiveView(null);
           return;
         }
 
-        const sourceNodes = hit.object.userData.sourceNodes as SwcNode[];
-        const sourceNode = sourceNodes[hit.instanceId];
-        const kind = hit.object === runtime.branchMesh ? "Branch point" : "Terminal point";
-        setSelectedNode({ ...sourceNode, kind });
+        const spherical = new three.Spherical().setFromVector3(
+          camera.position.clone().sub(controls.target),
+        );
+
+        if (event.key === "ArrowLeft") spherical.theta -= 0.12;
+        if (event.key === "ArrowRight") spherical.theta += 0.12;
+        if (event.key === "ArrowUp") spherical.phi -= 0.1;
+        if (event.key === "ArrowDown") spherical.phi += 0.1;
+        if (event.key === "+" || event.key === "=") spherical.radius *= 0.9;
+        if (event.key === "-" || event.key === "_") spherical.radius *= 1.1;
+
+        spherical.phi = three.MathUtils.clamp(spherical.phi, 0.12, Math.PI - 0.12);
+        spherical.radius = three.MathUtils.clamp(
+          spherical.radius,
+          controls.minDistance,
+          controls.maxDistance,
+        );
+        camera.position.copy(controls.target).add(new three.Vector3().setFromSpherical(spherical));
+        camera.lookAt(controls.target);
+        controls.update();
+        setActiveView(null);
       };
 
       renderer.domElement.addEventListener("pointerdown", handlePointerDown);
+      renderer.domElement.addEventListener("pointermove", handlePointerMove);
       renderer.domElement.addEventListener("pointerup", handlePointerUp);
+      renderer.domElement.addEventListener("pointercancel", handlePointerCancel);
+      renderer.domElement.addEventListener("wheel", handleWheel, { passive: true });
+      viewport.addEventListener("keydown", handleKeyDown);
 
       const resize = () => {
         const { width, height } = viewport.getBoundingClientRect();
@@ -267,29 +527,72 @@ export function NeuralMorphologyVisualizer() {
       resize();
 
       let frame = 0;
+      let isVisible = false;
       const animate = () => {
-        frame = window.requestAnimationFrame(animate);
+        frame = 0;
+        if (!isVisible) return;
         controls.update();
         renderer.render(scene, camera);
+        frame = window.requestAnimationFrame(animate);
       };
-      animate();
+
+      const stopAnimation = () => {
+        if (!frame) return;
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      };
+
+      const startAnimation = () => {
+        if (!isVisible || frame) return;
+        frame = window.requestAnimationFrame(animate);
+      };
+
+      const visibilityObserver = "IntersectionObserver" in window
+        ? new IntersectionObserver(
+            ([entry]) => {
+              isVisible = entry?.isIntersecting ?? true;
+              if (isVisible) startAnimation();
+              else stopAnimation();
+            },
+            { threshold: 0.01 },
+          )
+        : null;
+
+      if (visibilityObserver) {
+        visibilityObserver.observe(viewport);
+      } else {
+        isVisible = true;
+        startAnimation();
+      }
 
       cleanup = () => {
-        window.cancelAnimationFrame(frame);
+        stopAnimation();
+        visibilityObserver?.disconnect();
         resizeObserver.disconnect();
         renderer.domElement.removeEventListener("pointerdown", handlePointerDown);
+        renderer.domElement.removeEventListener("pointermove", handlePointerMove);
         renderer.domElement.removeEventListener("pointerup", handlePointerUp);
+        renderer.domElement.removeEventListener("pointercancel", handlePointerCancel);
+        renderer.domElement.removeEventListener("wheel", handleWheel);
+        viewport.removeEventListener("keydown", handleKeyDown);
         controls.dispose();
-        if (runtime.model) disposeObject(runtime.model, three);
+        if (runtime.model) {
+          const activeModel = runtime.model;
+          runtime.model = undefined;
+          runtime.volumes.clear();
+          scene.remove(activeModel);
+          disposeObject(activeModel, three);
+        }
+        scene.children.forEach((child) => disposeObject(child, three));
         renderer.dispose();
-        runtimeRef.current = null;
+        if (runtimeRef.current === runtime) runtimeRef.current = null;
         viewport.replaceChildren();
       };
     };
 
     void setup().catch(() => {
       if (!cancelled) {
-        setViewerError("This browser could not start the WebGL viewer.");
+        setViewerError("This browser could not start the WebGL volume viewer.");
         setIsRendererReady(false);
       }
     });
@@ -298,204 +601,331 @@ export function NeuralMorphologyVisualizer() {
       cancelled = true;
       cleanup();
     };
-  }, []);
+  }, [selectVolume, shouldInitialize]);
 
   useEffect(() => {
     const runtime = runtimeRef.current;
-    if (!runtime || !dataset || !isRendererReady) return;
+    if (!runtime || !isRendererReady) return;
 
-    const THREE = runtime.three;
+    let cancelled = false;
+    let loadedModel: THREE.Group | undefined;
+    setIsModelReady(false);
+    setViewerError(null);
 
-    if (runtime.model) {
-      runtime.scene.remove(runtime.model);
-      disposeObject(runtime.model, THREE);
-    }
+    const loadModel = async () => {
+      const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
+      const gltf = await new GLTFLoader().loadAsync(H01_MODEL_URL);
 
-    const sourceBox = new THREE.Box3();
-    dataset.nodes.forEach((node) => sourceBox.expandByPoint(new THREE.Vector3(node.x, node.y, node.z)));
-    const center = sourceBox.getCenter(new THREE.Vector3());
-    const size = sourceBox.getSize(new THREE.Vector3());
-    const scale = 150 / Math.max(size.x, size.y, size.z, 1);
-    const normalized = new Map<number, THREE.Vector3>();
+      if (cancelled) {
+        disposeObject(gltf.scene, runtime.three);
+        return;
+      }
 
-    dataset.nodes.forEach((node) => {
-      normalized.set(
-        node.id,
-        new THREE.Vector3(
-          (node.x - center.x) * scale,
-          (node.y - center.y) * scale,
-          (node.z - center.z) * scale,
-        ),
+      let prepared: ReturnType<typeof createH01Model>;
+      try {
+        prepared = createH01Model(runtime.three, gltf.scene);
+      } finally {
+        disposeObject(gltf.scene, runtime.three);
+      }
+
+      if (cancelled) {
+        disposeObject(prepared.model, runtime.three);
+        return;
+      }
+
+      loadedModel = prepared.model;
+      runtime.volumes.clear();
+      prepared.volumes.forEach((volume, volumeId) => runtime.volumes.set(volumeId, volume));
+      runtime.scene.add(loadedModel);
+      runtime.model = loadedModel;
+
+      const modelBox = new runtime.three.Box3().setFromObject(loadedModel);
+      const sphere = modelBox.getBoundingSphere(new runtime.three.Sphere());
+      runtime.controls.target.copy(sphere.center);
+      runtime.controls.minDistance = Math.max(2, sphere.radius * 0.12);
+      runtime.controls.maxDistance = Math.max(1200, sphere.radius * 22);
+      runtime.distance =
+        sphere.radius
+        / Math.sin(runtime.three.MathUtils.degToRad(runtime.camera.fov / 2))
+        * 0.96;
+      runtime.camera.near = Math.max(0.02, runtime.controls.minDistance / 250);
+      runtime.camera.far = Math.max(
+        runtime.controls.maxDistance * 3,
+        runtime.distance * 12,
       );
-    });
+      runtime.camera.updateProjectionMatrix();
+      applyView("Front");
+      setIsModelReady(true);
+    };
 
-    const model = new THREE.Group();
-    model.rotation.z = -0.08;
-
-    const pathGroup = new THREE.Group();
-    pathGroup.name = "paths";
-    const segmentPositions: number[] = [];
-    const allPositions: number[] = [];
-    const byId = new Map(dataset.nodes.map((node) => [node.id, node]));
-
-    dataset.nodes.forEach((node) => {
-      const point = normalized.get(node.id);
-      if (!point) return;
-      allPositions.push(point.x, point.y, point.z);
-
-      const parent = byId.get(node.parent);
-      const parentPoint = parent ? normalized.get(parent.id) : undefined;
-      if (parentPoint) {
-        segmentPositions.push(parentPoint.x, parentPoint.y, parentPoint.z, point.x, point.y, point.z);
+    void loadModel().catch(() => {
+      if (!cancelled) {
+        setViewerError("The public H01 demo geometry could not be loaded.");
+        setIsModelReady(false);
       }
     });
 
-    const segmentGeometry = new THREE.BufferGeometry();
-    segmentGeometry.setAttribute("position", new THREE.Float32BufferAttribute(segmentPositions, 3));
-    const segments = new THREE.LineSegments(
-      segmentGeometry,
-      new THREE.LineBasicMaterial({ color: 0x45d6d1, transparent: true, opacity: 0.86 }),
-    );
-    pathGroup.add(segments);
-
-    const pointGeometry = new THREE.BufferGeometry();
-    pointGeometry.setAttribute("position", new THREE.Float32BufferAttribute(allPositions, 3));
-    const points = new THREE.Points(
-      pointGeometry,
-      new THREE.PointsMaterial({ color: 0x7cf3ed, size: 0.78, transparent: true, opacity: 0.62 }),
-    );
-    pathGroup.add(points);
-    pathGroup.visible = showPathsRef.current;
-    model.add(pathGroup);
-
-    const createNodeMesh = (
-      sourceNodes: SwcNode[],
-      geometry: THREE.BufferGeometry,
-      color: number,
-      baseScale: number,
-    ) => {
-      const mesh = new THREE.InstancedMesh(
-        geometry,
-        new THREE.MeshBasicMaterial({ color }),
-        sourceNodes.length,
-      );
-      const transform = new THREE.Object3D();
-      sourceNodes.forEach((node, index) => {
-        transform.position.copy(normalized.get(node.id) ?? new THREE.Vector3());
-        transform.scale.setScalar(baseScale * pointScaleRef.current);
-        transform.updateMatrix();
-        mesh.setMatrixAt(index, transform.matrix);
-      });
-      mesh.instanceMatrix.needsUpdate = true;
-      mesh.userData.sourceNodes = sourceNodes;
-      mesh.userData.baseScale = baseScale;
-      mesh.userData.normalized = normalized;
-      return mesh;
+    return () => {
+      cancelled = true;
+      if (loadedModel && runtime.model === loadedModel) {
+        runtime.scene.remove(loadedModel);
+        disposeObject(loadedModel, runtime.three);
+        runtime.model = undefined;
+        runtime.volumes.clear();
+      }
     };
-
-    const branchNodes = dataset.nodes.filter((node) => node.type === 5);
-    const terminalNodes = dataset.nodes.filter((node) => node.type === 6);
-    const branchMesh = createNodeMesh(branchNodes, new THREE.SphereGeometry(1, 12, 8), 0xffa54f, 1.05);
-    branchMesh.name = "branches";
-    branchMesh.visible = showBranchesRef.current;
-    model.add(branchMesh);
-
-    const terminalMesh = createNodeMesh(terminalNodes, new THREE.OctahedronGeometry(1, 0), 0xe867ce, 0.92);
-    terminalMesh.name = "terminals";
-    terminalMesh.visible = showTerminalsRef.current;
-    model.add(terminalMesh);
-
-    runtime.scene.add(model);
-    runtime.model = model;
-    runtime.branchMesh = branchMesh;
-    runtime.terminalMesh = terminalMesh;
-
-    const modelBox = new THREE.Box3().setFromObject(model);
-    const sphere = modelBox.getBoundingSphere(new THREE.Sphere());
-    runtime.distance = Math.max(165, sphere.radius / Math.sin(THREE.MathUtils.degToRad(runtime.camera.fov / 2)) * 1.2);
-    runtime.camera.near = Math.max(0.1, runtime.distance / 1000);
-    runtime.camera.far = runtime.distance * 8;
-    runtime.camera.updateProjectionMatrix();
-    applyView("Front");
-  }, [applyView, dataset, isRendererReady]);
+  }, [applyView, isRendererReady]);
 
   useEffect(() => {
-    showPathsRef.current = showPaths;
-    showBranchesRef.current = showBranches;
-    showTerminalsRef.current = showTerminals;
     const runtime = runtimeRef.current;
-    runtime?.model?.getObjectByName("paths")?.traverse((object) => {
-      object.visible = showPaths;
+    if (!runtime?.model) return;
+
+    VOLUMES.forEach((definition) => {
+      const state = volumeStates[definition.id];
+      const volume = runtime.volumes.get(definition.id);
+      if (!state || !volume) return;
+
+      const isSelected = selectedId === definition.id;
+      volume.group.visible = state.visible;
+      volume.surfaceMaterial.depthWrite = false;
+      volume.surfaceMaterial.transparent = true;
+
+      if (state.muted) {
+        volume.surfaceMaterial.color.set(0x8391a2);
+        volume.surfaceMaterial.emissive.set(0x000000);
+        volume.surfaceMaterial.emissiveIntensity = 0;
+        volume.surfaceMaterial.opacity = 0.09;
+        volume.wireMaterial.color.set(0x9aa6b4);
+        volume.wireMaterial.opacity = 0.055;
+      } else if (isSelected) {
+        volume.surfaceMaterial.color.set(state.color);
+        volume.surfaceMaterial.emissive.set(state.color);
+        volume.surfaceMaterial.emissiveIntensity = 0.34;
+        volume.surfaceMaterial.opacity = globalOpacity;
+        volume.wireMaterial.color.set(0xffffff);
+        volume.wireMaterial.opacity = 0.46;
+      } else {
+        volume.surfaceMaterial.color.set(state.color);
+        volume.surfaceMaterial.emissive.set(state.color);
+        volume.surfaceMaterial.emissiveIntensity = 0.045;
+        volume.surfaceMaterial.opacity = globalOpacity;
+        volume.wireMaterial.color.set(state.color);
+        volume.wireMaterial.opacity = 0.12;
+      }
+
+      volume.surfaceMaterial.needsUpdate = true;
     });
-    if (runtime?.branchMesh) runtime.branchMesh.visible = showBranches;
-    if (runtime?.terminalMesh) runtime.terminalMesh.visible = showTerminals;
-  }, [showBranches, showPaths, showTerminals]);
+  }, [globalOpacity, isModelReady, isRendererReady, selectedId, volumeStates]);
 
   useEffect(() => {
     const runtime = runtimeRef.current;
     if (runtime) runtime.controls.autoRotate = autoRotate;
+    if (autoRotate) setActiveView(null);
   }, [autoRotate]);
 
   useEffect(() => {
-    pointScaleRef.current = pointScale;
+    dragModeRef.current = dragMode;
+
     const runtime = runtimeRef.current;
     if (!runtime) return;
 
-    const THREE = runtime.three;
+    runtime.controls.mouseButtons.LEFT = dragMode === "pan"
+      ? runtime.three.MOUSE.PAN
+      : runtime.three.MOUSE.ROTATE;
+    runtime.controls.mouseButtons.RIGHT = runtime.three.MOUSE.PAN;
+    runtime.controls.touches.ONE = dragMode === "pan"
+      ? runtime.three.TOUCH.PAN
+      : runtime.three.TOUCH.ROTATE;
+    runtime.controls.touches.TWO = runtime.three.TOUCH.DOLLY_PAN;
+    runtime.renderer.domElement.style.cursor = dragMode === "pan" ? "move" : "grab";
+  }, [dragMode, isRendererReady]);
 
-    [runtime.branchMesh, runtime.terminalMesh].forEach((mesh) => {
-      if (!mesh) return;
-      const sourceNodes = mesh.userData.sourceNodes as SwcNode[];
-      const normalized = mesh.userData.normalized as Map<number, THREE.Vector3>;
-      const baseScale = mesh.userData.baseScale as number;
-      const transform = new THREE.Object3D();
-      sourceNodes.forEach((node, index) => {
-        transform.position.copy(normalized.get(node.id) ?? new THREE.Vector3());
-        transform.scale.setScalar(baseScale * pointScale);
-        transform.updateMatrix();
-        mesh.setMatrixAt(index, transform.matrix);
-      });
-      mesh.instanceMatrix.needsUpdate = true;
-    });
-  }, [pointScale]);
-
-  const handleFileInput = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) void loadFile(file);
-    event.target.value = "";
+  const updateVolume = (volumeId: string, patch: Partial<VolumeDisplayState>) => {
+    setVolumeStates((current) => ({
+      ...current,
+      [volumeId]: {
+        ...current[volumeId],
+        ...patch,
+      },
+    }));
   };
 
-  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragActive(false);
-    const file = event.dataTransfer.files?.[0];
-    if (file) void loadFile(file);
+  const showAll = () => {
+    setVolumeStates((current) =>
+      Object.fromEntries(
+        Object.entries(current).map(([volumeId, state]) => [
+          volumeId,
+          { ...state, muted: false, visible: true },
+        ]),
+      ),
+    );
   };
 
-  const branchCount = dataset?.nodes.filter((node) => node.type === 5).length ?? 0;
-  const terminalCount = dataset?.nodes.filter((node) => node.type === 6).length ?? 0;
+  const focusSelected = () => {
+    setVolumeStates((current) =>
+      Object.fromEntries(
+        Object.entries(current).map(([volumeId, state]) => [
+          volumeId,
+          {
+            ...state,
+            muted: volumeId !== selectedId,
+            visible: true,
+          },
+        ]),
+      ),
+    );
+  };
+
+  const resetScene = () => {
+    setVolumeStates(createInitialVolumeStates());
+    setSelectedId(DEFAULT_SELECTED_ID);
+    setGlobalOpacity(0.42);
+    setAutoRotate(false);
+    setDragMode("rotate");
+    applyView("Front");
+  };
+
+  const toggleFullscreen = async () => {
+    const visualizer = visualizerRef.current;
+
+    if (
+      !visualizer
+      || !document.fullscreenEnabled
+      || typeof visualizer.requestFullscreen !== "function"
+    ) {
+      setFullscreenStatus("Full screen is not available in this browser.");
+      return;
+    }
+
+    setFullscreenStatus("");
+
+    try {
+      if (document.fullscreenElement === visualizer) {
+        await document.exitFullscreen();
+      } else {
+        await visualizer.requestFullscreen();
+      }
+    } catch {
+      setFullscreenStatus("Full screen could not be opened. Browser permission may be required.");
+    }
+  };
 
   return (
-    <section className="neural-visualizer" aria-label="Interactive three-dimensional neuron morphology visualizer">
+    <section
+      className="neural-visualizer"
+      aria-label="Interactive three-dimensional public H01 dataset demo"
+      ref={visualizerRef}
+    >
       <header className="neural-visualizer__header">
         <div>
-          <span>Public morphology sample</span>
-          <h3>{datasetName}</h3>
-          <p>{datasetId} · TEM-derived SWC morphology</p>
+          <span>Public H01 dataset demo</span>
+          <h3>Multi-volume spatial explorer</h3>
+          <p>Publicly available reconstructions used to demonstrate layered 3D inspection and rendering controls.</p>
         </div>
-        <dl aria-label="Dataset summary">
-          <div><dt>Nodes</dt><dd>{dataset?.nodes.length.toLocaleString() ?? "—"}</dd></div>
-          <div><dt>Edges</dt><dd>{dataset?.edges.toLocaleString() ?? "—"}</dd></div>
-          <div><dt>Roots</dt><dd>{dataset?.roots.toLocaleString() ?? "—"}</dd></div>
-        </dl>
+        <div className="neural-visualizer__header-actions">
+          <dl aria-label="Public demo dataset summary">
+            <div><dt>Cells</dt><dd>{VOLUMES.length}</dd></div>
+            <div><dt>Dataset</dt><dd>H01</dd></div>
+            <div><dt>Use</dt><dd>Demo only</dd></div>
+          </dl>
+          <div className="neural-visualizer__fullscreen-control">
+            <button
+              aria-disabled={!fullscreenSupported}
+              aria-label={isFullscreen ? "Exit full screen" : "Open demo in full screen"}
+              aria-pressed={isFullscreen}
+              className="neural-visualizer__fullscreen"
+              onClick={() => void toggleFullscreen()}
+              title={
+                fullscreenSupported
+                  ? isFullscreen
+                    ? "Exit full screen"
+                    : "Open demo in full screen"
+                  : "Full screen is not available in this browser"
+              }
+              type="button"
+            >
+              {isFullscreen
+                ? <Minimize2 aria-hidden="true" size={16} />
+                : <Maximize2 aria-hidden="true" size={16} />}
+              {isFullscreen ? "Exit full screen" : "Full screen"}
+            </button>
+            <span aria-live="polite" className="sr-only">{fullscreenStatus}</span>
+          </div>
+        </div>
       </header>
 
-      <aside className="neural-visualizer__controls" aria-label="Global visualization controls">
-        <fieldset>
-          <legend>Structure</legend>
-          <label><input checked={showPaths} onChange={(event) => setShowPaths(event.target.checked)} type="checkbox" /> <span className="neural-legend neural-legend--path" /> Neurite paths</label>
-          <label><input checked={showBranches} onChange={(event) => setShowBranches(event.target.checked)} type="checkbox" /> <span className="neural-legend neural-legend--branch" /> Branch points <small>{branchCount}</small></label>
-          <label><input checked={showTerminals} onChange={(event) => setShowTerminals(event.target.checked)} type="checkbox" /> <span className="neural-legend neural-legend--terminal" /> Terminal points <small>{terminalCount}</small></label>
+      <aside className="neural-visualizer__controls" aria-label="Volume and view controls">
+        <fieldset className="neural-visualizer__layer-fieldset">
+          <legend>Volume layers</legend>
+          <div className="neural-visualizer__layer-actions">
+            <button onClick={showAll} type="button">Show all</button>
+            <button onClick={focusSelected} type="button">
+              <Focus aria-hidden="true" size={14} />
+              Focus
+            </button>
+          </div>
+          <div className="neural-visualizer__layer-list">
+            {VOLUMES.map((volume) => {
+              const state = volumeStates[volume.id];
+              const isSelected = selectedId === volume.id;
+
+              return (
+                <div
+                  className="neural-visualizer__layer"
+                  data-muted={state.muted}
+                  data-selected={isSelected}
+                  data-visible={state.visible}
+                  key={volume.id}
+                >
+                  <button
+                    aria-pressed={isSelected}
+                    className="neural-visualizer__layer-name"
+                    onClick={() => selectVolume(volume.id)}
+                    type="button"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="neural-visualizer__swatch"
+                      style={{ backgroundColor: state.color }}
+                    />
+                    <span>
+                      <strong>{volume.name}</strong>
+                      <small>{volume.classification}</small>
+                    </span>
+                  </button>
+                  <div className="neural-visualizer__layer-tools">
+                    <button
+                      aria-label={`${state.visible ? "Hide" : "Show"} ${volume.name}`}
+                      onClick={() => updateVolume(volume.id, { visible: !state.visible })}
+                      title={state.visible ? "Hide volume" : "Show volume"}
+                      type="button"
+                    >
+                      {state.visible ? <Eye aria-hidden="true" size={14} /> : <EyeOff aria-hidden="true" size={14} />}
+                    </button>
+                    <button
+                      aria-label={`${state.muted ? "Restore color to" : "Grey out"} ${volume.name}`}
+                      aria-pressed={state.muted}
+                      className="neural-visualizer__mute"
+                      onClick={() => updateVolume(volume.id, { muted: !state.muted, visible: true })}
+                      title={state.muted ? "Restore color" : "Grey into context"}
+                      type="button"
+                    >
+                      <span aria-hidden="true" />
+                    </button>
+                    <label title={`Change ${volume.name} color`}>
+                      <span className="sr-only">Change {volume.name} color</span>
+                      <input
+                        aria-label={`Change ${volume.name} color`}
+                        onChange={(event) => updateVolume(volume.id, { color: event.target.value, muted: false })}
+                        type="color"
+                        value={state.color}
+                      />
+                    </label>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </fieldset>
 
         <fieldset>
@@ -512,70 +942,116 @@ export function NeuralMorphologyVisualizer() {
               </button>
             ))}
           </div>
+          <div
+            aria-label="Primary mouse and one-finger drag mode"
+            className="neural-visualizer__button-row"
+            role="group"
+            style={{ gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}
+          >
+            <button
+              aria-pressed={dragMode === "rotate"}
+              onClick={() => setDragMode("rotate")}
+              type="button"
+            >
+              Rotate drag
+            </button>
+            <button
+              aria-pressed={dragMode === "pan"}
+              onClick={() => setDragMode("pan")}
+              type="button"
+            >
+              Pan drag
+            </button>
+          </div>
           <label className="neural-visualizer__range">
-            <span>Node scale <output>{pointScale.toFixed(1)}×</output></span>
+            <span>Translucent opacity <output>{Math.round(globalOpacity * 100)}%</output></span>
             <input
-              max="2"
-              min="0.6"
-              onChange={(event) => setPointScale(Number(event.target.value))}
-              step="0.1"
+              aria-valuetext={`${Math.round(globalOpacity * 100)} percent`}
+              max="1"
+              min="0"
+              onChange={(event) => setGlobalOpacity(Number(event.target.value))}
+              step="0.01"
               type="range"
-              value={pointScale}
+              value={globalOpacity}
             />
           </label>
-          <label><input checked={autoRotate} onChange={(event) => setAutoRotate(event.target.checked)} type="checkbox" /> Auto-rotate</label>
-          <button className="neural-visualizer__reset" onClick={() => applyView("Front")} type="button">Reset view</button>
+          <label>
+            <input checked={autoRotate} onChange={(event) => setAutoRotate(event.target.checked)} type="checkbox" />
+            Auto-rotate
+          </label>
+          <button className="neural-visualizer__reset" onClick={resetScene} type="button">
+            <RotateCcw aria-hidden="true" size={14} />
+            Reset scene
+          </button>
         </fieldset>
 
-        <fieldset>
-          <legend>Dataset</legend>
-          <label className="neural-visualizer__file">
-            Open an SWC file
-            <input accept=".swc,text/plain" onChange={handleFileInput} type="file" />
-          </label>
-          <p>Or drop a local .swc file onto the viewer. Files stay in your browser.</p>
-          {!isPublicSample ? <button onClick={() => void restoreSample()} type="button">Restore public sample</button> : null}
-          {error ? <p className="neural-visualizer__error" role="alert">{error}</p> : null}
+        <fieldset className="neural-visualizer__key">
+          <legend>Display key</legend>
+          <p><span className="neural-key neural-key--selected" /> Highlighted volume</p>
+          <p><span className="neural-key neural-key--visible" /> Translucent volume</p>
+          <p><span className="neural-key neural-key--muted" /> Grey context</p>
+          <p className="neural-visualizer__key-note">
+            <Palette aria-hidden="true" size={14} />
+            Colors and transparency are interface encodings.
+          </p>
         </fieldset>
       </aside>
 
       <div
+        aria-busy={!isModelReady && !viewerError}
         className="neural-visualizer__viewer"
-        data-drag-active={isDragActive}
-        onDragEnter={(event) => { event.preventDefault(); setIsDragActive(true); }}
-        onDragLeave={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsDragActive(false);
-        }}
-        onDragOver={(event) => event.preventDefault()}
-        onDrop={handleDrop}
       >
         <div
-          aria-label="Three-dimensional neuron skeleton. Drag to rotate, right-drag to pan, and scroll to zoom."
+          aria-label={`Seven reconstructions from the public H01 dataset. Primary mouse and one-finger drag currently ${dragMode === "pan" ? "pans across the screen plane" : "rotates the model"}. Right-drag or shift plus arrow keys pans across the screen plane. Scroll, pinch, or use plus and minus to zoom.`}
           className="neural-visualizer__viewport"
           ref={viewportRef}
-          role="img"
+          role="region"
+          tabIndex={0}
         />
-        <p className="neural-visualizer__gesture">Drag to rotate · Right-drag to pan · Scroll to zoom</p>
+        <p className="neural-visualizer__gesture">
+          {dragMode === "pan" ? "Drag pans in screen plane" : "Drag rotates"}
+          {" · "}Right-drag pans{" · "}Shift + arrows pan{" · "}Scroll/pinch or +/− zoom
+        </p>
         <div className="neural-visualizer__selection" aria-live="polite">
-          {selectedNode ? (
-            <><strong>{selectedNode.kind} · node {selectedNode.id}</strong><span>x {selectedNode.x.toFixed(1)} · y {selectedNode.y.toFixed(1)} · z {selectedNode.z.toFixed(1)}</span></>
-          ) : (
-            <><strong>Select a colored node</strong><span>Branch and terminal coordinates appear here.</span></>
-          )}
+          <span
+            aria-hidden="true"
+            className="neural-visualizer__selection-swatch"
+            style={{ backgroundColor: volumeStates[selectedVolume.id].color }}
+          />
+          <span>
+            <strong>{selectedVolume.name} · {selectedVolume.classification}</strong>
+            <small>{selectedVolume.description}</small>
+          </span>
         </div>
-        {isLoading ? <div className="neural-visualizer__loading">Loading public morphology…</div> : null}
-        {viewerError ? <div className="neural-visualizer__loading neural-visualizer__viewer-error">{viewerError}</div> : null}
-        {isDragActive ? <div className="neural-visualizer__drop">Drop SWC to visualize</div> : null}
+        {!isModelReady && !viewerError ? (
+          <div className="neural-visualizer__loading" role="status">
+            <div className="neural-visualizer__loading-content">
+              <span aria-hidden="true" className="neural-visualizer__spinner" />
+              <span>Preparing the 3D explorer…</span>
+              <small>
+                The rest of the case study is ready to browse.
+              </small>
+            </div>
+          </div>
+        ) : null}
+        {viewerError ? (
+          <div className="neural-visualizer__loading neural-visualizer__viewer-error" role="alert">{viewerError}</div>
+        ) : null}
       </div>
 
       <footer className="neural-visualizer__source">
-        {isPublicSample ? (
-          <p>
-            Source: <a href="https://virtualflybrain.org/reports/VFB_00101204" rel="noreferrer" target="_blank">Virtual Fly Brain · FAFB 61221</a>. CC BY-SA 4.0; aligned to the JRC2018Unisex template.
-          </p>
-        ) : (
-          <p>Local SWC preview · no file data leaves this browser.</p>
-        )}
+        <p>
+          Demo purposes only. Simplified geometry is derived from seven proofread reconstructions in the publicly
+          available{" "}
+          <a href={H01_DATASET_URL} rel="noreferrer" target="_blank">H01 dataset</a>
+          {" "}(
+          <a href={H01_PAPER_URL} rel="noreferrer" target="_blank">Shapson-Coe et al., 2024</a>
+          )
+          {" "}(
+          <a href={H01_LICENSE_URL} rel="noreferrer" target="_blank">CC BY 4.0</a>
+          ). Colors and transparency are interface encodings. This is not data from the original Albert
+          Einstein engagement.
+        </p>
       </footer>
     </section>
   );

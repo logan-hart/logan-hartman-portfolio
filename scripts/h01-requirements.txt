@@ -1,0 +1,4 @@
+cloud-volume==12.14.2
+DracoPy==1.7.0
+# The deterministic vertex-clustering simplifier is implemented with NumPy.
+numpy==2.5.1

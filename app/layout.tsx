@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { H01AssetWarmup } from "@/components/demos/H01AssetWarmup";
 import { profile } from "@/data/profile";
 import "./globals.css";
 import "./portfolio.css";
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main id="main">{children}</main>
           <Footer />
         </div>
+        <H01AssetWarmup />
         <script
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
           type="application/ld+json"

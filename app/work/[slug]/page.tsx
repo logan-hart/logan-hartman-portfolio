@@ -20,6 +20,7 @@ import { VideoFallback } from "@/components/demos/VideoFallback";
 import { ArchitectureMap } from "@/components/red-eye/ArchitectureMap";
 import { EvidenceCards } from "@/components/red-eye/EvidenceCards";
 import { Section } from "@/components/Section";
+import { HeartProjectVisual } from "@/components/work/HeartProjectVisual";
 import type { ProductArtifact, Project, Screenshot } from "@/data/projects";
 import { projects } from "@/data/projects";
 import { redEyeMetric, redEyeMetricsAsOf } from "@/data/redEyeMetrics";
@@ -297,6 +298,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const caseStudy = project.caseStudy;
   const isRedEye = project.slug === "red-eye-tickets";
   const isCats = project.slug === "cats-the-jellicle-ball";
+  const isHeart = project.slug === "the-heart";
   const isCompactCreative = project.caseStudyPresentation === "creative-compact";
   const isNeuralVisualizer = project.interactiveDemoComponent === "neural-visualizer";
   const demoIntro = isRedEye
@@ -304,7 +306,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     : isCompactCreative
       ? "Selected portions of the original front-end work, recreated so the responsive behavior remains reviewable."
       : isNeuralVisualizer
-        ? "Explore an attributed public neuron morphology through a stripped-down version of the global controls and 3D navigation used in research visualization tools."
+        ? "Explore seven simplified meshes from the public H01 dataset through layered controls and 3D navigation. The data is used only as an unrelated interface demonstration."
       : "Explore the preserved interaction without depending on a production site.";
   const caseMetricCards = isRedEye
     ? redEyeCaseMetrics
@@ -378,15 +380,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               ) : null}
             </div>
             {!isCats ? (
-              <figure className="case-hero-media">
-                <Image
-                  alt={project.imageAlt}
-                  height={720}
-                  priority
-                  sizes="(max-width: 900px) 100vw, 44vw"
-                  src={project.image}
-                  width={1280}
-                />
+              <figure
+                className={`case-hero-media ${isHeart ? "case-hero-media--heart" : ""} ${
+                  project.thumbnailPresentation === "contain-black"
+                    ? "project-media--contain-black"
+                    : ""
+                }`}
+              >
+                {isHeart ? (
+                  <HeartProjectVisual priority variant="hero" />
+                ) : (
+                  <Image
+                    alt={project.imageAlt}
+                    height={720}
+                    priority
+                    sizes="(max-width: 900px) 100vw, 44vw"
+                    src={project.image}
+                    width={1280}
+                  />
+                )}
               </figure>
             ) : null}
           </div>
@@ -597,7 +609,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             isCompactCreative
               ? "Interaction recreation"
               : isNeuralVisualizer
-                ? "3D neuron morphology explorer"
+                ? "3D multi-volume morphology explorer"
               : isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true"
                 ? "Workflow captures"
                 : "Workflow demo"

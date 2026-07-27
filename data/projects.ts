@@ -400,8 +400,9 @@ export const projects: Project[] = [
     description:
       "Led client projects from early discovery through launch, turning unclear goals into websites, presentation systems, messaging structures, and audience-facing digital experiences.",
     tags: ["Client Discovery", "UX Strategy", "Frontend Implementation"],
-    image: "/images/projects/spotlight-studio.svg",
-    imageAlt: "Spotlight Strategies discovery, content structure, and digital delivery workflow",
+    image: "/images/spotlight/spotlight-strategies.png",
+    imageAlt: "Spotlight Strategies creative technology and digital strategy artwork under a theater spotlight",
+    thumbnailPresentation: "contain-black",
     screenshots: [
       {
         src: "/images/spotlight/spotlight-banner.webp",
@@ -409,13 +410,6 @@ export const projects: Project[] = [
         caption: "Self-hosted Spotlight Strategies positioning banner and service-system visual.",
         width: 1800,
         height: 354,
-      },
-      {
-        src: "/images/projects/spotlight-studio.svg",
-        alt: "Spotlight Strategies discovery through implementation workflow visual",
-        caption: "Case-study visual showing discovery, structure, and implementation flow.",
-        width: 1280,
-        height: 720,
       },
     ],
     permissionsNote:
@@ -604,31 +598,15 @@ export const projects: Project[] = [
     statusLabels: ["Scoped contribution", "Production assets adapted"],
     demoStatus: "Live interactive demo",
     description:
-      "Matched the production homepage's layered heartbeat display and extended it with the original point-wave CodePen study.",
+      "Rebuilt the layered heartbeat hero and its original point-wave study as a responsive, self-hosted motion demo.",
     tags: ["Design Engineering", "Motion", "Interaction Design", "Accessibility"],
-    image: "/images/the-heart/heart-homepage-globe.png",
-    imageAlt: "The Heart point-cloud globe from the production musical homepage",
+    image: "/images/the-heart/the-heart-mark.webp",
+    imageAlt: "The Heart point-cloud globe, purple waveform, and glowing title on black",
     liveUrl: "https://theheartmusical.com/",
     liveUrlLabel: "View production site",
-    screenshots: [
-      {
-        src: "/images/the-heart/heart-homepage-globe.png",
-        alt: "The Heart production point-cloud globe",
-        caption: "The production homepage's point-cloud globe, self-hosted here to preserve the exact hero treatment.",
-        width: 800,
-        height: 797,
-      },
-      {
-        src: "/images/the-heart/heart-homepage-wave.png",
-        alt: "The Heart production waveform graphic",
-        caption: "The production waveform layer that crosses behind the hero mark and establishes the site's pulse language.",
-        width: 1695,
-        height: 800,
-      },
-    ],
     interactiveDemoComponent: "heartbeat",
     permissionsNote:
-      "Self-hosted adaptation using public production homepage assets and timing, plus Logan Hart's public The Wave CodePen parameters for the animated point field.",
+      "Self-hosted reconstruction using public production homepage assets and Logan Hart's original The Wave CodePen source, adapted only for the React lifecycle and embedded portfolio context.",
     caseStudy: {
       overview:
         "This self-hosted case study preserves the animation language and interaction logic behind a production experience without relying on an external site remaining unchanged.",
@@ -676,63 +654,99 @@ export const projects: Project[] = [
     roleLabel: careerFacts.einstein.role,
     period: careerFacts.einstein.period,
     engagementLabel: "Scoped technical contribution",
-    statusLabels: ["Scoped contribution", "Public-data recreation"],
+    statusLabels: ["Scoped contribution", "Public-data demo"],
     description:
-      "Improved interface clarity, rendering behavior, and dataset loading inside an existing neuroscience visualization tool.",
+      "Turned overlapping colored volumes into an inspectable 3D workspace with material states, recoloring, and shared camera controls.",
     tags: ["Research Tools", "Technical UI", "Data Visualization", "Performance", "Three.js"],
     image: "/images/projects/einstein-research.svg",
-    imageAlt: "Representative workflow diagram for neuroscience dataset loading, visualization, and interface refinement",
+    imageAlt: "Representative workflow diagram for public neuroscience data loading, visualization, and interface refinement",
     interactiveDemoComponent: "neural-visualizer",
     screenshots: [
       {
         src: "/images/projects/einstein-research.svg",
         alt: "Representative workflow diagram for research dataset loading, visualization, and interface refinement",
-        caption: "Representative workflow diagram. The interactive demo below uses a separate, attributed public neuron morphology.",
+        caption: "Representative workflow diagram. The interactive recreation below uses an unrelated public H01 subset to demonstrate opacity, layer, and navigation controls without exposing the original research data.",
         width: 1280,
         height: 720,
       },
     ],
     permissionsNote:
-      "The original research interface and proprietary datasets are not shown. The interactive demo below is a simplified portfolio recreation using a separately published Virtual Fly Brain/FAFB morphology under CC BY-SA 4.0.",
+      "The original research interface and proprietary datasets are not shown. This recreation uses seven simplified reconstructions from the publicly available H01 dataset solely to demonstrate the interface; it is unrelated to the Albert Einstein engagement.",
     caseStudy: {
       overview:
-        "This work refined research visualization interfaces and technical workflows used for neuroscience data exploration.",
+        "The starting visualization could render multiple colored bodies, but each one behaved largely like another colored blob in the same scene. I helped turn that output into an inspection tool: researchers could distinguish focus from context, change how individual volumes were rendered, and navigate the same scene through global mouse and keyboard controls.",
       problem:
-        "Researchers and collaborators needed to inspect dense visual data with less friction from load performance, rendering behavior, and unclear interface states.",
+        "Color alone was carrying too much meaning. As volumes overlapped, it became difficult to tell what was selected, what should recede into context, and what had been intentionally hidden. The viewer also needed a clearer control model for changing materials and moving through the scene.",
       constraints: [
         "The work happened inside an existing research tool rather than a blank-slate redesign.",
         "Proprietary data could not be shown publicly.",
-        "Performance and accuracy mattered more than visual novelty.",
-        "Changes needed to respect technical collaborators who maintained the rendering pipeline.",
+        "The portfolio recreation needed to distinguish its unrelated public demo data from the original engagement.",
+        "Transparency and additional materials could not make an already dense WebGL scene unusably slow.",
+        "New controls needed to respect the rendering pipeline maintained by technical collaborators.",
       ],
       role:
-        "Contract Frontend Developer responsible for scoped interface refinement, rendering behavior, and dataset-load performance within an existing research tool.",
+        "Contract Frontend Developer responsible for the scoped interaction model, material and visibility behavior, camera controls, and dataset-load performance within an existing research tool.",
       usersAndWorkflows: [
-        "Researchers: inspect visualized neuroscience data with less interface friction",
-        "Technical collaborators: maintain rendering and interface behavior",
-        "Research collaborators: evaluate progress through clearer UI states and performance improvements",
+        "Researchers: isolate one structure while keeping neighboring volumes available as context",
+        "Technical collaborators: maintain predictable rendering and camera behavior",
+        "Research collaborators: compare dense spatial relationships without losing orientation",
       ],
       built: [
-        "Interface refinements",
-        "Visualization behavior improvements",
-        "Dataset loading and rendering workflow adjustments",
+        "Per-volume highlight, hide/show, and grey-context states",
+        "Opaque, translucent, and alternate material treatments for overlapping geometry",
+        "Per-volume recoloring plus global show, focus, opacity, and reset controls",
+        "A shared camera model with mouse, trackpad, and keyboard navigation",
+        "Dataset-loading and render-path adjustments that improved responsiveness",
+      ],
+      techStack: ["Three.js", "WebGL", "Modern JavaScript", "Material state management", "Keyboard and pointer input"],
+      productArtifacts: [
+        {
+          title: "From blobs to visual states",
+          context:
+            "The inherited scene differentiated structures primarily by assigning each volume a color.",
+          flow: ["Colored bodies", "Select a volume", "Focus + context states"],
+          decision:
+            "Treat highlight, neutral-grey context, transparency, and hidden as explicit states rather than one-off color changes.",
+          outcome:
+            "Researchers could keep spatial relationships visible while making the structure under inspection unmistakable.",
+        },
+        {
+          title: "Material and color controls",
+          context:
+            "Overlapping surfaces needed more than an eye icon; users needed control over how each body participated in the scene.",
+          flow: ["Choose layer", "Change color or material", "Adjust global opacity"],
+          decision:
+            "Separate a volume's color, material treatment, opacity, and visibility so changing one property did not destroy the others.",
+          outcome:
+            "The same dataset could support comparison, presentation, and close inspection without being reloaded.",
+        },
+        {
+          title: "One camera model",
+          context:
+            "Researchers moved between direct manipulation and keyboard-driven inspection while comparing structures.",
+          flow: ["Mouse / trackpad", "Keyboard controls", "Shared camera state"],
+          decision:
+            "Route pointer and keyboard input through the same camera target, presets, zoom limits, and reset behavior.",
+          outcome:
+            "Navigation stayed predictable across input methods, and users could recover a known orientation at any time.",
+        },
       ],
       decisions: [
-        "Prioritized clarity and performance over decorative visualization",
-        "Kept proprietary research data out of portfolio materials",
-        "Improved existing workflows instead of forcing a new interface model",
+        "Used grey and transparency to preserve context instead of forcing a binary visible-or-hidden choice",
+        "Kept recoloring independent from material and visibility state",
+        "Applied global navigation controls consistently across mouse and keyboard input",
       ],
       outcomes: [
-        "Reduced dataset load time by approximately 20%",
-        "Improved navigation and interface clarity for research workflows",
-        "Refined rendering behavior within an existing visualization tool",
+        "Made overlapping volumes easier to isolate, compare, and return to context",
+        "Expanded the viewer from color-only differentiation to explicit material and visibility states",
+        "Made global 3D navigation available through both pointer and keyboard controls",
       ],
       lessons: [
-        "Technical tools need UX judgment just as much as consumer-facing sites do.",
-        "Improving an existing system often requires respecting the workflow already in place.",
+        "In dense visualization, removing context can be as disorienting as showing too much; a neutral intermediate state matters.",
+        "Material, color, visibility, and camera state should be modeled independently when researchers need to compare the same scene in multiple ways.",
       ],
       shows:
-        "This project shows technical UI judgment, performance awareness, and respect for existing expert workflows.",
+        "This project shows how I turn raw WebGL output into an inspectable expert workflow without hiding the complexity of the underlying scene.",
     },
   },
   {
@@ -748,6 +762,7 @@ export const projects: Project[] = [
     tags: ["Visual Communication", "Presentation Design", "Product Direction"],
     image: "/images/projects/steve-madden.svg",
     imageAlt: "Steve Madden sales decks, CAD assets, packaging concepts, and presentation materials",
+    thumbnailImage: "/images/madden/madden-nyc-cover.webp",
     screenshots: [
       {
         src: "/images/madden/madden-nyc-cover.webp",
@@ -827,20 +842,20 @@ export const featuredProject = projects.find((project) => project.slug === "red-
 export const selectedProjects = projects.filter((project) =>
   [
     "red-eye-tickets",
+    "albert-einstein-college-of-medicine",
     "cats-the-jellicle-ball",
-    "spotlight-strategies",
   ].includes(project.slug),
 ).sort(
   (a, b) =>
     [
       "red-eye-tickets",
+      "albert-einstein-college-of-medicine",
       "cats-the-jellicle-ball",
-      "spotlight-strategies",
     ].indexOf(a.slug) -
     [
       "red-eye-tickets",
+      "albert-einstein-college-of-medicine",
       "cats-the-jellicle-ball",
-      "spotlight-strategies",
     ].indexOf(b.slug),
 );
 export const clientDemoProjects = projects.filter((project) => project.interactiveDemoComponent);
