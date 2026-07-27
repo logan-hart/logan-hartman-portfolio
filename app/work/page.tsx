@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { NeuralMorphologyPreview } from "@/components/demos/NeuralMorphologyPreview";
+import { HeartProjectVisual } from "@/components/work/HeartProjectVisual";
 import type { Project } from "@/data/projects";
 import { projects } from "@/data/projects";
 
@@ -33,14 +35,20 @@ function ProjectRow({ project, index, priority = false }: { project: Project; in
         className={`work-row__media ${project.thumbnailPresentation === "contain-black" ? "project-media--contain-black" : ""}`}
         href={`/work/${project.slug}/`}
       >
-        <Image
-          alt=""
-          height={720}
-          priority={priority}
-          sizes="(max-width: 720px) 100vw, 36vw"
-          src={project.thumbnailImage ?? project.image}
-          width={1280}
-        />
+        {project.slug === "albert-einstein-college-of-medicine" ? (
+          <NeuralMorphologyPreview />
+        ) : project.slug === "the-heart" ? (
+          <HeartProjectVisual variant="compact" />
+        ) : (
+          <Image
+            alt=""
+            height={720}
+            priority={priority}
+            sizes="(max-width: 720px) 100vw, 36vw"
+            src={project.thumbnailImage ?? project.image}
+            width={1280}
+          />
+        )}
       </Link>
       <div className="work-row__body">
         <div className="work-row__topline">

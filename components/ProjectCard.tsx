@@ -11,7 +11,13 @@ type ProjectCardProps = {
 export function ProjectCard({ project, detailed = false }: ProjectCardProps) {
   return (
     <article className="project-card">
-      <Link className="project-card__media" href={`/work/${project.slug}/`} aria-label={`View ${project.title}`}>
+      <Link
+        className={`project-card__media ${
+          project.thumbnailPresentation === "contain-black" ? "project-media--contain-black" : ""
+        }`}
+        href={`/work/${project.slug}/`}
+        aria-label={`View ${project.title}`}
+      >
         <Image alt="" height={720} sizes="(max-width: 760px) 100vw, 33vw" src={project.image} width={1280} />
       </Link>
       <div className="project-card__body">

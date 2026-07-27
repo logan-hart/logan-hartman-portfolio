@@ -13,3 +13,9 @@ services:
       - path: /_next/static/*
         name: Cache-Control
         value: public, max-age=31536000, immutable
+      - path: /data/h01/*.glb
+        name: Cache-Control
+        value: public, max-age=86400, stale-while-revalidate=604800
+      - path: /images/the-heart/*
+        name: Cache-Control
+        value: public, max-age=86400, stale-while-revalidate=604800

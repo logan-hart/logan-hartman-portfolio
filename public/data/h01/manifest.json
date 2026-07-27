@@ -1,0 +1,386 @@
+{
+  "assets": [
+    {
+      "byteLength": 2189152,
+      "file": "h01-seven-cells.glb",
+      "key": "caseStudy",
+      "meshCount": 7,
+      "meshes": [
+        {
+          "cellSizeNanometers": 1271,
+          "collapsedTriangleCount": 19622,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 2030,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "1072605926",
+          "simplifiedGeometrySha256": "83070644cdfcd53d3776792e02e13c64092ac2c62bdf72ccd503b9262ca8197e",
+          "triangleCount": 15002,
+          "vertexCount": 8572,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 841,
+          "collapsedTriangleCount": 5551,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 757,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "810151953",
+          "simplifiedGeometrySha256": "d6a52628df0b25f493ea39384649794414769769697d25e74c9c283f4c3cb28c",
+          "triangleCount": 14992,
+          "vertexCount": 7906,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 2255,
+          "collapsedTriangleCount": 93570,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 4605,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "620880207",
+          "simplifiedGeometrySha256": "fbced357a04e2b47a2d90e52a0bd40f452de1656ebcf394f848163b8fbb9d0a8",
+          "triangleCount": 15001,
+          "vertexCount": 10158,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 1973,
+          "collapsedTriangleCount": 67130,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 4186,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "1684504313",
+          "simplifiedGeometrySha256": "0b19baf599484ab6eeafa7ec5ed63415afb8055733cee78ed37469477441a2e7",
+          "triangleCount": 14991,
+          "vertexCount": 10035,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 1445,
+          "collapsedTriangleCount": 27463,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 2604,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "1465400601",
+          "simplifiedGeometrySha256": "21f02e8eee369b3c93915320fad30491078bb8f1447c545d7ee1ad666df0ec34",
+          "triangleCount": 15047,
+          "vertexCount": 9029,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 1800,
+          "collapsedTriangleCount": 50187,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 3421,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "810970127",
+          "simplifiedGeometrySha256": "8fd32608e4205d17e2ed6665af49b959c7f67421cf130e8e0307412e76446e7e",
+          "triangleCount": 15000,
+          "vertexCount": 9640,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 1622,
+          "collapsedTriangleCount": 36401,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 3077,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "2047644309",
+          "simplifiedGeometrySha256": "bd619f24caea7ee156a6d9a134eb78ba0b5271c4b09ca88a788060652a76518d",
+          "triangleCount": 14998,
+          "vertexCount": 9290,
+          "zeroAreaTriangleCountRemoved": 0
+        }
+      ],
+      "sha256": "b85f314e52702f3b65d73ca78fe5dd2da9b6ef0d2f00d406460f5379237f2cbb",
+      "targetTrianglesPerMesh": 15000,
+      "triangleCount": 105031,
+      "vertexCount": 64630
+    },
+    {
+      "byteLength": 223332,
+      "file": "h01-seven-cells-preview.glb",
+      "key": "preview",
+      "meshCount": 7,
+      "meshes": [
+        {
+          "cellSizeNanometers": 4864,
+          "collapsedTriangleCount": 35150,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 505,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "1072605926",
+          "simplifiedGeometrySha256": "342ac97cab20770d884245746a11366d230da040c75cfbd274748e4a00fa6726",
+          "triangleCount": 999,
+          "vertexCount": 1000,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 4005,
+          "collapsedTriangleCount": 19892,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 408,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "810151953",
+          "simplifiedGeometrySha256": "82ebd36113a8fa9fccd1eabc0848b509aeee6e87d6debc7d1ec41e785ac0d0e7",
+          "triangleCount": 1000,
+          "vertexCount": 946,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 8722,
+          "collapsedTriangleCount": 111604,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 572,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "620880207",
+          "simplifiedGeometrySha256": "d957dd505fb5bf2662683b66b60993a3618c078524a7656845da06f5b8d6e386",
+          "triangleCount": 1000,
+          "vertexCount": 1032,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 7737,
+          "collapsedTriangleCount": 84804,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 503,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "1684504313",
+          "simplifiedGeometrySha256": "7048f3c7c7eb27c283ab6c1cba8ca8dc5f69a0618fe52ef3cd6fde4c48b82231",
+          "triangleCount": 1000,
+          "vertexCount": 1028,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 5511,
+          "collapsedTriangleCount": 43626,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 487,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "1465400601",
+          "simplifiedGeometrySha256": "188bb6b7d36dc9892bf9537fbd40fb5436ec8c907f0fca6dc77dbfc3e575c52c",
+          "triangleCount": 1001,
+          "vertexCount": 1062,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 6706,
+          "collapsedTriangleCount": 67094,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 512,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "810970127",
+          "simplifiedGeometrySha256": "98ff7a0a4e3b0c528c66c19faf072373a43ca88ed9939c9871dede2fa126367e",
+          "triangleCount": 1002,
+          "vertexCount": 1114,
+          "zeroAreaTriangleCountRemoved": 0
+        },
+        {
+          "cellSizeNanometers": 6187,
+          "collapsedTriangleCount": 52949,
+          "degenerateTriangleCount": 0,
+          "duplicateTriangleCount": 527,
+          "fallbackNormalCount": 0,
+          "indexComponentType": "UNSIGNED_SHORT",
+          "segmentId": "2047644309",
+          "simplifiedGeometrySha256": "55c069cd03167f873947ffa4a102d8e2e92e5035895e57b2d08b93cc1cceccb5",
+          "triangleCount": 1000,
+          "vertexCount": 1049,
+          "zeroAreaTriangleCountRemoved": 0
+        }
+      ],
+      "sha256": "d19c197dd62477af2c81ee3eeeb1e536c3f84d324ee49f53a4b00600d4b73a85",
+      "targetTrianglesPerMesh": 1000,
+      "triangleCount": 7002,
+      "vertexCount": 7231
+    }
+  ],
+  "build": {
+    "cloudVolumeVersion": "12.14.2",
+    "command": "uv run --python 3.12 --with-requirements scripts/h01-requirements.txt python scripts/build_h01_demo_asset.py",
+    "dracoPyVersion": "1.7.0",
+    "numpyVersion": "2.5.1",
+    "script": "scripts/build_h01_demo_asset.py",
+    "simplification": {
+      "algorithm": "integer-nanometer vertex clustering",
+      "description": "Vertices sharing an absolute-coordinate grid cell are averaged; collapsed, duplicate, and zero-area triangles are removed; remaining vertices are compacted.",
+      "gridAnchorNanometers": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "coordinateFrame": {
+    "originNanometers": [
+      2780608.5,
+      723008.0,
+      87351.296875
+    ],
+    "outputUnits": "micrometers",
+    "transform": "positionMicrometers = (sourcePositionNanometers - originNanometers) / 1000"
+  },
+  "notice": "Publicly available H01 geometry, simplified for this interactive portfolio demonstration. Colors and materials are interface encodings and are not included in either asset.",
+  "schemaVersion": 2,
+  "source": {
+    "dataPage": "https://h01-release.storage.googleapis.com/data.html",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "meshInfoSha256": "e012dddc855f03403604eaa7067dc0651032a5cab4566abc9693a461c6e2b052",
+    "meshInfoSha256Canonicalization": "raw response bytes",
+    "meshInfoUrl": "https://storage.googleapis.com/h01-release/data/20210601/proofread_104/mesh/info",
+    "meshLod": 3,
+    "meshLodDescription": "Lowest level available in the H01 proofread_104 mesh layer at build time; pinned to level 3 for reproducibility.",
+    "meshes": [
+      {
+        "segmentId": "1072605926",
+        "sourceBoundsNanometers": {
+          "max": [
+            2933952.75,
+            799936.1875,
+            174636.59375
+          ],
+          "min": [
+            2708415.25,
+            427136.5,
+            66.0
+          ]
+        },
+        "sourceGeometrySha256": "6c850c2d02a35d52b01f77b3fd7230a1aa9e33ddf6ff79f327564002566e043c",
+        "triangleCount": 36654,
+        "vertexCount": 20768
+      },
+      {
+        "segmentId": "810151953",
+        "sourceBoundsNanometers": {
+          "max": [
+            2857535.5,
+            696896.625,
+            168432.5
+          ],
+          "min": [
+            2654528.5,
+            397824.0625,
+            66.0
+          ]
+        },
+        "sourceGeometrySha256": "e3eb7dd5c5274ae63d6ac7453eff91d7aac3781f3fa27c78ac9c578d11931d50",
+        "triangleCount": 21300,
+        "vertexCount": 12074
+      },
+      {
+        "segmentId": "620880207",
+        "sourceBoundsNanometers": {
+          "max": [
+            3004863.75,
+            775295.8125,
+            174636.59375
+          ],
+          "min": [
+            2582847.5,
+            352639.375,
+            66.0
+          ]
+        },
+        "sourceGeometrySha256": "143d96e232e553c946c908e00f5ccd6e50cd5d736b49a62d80fc2649f6fb76c6",
+        "triangleCount": 113176,
+        "vertexCount": 63346
+      },
+      {
+        "segmentId": "1684504313",
+        "sourceBoundsNanometers": {
+          "max": [
+            3016576.0,
+            1093376.625,
+            174636.59375
+          ],
+          "min": [
+            2501184.25,
+            377791.75,
+            66.0
+          ]
+        },
+        "sourceGeometrySha256": "924c79472b89aac42fdc97c0e86a50535ab162d17cac99c083f475a048c46c7e",
+        "triangleCount": 86307,
+        "vertexCount": 47895
+      },
+      {
+        "segmentId": "1465400601",
+        "sourceBoundsNanometers": {
+          "max": [
+            3060032.75,
+            884351.5,
+            174636.59375
+          ],
+          "min": [
+            2649216.5,
+            455808.9375,
+            66.0
+          ]
+        },
+        "sourceGeometrySha256": "eaaab1f1615115fcb77f993dd4ec57c51b1913ba182e1efd558b877276e21702",
+        "triangleCount": 45114,
+        "vertexCount": 24658
+      },
+      {
+        "segmentId": "810970127",
+        "sourceBoundsNanometers": {
+          "max": [
+            2963327.25,
+            919104.0,
+            174636.59375
+          ],
+          "min": [
+            2596223.5,
+            353855.40625,
+            66.0
+          ]
+        },
+        "sourceGeometrySha256": "1d9a84d4a51710c04c629f8b0b804649f57e3d16f834113322bbb138a3343ac0",
+        "triangleCount": 68608,
+        "vertexCount": 38063
+      },
+      {
+        "segmentId": "2047644309",
+        "sourceBoundsNanometers": {
+          "max": [
+            3044544.5,
+            1004159.3125,
+            174636.59375
+          ],
+          "min": [
+            2568703.25,
+            435264.625,
+            66.0
+          ]
+        },
+        "sourceGeometrySha256": "da949cda70c1b9e8d3aa6445c9426a93ea75e7fa9a9a3aed4379c7b09fbf9b94",
+        "triangleCount": 54476,
+        "vertexCount": 30272
+      }
+    ],
+    "segmentIds": [
+      "1072605926",
+      "810151953",
+      "620880207",
+      "1684504313",
+      "1465400601",
+      "810970127",
+      "2047644309"
+    ],
+    "sourceGeometrySha256Canonicalization": "little-endian float32 XYZ nanometer positions followed by little-endian uint32 triangle indices",
+    "volumeUrl": "https://storage.googleapis.com/h01-release/data/20210601/proofread_104"
+  }
+}

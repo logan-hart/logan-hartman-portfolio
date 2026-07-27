@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Audit dependencies
-        run: npm audit --audit-level=high
+        run: npm run audit
 
       - name: Verify sanitized evidence
         run: npm run verify:evidence

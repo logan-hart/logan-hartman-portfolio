@@ -2,6 +2,7 @@ import { ArrowRight, Blocks, Compass, Route } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { preload } from "react-dom";
+import { NeuralMorphologyPreview } from "@/components/demos/NeuralMorphologyPreview";
 import { EvidenceCards } from "@/components/red-eye/EvidenceCards";
 import { Section } from "@/components/Section";
 import { careerFacts } from "@/data/careerFacts";
@@ -122,14 +123,18 @@ export default function HomePage() {
                 key={project.slug}
               >
                 <div className={`home-project__media ${project.thumbnailPresentation === "contain-black" ? "project-media--contain-black" : ""}`}>
-                  <Image
-                    alt=""
-                    height={720}
-                    priority={index === 0}
-                    sizes={index === 0 ? "(max-width: 860px) 100vw, 58vw" : "(max-width: 860px) 100vw, 50vw"}
-                    src={project.thumbnailImage ?? project.image}
-                    width={1280}
-                  />
+                  {project.slug === "albert-einstein-college-of-medicine" ? (
+                    <NeuralMorphologyPreview />
+                  ) : (
+                    <Image
+                      alt=""
+                      height={720}
+                      priority={index === 0}
+                      sizes={index === 0 ? "(max-width: 860px) 100vw, 58vw" : "(max-width: 860px) 100vw, 50vw"}
+                      src={project.thumbnailImage ?? project.image}
+                      width={1280}
+                    />
+                  )}
                 </div>
                 <div className="home-project__body">
                   <span className="category">{featuredLabels[project.slug] ?? project.category}</span>

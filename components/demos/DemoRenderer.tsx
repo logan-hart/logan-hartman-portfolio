@@ -12,7 +12,18 @@ type DemoRendererProps = {
 
 const NeuralMorphologyVisualizer = dynamic(
   () => import("@/components/demos/NeuralMorphologyVisualizer").then((module) => module.NeuralMorphologyVisualizer),
-  { loading: () => <div className="neural-visualizer__module-loading">Preparing 3D viewer…</div> },
+  {
+    loading: () => (
+      <div
+        aria-live="polite"
+        className="neural-visualizer__module-loading"
+        role="status"
+      >
+        <span aria-hidden="true" className="neural-visualizer__spinner" />
+        <span>Preparing 3D viewer…</span>
+      </div>
+    ),
+  },
 );
 
 export function DemoRenderer({ component }: DemoRendererProps) {
