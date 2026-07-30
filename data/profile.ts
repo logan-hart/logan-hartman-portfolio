@@ -3,15 +3,16 @@ const configuredSiteUrl =
   process.env.RENDER_EXTERNAL_URL?.trim() ||
   "http://localhost:3100";
 
-const configuredEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || null;
-const configuredResumeUrl = process.env.NEXT_PUBLIC_RESUME_URL?.trim() || null;
+const configuredEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "loganchart@gmail.com";
+const configuredResumeUrl =
+  process.env.NEXT_PUBLIC_RESUME_URL?.trim() || "/resume/logan-hartman-product-engineer-resume.pdf";
 
 export const profile = {
   name: "Logan Hartman",
   title: "Co-Founder and CTO",
   positioning: "I turn messy workflows into usable systems.",
   subheadline:
-    "Product-minded technical builder focused on workflow design, implementation, product systems, and AI-assisted delivery.",
+    "Product engineer focused on workflow systems, guarded AI implementation, and production accountability.",
   supportingLine:
     "I map how people work, translate ambiguity into product decisions, and ship software that makes operations easier to run.",
   email: configuredEmail,
@@ -29,5 +30,7 @@ export const profile = {
     "Customer-Facing Software",
     "Design Engineering",
     "AI-Assisted Development",
+    "Forward-Deployed Implementation",
+    "Production Guardrails",
   ],
 };

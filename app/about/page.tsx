@@ -9,7 +9,7 @@ const capabilities = [
   "Workflow discovery",
   "Product engineering",
   "Operational tooling",
-  "Technical communication",
+  "Guarded AI implementation",
 ];
 
 export const metadata: Metadata = {
@@ -54,6 +54,11 @@ export default function AboutPage() {
               the right boundary for a system, shipping the implementation, and staying close enough to operations to
               see where the first version breaks down.
             </p>
+            <p>
+              At Red Eye, that responsibility includes a guarded AI-assisted operations layer: signed evidence becomes
+              deduplicated repair work, planning is separated from execution and review, and higher-risk changes remain
+              behind policy, approval, rollback, exact-commit deployment, and production-verification controls.
+            </p>
           </div>
           <div className="capability-list" aria-label="Capabilities">
             {capabilities.map((capability, index) => (
@@ -91,6 +96,14 @@ export default function AboutPage() {
               incident recovery, release evidence, and tools for people working a live event.
             </p>
           </article>
+          <article>
+            <span>AI implementation</span>
+            <h3>Evidence-driven repair with explicit authority boundaries</h3>
+            <p>
+              A policy-governed observation and learning architecture connects findings to proposed actions, approvals,
+              rollback plans, verification results, measured outcomes, and reusable lessons.
+            </p>
+          </article>
         </div>
         <Link className="card-link about-current-link" href="/work/red-eye-tickets/">
           Review the Red Eye case study <ArrowRight aria-hidden="true" size={17} />
@@ -102,8 +115,8 @@ export default function AboutPage() {
         variant="tight"
       >
         <p className="about-evidence-note">
-          Production systems, scoped contributions, representative visuals, and local prototypes are labeled explicitly
-          throughout the portfolio.
+          Production systems, scoped contributions, representative visuals, and local or pilot capabilities are labeled
+          explicitly. Default-off, attended, pilot-scoped, and framework-only boundaries remain visible.
         </p>
       </Section>
       <Section variant="tight">

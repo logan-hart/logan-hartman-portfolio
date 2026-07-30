@@ -5,7 +5,7 @@ import { profile } from "@/data/profile";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Contact Logan Hartman for product engineering, workflow systems, AI-assisted delivery, and implementation roles.",
+  description: "Contact Logan Hartman for product engineering, workflow-oriented FDE, and guarded AI implementation roles.",
   alternates: {
     canonical: "/contact/",
   },
@@ -18,7 +18,7 @@ export default function ContactPage() {
         <div className="container">
           <p className="eyebrow">Contact</p>
           <h1>Let&apos;s make the complex part clear.</h1>
-          <p>Open to product engineering, founding engineering, and FDE roles where customer problems, product decisions, and implementation meet.</p>
+          <p>Open to Product Engineer, workflow-oriented FDE, and coding-heavy AI implementation roles. Remote preferred, with relocation available for New York City or San Francisco.</p>
         </div>
       </section>
       <Section variant="tight">

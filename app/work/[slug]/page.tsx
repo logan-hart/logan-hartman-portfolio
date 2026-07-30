@@ -378,6 +378,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   ))}
                 </dl>
               ) : null}
+              {project.documentLinks?.length ? (
+                <div className="case-document-links" aria-label={`${project.title} full portfolio decks`}>
+                  {project.documentLinks.map((document) => (
+                    <Link
+                      className="button button--secondary"
+                      href={document.href}
+                      key={document.href}
+                      prefetch={false}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <span>
+                        {document.label}
+                        {document.detail ? <small>{document.detail}</small> : null}
+                      </span>
+                      <ArrowUpRight aria-hidden="true" size={17} />
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
             </div>
             {!isCats ? (
               <figure
