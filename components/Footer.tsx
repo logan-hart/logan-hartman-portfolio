@@ -9,7 +9,7 @@ export function Footer() {
         <div className="footer-main">
           <div>
             <span className="footer-kicker">Logan Hartman</span>
-            <p>Product-minded technical builder turning messy workflows into usable systems.</p>
+            <p>Product Engineer building reliable software for real operations.</p>
           </div>
           {profile.email ? (
             <a className="footer-email" href={`mailto:${profile.email}`}>
@@ -22,7 +22,7 @@ export function Footer() {
           )}
         </div>
         <div className="footer-bottom">
-          <span>Product engineering · workflow systems · AI-assisted delivery</span>
+          <span>Product engineering · Reliability · AI-assisted delivery</span>
           <div className="footer-links" aria-label="Footer links">
             <Link href="/work/">Work</Link>
             <Link href="/#approach">Approach</Link>

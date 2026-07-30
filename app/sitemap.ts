@@ -7,7 +7,9 @@ export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = ["", "/work", "/about", "/contact", "/demos"];
   const redEyeEvidenceRoutes = [
+    "/work/red-eye-tickets/guarded-production-implementation",
     "/work/red-eye-tickets/payment-integration",
+    "/work/red-eye-tickets/guest-checkout-inventory-hold",
     "/work/red-eye-tickets/postmortem-unicode-pdf",
     "/work/red-eye-tickets/adr-local-first-repair",
     "/work/red-eye-tickets/reliability",

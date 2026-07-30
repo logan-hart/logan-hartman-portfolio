@@ -3,95 +3,80 @@
 [![Build](https://github.com/logan-hart/logan-hartman-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/logan-hart/logan-hartman-portfolio/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-[View the live portfolio](https://logan-hartman-portfolio.onrender.com) · [Explore the Red Eye case study](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/)
+[View the live portfolio](https://logan-hartman-portfolio.onrender.com/) · [Explore Red Eye Tickets](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/) · [Review payment reliability](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/payment-integration/) · [Review testing, release, and recovery](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/reliability/)
 
-Product-engineering portfolio for Logan Hartman, built with Next.js, TypeScript, and static export. It documents how I turn operational complexity into usable systems across event commerce, payments, admissions, workflow design, reliability automation, and high-craft digital experiences.
+**A product engineering portfolio focused on building reliable software for real operations.**
 
-The portfolio uses self-hosted case studies and interaction demos so the relevant product and implementation work remains understandable even when an external production site changes.
+Built with Next.js, React, and TypeScript and exported as a static site. The portfolio documents how I move from user and operator context to product decisions, full-stack implementation, testing, release, and ongoing production improvement.
 
-![Logan Hartman product-engineering portfolio homepage](./public/images/portfolio-homepage.png)
+The flagship Red Eye Tickets case examines how a live event-commerce platform preserves a chain of promises from payment to inventory to ticket delivery to venue admission. This repository contains the portfolio implementation and a sanitized evidence layer. It does not contain the private Red Eye production application.
+
+![Logan Hartman product engineering portfolio homepage](./public/images/portfolio-homepage.png)
 
 ## What This Repository Demonstrates
 
-- Product case studies organized around users, constraints, decisions, and outcomes
-- A sanitized Red Eye Tickets systems narrative without production code or customer data
-- Self-contained workflow and interaction demonstrations
-- Responsive, accessible UI with reduced-motion support
-- Static generation for fast, durable deployment
-- Evidence pages for architecture decisions, reliability work, payments, and operational metrics
+- Product case studies organized around users, constraints, decisions, implementation, and outcomes
+- Reliability treated as a product responsibility across payments, inventory, ticketing, and live admissions
+- Technical evidence for state integrity, retries, concurrency, partial-failure recovery, testing, and release safety
+- Responsive, accessible interfaces with reduced-motion support
+- Self-hosted interaction demos and case-study visuals that remain reviewable when external production sites change
+- Sanitized fixtures, diagrams, aggregated metrics, and explicit maturity labels for private production work
+- Static generation, metadata, structured data, sitemaps, and CI-backed builds
 
-## Public-Portfolio Boundaries
+## Selected Technical Evidence
 
-The Red Eye Tickets production application, credentials, customer records, and private operational data are intentionally excluded. Public examples use sanitized captures, deterministic fixtures, portfolio-safe diagrams, and aggregated metrics. Client work is included only through approved or self-hosted materials.
+- [Red Eye Tickets platform](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/) — Product and engineering ownership across commerce, producer and administrator tools, reporting, support, and admissions
+- [Payment reliability](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/payment-integration/) — Idempotency, provider-specific protocols, signed webhooks, reconciliation, and recovery
+- [Guest-checkout inventory incident](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/guest-checkout-inventory-hold/) — Root cause, origin-bound inventory ownership, fail-closed session authorization, and the verified production fix
+- [Testing, release, and recovery](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/reliability/) — Automated verification, production canaries, release controls, rollback, and post-release validation
+- [Unicode PDF incident review](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/postmortem-unicode-pdf/) — Root-cause analysis, remediation, and regression protection at an encoding and rendering boundary
+- [Metrics and methodology](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/metrics/) — Definitions, exclusions, evidence limits, and conservative public reporting
+
+## Public Evidence Boundaries
+
+The Red Eye Tickets production repository, credentials, customer and attendee records, real order and ticket identifiers, raw telemetry, private endpoints, processor secrets, and private operational data are intentionally excluded.
+
+Public examples use sanitized captures, deterministic fixtures, portfolio-safe diagrams, representative patterns, and aggregated metrics. Client work is included only through approved or self-hosted materials.
+
+Maturity labels distinguish production systems, scoped client contributions, recreated demonstrations, and guarded or local prototypes. The public evidence pack is a reconstruction of documented behavior, not extracted production source.
 
 ## Sanitized Evidence
 
-The [`evidence/red-eye`](./evidence/red-eye/) pack makes representative workflow behavior inspectable without publishing the private production application. It includes:
+The [`evidence/red-eye`](./evidence/red-eye/) package makes representative workflow behavior inspectable without publishing the private application. It includes:
 
-- a deterministic buyer, payments, and admissions workflow snapshot;
+- a deterministic buyer, payment, and admissions workflow snapshot;
 - payment and ticket-state invariants expressed independently of production models;
 - provenance, redaction, and maturity boundaries; and
 - an executable structural and privacy-boundary check.
 
-Run `npm run verify:evidence` to validate the public fixture. The evidence pack is a portfolio-safe reconstruction of documented production behavior, not extracted production source or customer data.
-
-## Local Development
+Run the evidence verifier with:
 
 ```bash
-npm install
+npm run verify:evidence
+```
+
+## Run and Verify
+
+Requires Node.js 20 or later.
+
+```bash
+npm ci
 npm run dev
 ```
 
 Open `http://localhost:3000`.
 
-## Static Build
+Run the repository's verification and production-build checks with:
 
 ```bash
+npm run audit
+npm run verify:evidence
 npm run build
 ```
 
-The static site is exported to `out/`.
+GitHub Actions runs the dependency audit, sanitized-evidence verification, and production build for pushes and pull requests.
 
-The production build performs TypeScript validation and prerenders the complete static route set. GitHub Actions runs the same build for every push and pull request.
-
-## Content Editing
-
-- Canonical roles, dates, launch dates, and public metric floors live in `data/careerFacts.ts`.
-- Profile/contact details live in `data/profile.ts`.
-- Project and case study content lives in `data/projects.ts`.
-- Interactive demo modules live in `components/demos/`.
-- Self-hosted case-study visuals and approved local assets live in `public/images/`. Add new screenshots or screen recordings there as additional evidence becomes available.
-
-Each client case study supports:
-
-- `liveUrl`
-- `liveUrlLabel`
-- `archivedDemoUrl`
-- `screenshots[]`
-- `videoDemo`
-- `interactiveDemoComponent`
-- `permissionsNote`
-
-Public metadata uses `NEXT_PUBLIC_SITE_URL` when supplied and otherwise uses Render's `RENDER_EXTERNAL_URL`. Contact defaults to LinkedIn; set `NEXT_PUBLIC_CONTACT_EMAIL` only after verifying the public mailbox. Set `NEXT_PUBLIC_RESUME_URL` to a public PDF path or URL to display the resume download action.
-
-## Render Static Site
-
-Use the Render workspace that also contains `redeyetickets`.
-
-- Build command: `npm ci && npm run build`
-- Publish directory: `out`
-- Runtime: Static Site
-
-The included `render.yaml` is ready for a Render Blueprint deployment after this repo is pushed to GitHub, GitLab, or Bitbucket. If using the Render Dashboard instead, create a new Static Site in the desired workspace and use the same build command and publish directory.
-
-## Netlify
-
-- Build command: `npm run build`
-- Publish directory: `out`
-
-## GitHub Pages
-
-Use a GitHub Actions workflow that installs dependencies, runs `npm run build`, and publishes the `out/` directory. If deploying to a project subpath instead of a custom domain, set the appropriate `basePath` and `assetPrefix` in `next.config.ts`.
+The site is statically exported and deployed to Render using the included [`render.yaml`](./render.yaml).
 
 ## License
 

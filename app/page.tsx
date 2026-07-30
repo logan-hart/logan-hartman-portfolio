@@ -6,29 +6,61 @@ import { NeuralMorphologyPreview } from "@/components/demos/NeuralMorphologyPrev
 import { EvidenceCards } from "@/components/red-eye/EvidenceCards";
 import { Section } from "@/components/Section";
 import { careerFacts } from "@/data/careerFacts";
+import { profile } from "@/data/profile";
+import { homepageRedEyeEvidenceLinks } from "@/data/redEyeEvidence";
 import {
-  impactMetrics,
   operatingManualPrinciples,
   selectedProjects,
 } from "@/data/projects";
-import { redEyeMetricsAsOf } from "@/data/redEyeMetrics";
+import { redEyeMetrics, redEyeMetricsAsOf } from "@/data/redEyeMetrics";
 
 const approachIcons = [Route, Compass, Blocks];
-const homepageImpactMetrics = impactMetrics.filter((metric) =>
-  ["Ticketed events", "Buyer identities", "Completed orders", "Tickets issued"].includes(metric.label),
+const homepageImpactMetrics = redEyeMetrics.filter((metric) =>
+  ["events", "orders", "tickets", "gpv"].includes(metric.key),
 );
 
 const featuredLabels: Record<string, string> = {
-  "red-eye-tickets": "Product Systems",
-  "cats-the-jellicle-ball": "Creative Engineering",
-  "the-season-flyer": "Design Engineering",
-  "albert-einstein-college-of-medicine": "Technical Tools",
-  "spotlight-strategies": "Communication Systems",
+  "red-eye-tickets": "Product Engineering",
+  "albert-einstein-college-of-medicine": "3D Research Visualization",
 };
 
 const featuredTitles: Record<string, string> = {
   "the-season-flyer": "The Season",
   "albert-einstein-college-of-medicine": "Albert Einstein College of Medicine",
+};
+
+const featuredDescriptions: Record<string, string> = {
+  "red-eye-tickets":
+    "Built and operate a Rails, React, and PostgreSQL event-commerce platform where payments, inventory, ticket delivery, and venue admission must remain in sync.",
+  "albert-einstein-college-of-medicine":
+    "Refined a Three.js workspace for inspecting overlapping neurological volumes and reduced large-dataset load time by approximately 20%.",
+};
+
+const featuredProof: Record<string, string> = {
+  "red-eye-tickets": "Co-Founder & CTO · Sole technical contributor · January 2024–present",
+  "albert-einstein-college-of-medicine": "Contract Frontend Developer · May 2023–January 2024",
+};
+
+const featuredContext: Record<string, string> = {
+  "red-eye-tickets": "Custom platform launched October 2025",
+};
+
+const featuredStatuses: Record<string, string[]> = {
+  "albert-einstein-college-of-medicine": ["Scoped contribution", "Public-data recreation"],
+};
+
+const featuredTags: Record<string, string[]> = {
+  "red-eye-tickets": ["Payments", "Inventory", "Operations", "Reliability"],
+  "albert-einstein-college-of-medicine": ["Three.js", "Technical UI", "Performance"],
+};
+
+const featuredDemoLabels: Record<string, string> = {
+  "albert-einstein-college-of-medicine": "Interactive 3D demo",
+};
+
+const featuredLinkLabels: Record<string, string> = {
+  "red-eye-tickets": "Explore the Case Study",
+  "albert-einstein-college-of-medicine": "View the Project",
 };
 
 export default function HomePage() {
@@ -45,26 +77,27 @@ export default function HomePage() {
         <div aria-hidden="true" className="hero-ribbons" />
         <div className="container hero-content">
           <div className="hero-copy">
-            <p className="eyebrow">Product-minded technical builder · Co-Founder &amp; CTO</p>
+            <p className="eyebrow">Product Engineer · Co-Founder &amp; CTO</p>
             <h1>
-              Building products for the <span className="accent-text">messy part of real operations.</span>
+              Building <span className="accent-text">reliable products for real operations.</span>
             </h1>
             <p className="hero-lead">
-              I work across product, engineering, and operations, translating real workflows into reliable software. At
-              Red Eye Tickets, I rebuilt a WordPress MVP into a custom event-commerce platform used by buyers, producers,
-              admins, and door staff.
+              I work directly with users and operators to turn complex workflows into reliable full-stack software, then
+              stay accountable through testing, release, recovery, and production improvement. At Red Eye Tickets, I
+              rebuilt a WordPress MVP as a Rails, React, and PostgreSQL event-commerce platform spanning payments,
+              inventory, ticketing, producer tools, and live admissions.
             </p>
             <p className="hero-proof-line">
-              Since its {redEye.customPlatformLaunchLabel} launch: {redEye.metrics.ticketedEvents.value} events ·{" "}
-              {redEye.metrics.completedOrders.value} orders · {redEye.metrics.ticketsIssued.value} tickets.
+              Since the custom platform launched in {redEye.customPlatformLaunchLabel}:{" "}
+              {redEye.metrics.ticketedEvents.value} ticketed events · {redEye.metrics.completedOrders.value} completed
+              orders · {redEye.metrics.ticketsIssued.value} tickets issued ·{" "}
+              {redEye.metrics.grossPaymentVolume.value} in gross payment volume.
             </p>
             <div className="actions">
               <Link className="button button--primary" href="/work/red-eye-tickets/">
                 Explore Red Eye <ArrowRight aria-hidden="true" size={18} />
               </Link>
-              <Link className="button button--ghost" href="/#evidence">
-                Read engineering stories
-              </Link>
+              <a className="button button--ghost" download href={profile.resumeUrl}>Download Resume</a>
             </div>
           </div>
         </div>
@@ -73,8 +106,11 @@ export default function HomePage() {
       <section className="impact-band">
         <div className="container">
           <div className="impact-band__header">
-            <p className="eyebrow">Selected impact</p>
-            <span>Production outcomes from Red Eye Tickets</span>
+            <div>
+              <p className="eyebrow">Production scale</p>
+              <h2>Red Eye Tickets in production.</h2>
+            </div>
+            <p>A live event-commerce platform supporting the customer journey from checkout through venue admission.</p>
           </div>
           <div className="impact-stats" aria-label="Selected impact metrics">
             {homepageImpactMetrics.map((metric) => (
@@ -85,8 +121,8 @@ export default function HomePage() {
             ))}
           </div>
           <p className="metric-method-note">
-            Production totals through {redEyeMetricsAsOf}; conservative rounded floors with obvious QA and local fixtures excluded.{" "}
-            <Link href="/work/red-eye-tickets/metrics/">Read the definitions →</Link>
+            Production totals through {redEyeMetricsAsOf} ·{" "}
+            <Link href="/work/red-eye-tickets/metrics/">Metric definitions →</Link>
           </p>
         </div>
       </section>
@@ -94,11 +130,11 @@ export default function HomePage() {
       <Section
         eyebrow="Engineering evidence"
         id="evidence"
-        title="The decisions and systems behind the work."
-        intro="Explore production integrations, incident reviews, architecture decisions, and clearly labeled prototypes."
+        title="How reliability is designed, tested, and recovered."
+        intro="Case studies and technical artifacts showing how the product handles real money, scarce inventory, production failures, and controlled automation. Each item is labeled by maturity and evidence boundary."
         variant="tight"
       >
-        <EvidenceCards />
+        <EvidenceCards items={homepageRedEyeEvidenceLinks} />
       </Section>
 
       <section className="section section--home-work" id="selected-work">
@@ -106,19 +142,19 @@ export default function HomePage() {
           <div className="section-heading section-heading--home">
             <div>
               <p className="eyebrow">Selected work</p>
-              <h2>Systems built around how people actually work.</h2>
+              <h2>Product engineering, technical tools, and coded interaction.</h2>
             </div>
             <div>
-              <p>Product platforms and technical tools shaped by users, constraints, and measurable outcomes.</p>
+              <p>Work across event commerce, 3D research visualization, and design engineering.</p>
               <Link className="view-all-link" href="/work/">
-                View all work <ArrowRight aria-hidden="true" size={16} />
+                View All Work <ArrowRight aria-hidden="true" size={16} />
               </Link>
             </div>
           </div>
           <div className="home-featured-projects">
-            {selectedProjects.slice(0, 3).map((project, index) => (
+            {selectedProjects.slice(0, 2).map((project, index) => (
               <Link
-                className={`home-project ${index === 0 ? "home-project--lead" : ""}`}
+                className={`home-project ${index === 0 ? "home-project--lead" : "home-project--wide"}`}
                 href={`/work/${project.slug}/`}
                 key={project.slug}
               >
@@ -139,20 +175,25 @@ export default function HomePage() {
                 <div className="home-project__body">
                   <span className="category">{featuredLabels[project.slug] ?? project.category}</span>
                   <h3>{featuredTitles[project.slug] ?? project.title}</h3>
-                  <p>{project.description}</p>
-                  {project.roleLabel ? (
-                    <p className="home-project__proof">
-                      {project.roleLabel}
-                      {project.period ? ` · ${project.period}` : ""}
-                      {project.engagementLabel ? ` · ${project.engagementLabel}` : ""}
-                    </p>
+                  <p>{featuredDescriptions[project.slug] ?? project.description}</p>
+                  <p className="home-project__proof">{featuredProof[project.slug]}</p>
+                  {featuredContext[project.slug] ? (
+                    <p className="home-project__context">{featuredContext[project.slug]}</p>
                   ) : null}
-                  <div className="status-list" aria-label="Project status">
-                    {project.statusLabels.map((status) => <span key={status}>{status}</span>)}
-                  </div>
+                  {project.slug !== "red-eye-tickets" ? (
+                    <div className="status-list" aria-label="Project status">
+                      {(featuredStatuses[project.slug] ?? project.statusLabels).map((status) => <span key={status}>{status}</span>)}
+                    </div>
+                  ) : null}
+                  {featuredDemoLabels[project.slug] ? (
+                    <span className="home-project__demo-label">{featuredDemoLabels[project.slug]}</span>
+                  ) : null}
                   <div className="home-project__footer">
-                    <span>{project.tags.slice(0, 3).join(" · ")}</span>
-                    <ArrowRight aria-hidden="true" size={18} />
+                    <span>{(featuredTags[project.slug] ?? project.tags).join(" · ")}</span>
+                    <span className="home-project__link-label">
+                      {featuredLinkLabels[project.slug] ?? "View Project"}
+                      <ArrowRight aria-hidden="true" size={18} />
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -168,7 +209,7 @@ export default function HomePage() {
               <p className="eyebrow">Operating style</p>
               <h2>From ambiguity to a system people can trust.</h2>
             </div>
-            <p>I move from workflow discovery through product decisions and implementation.</p>
+            <p>I move from workflow discovery through implementation, release, production verification, and learning.</p>
           </div>
           <div className="principle-list">
             {operatingManualPrinciples.map((principle, index) => {
@@ -186,9 +227,9 @@ export default function HomePage() {
             })}
           </div>
           <div className="approach-home-cta">
-            <p>Open to product engineering, founding engineering, and FDE roles where technical execution and customer context meet.</p>
+            <p>Open to Product Engineer, workflow-oriented FDE, and coding-heavy AI implementation roles. Remote preferred; New York or San Francisco relocation available.</p>
             <Link className="button button--primary" href="/contact/">
-              Start a conversation <ArrowRight aria-hidden="true" size={18} />
+              Start a Conversation <ArrowRight aria-hidden="true" size={18} />
             </Link>
           </div>
         </div>

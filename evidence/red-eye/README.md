@@ -8,6 +8,8 @@ This directory exposes representative product behavior and engineering constrain
 | --- | --- | --- | --- |
 | [`workflow-snapshot.json`](./workflow-snapshot.json) | Portfolio-safe reconstruction | Actors, states, recovery paths, and invariants across checkout and admissions | Production source-code identity or live service availability |
 | [`payment-invariants.md`](./payment-invariants.md) | Sanitized engineering specification | The correctness boundary around payment capture, ticket issuance, reconciliation, and refunds | Provider certification or a live-wallet transaction |
+| [`guarded-repair-architecture.md`](./guarded-repair-architecture.md) | Sanitized production architecture and representative excerpt | Evidence intake, bounded repair, separated passes, policy, deployment, rollback, verification, and Loop maturity boundaries | Unrestricted autonomy, model training, or a general-purpose AI platform |
+| [`guarded-repair-snapshot.json`](./guarded-repair-snapshot.json) | Sanitized architecture fixture | Stage order, deploy lanes, maturity labels, and explicit non-claims | Production configuration, live incidents, credentials, or customer data |
 | [`../../public/images/red-eye/checkin-mobile-scanner-admit.webp`](../../public/images/red-eye/checkin-mobile-scanner-admit.webp) | Audited product capture | Successful mobile admission feedback | Customer data or the complete scanner application |
 | [`../../public/images/red-eye/checkin-mobile-event-menu.webp`](../../public/images/red-eye/checkin-mobile-event-menu.webp) | Audited product capture | Manual recovery and event controls | Production credentials or administrative access |
 
@@ -17,7 +19,7 @@ This directory exposes representative product behavior and engineering constrain
 - Public metrics are conservative rounded floors with definitions and limitations published in the portfolio.
 - Captures are reviewed to exclude buyer names, email addresses, order identifiers, ticket tokens, and payment data.
 - Production implementation details are summarized at the architectural and invariant level.
-- Local prototypes are labeled separately from production behavior.
+- Production-facing, local-execution, attended/pilot, default-off, and framework-only capabilities are labeled separately.
 
 ## Verification
 

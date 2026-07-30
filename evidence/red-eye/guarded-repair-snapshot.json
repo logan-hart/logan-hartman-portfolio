@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "classification": "sanitized_production_architecture",
+    "containsProductionData": false,
+    "identifierNamespace": "demo_",
+    "reviewedAt": "2026-07-27"
+  },
+  "stages": [
+    "signed_evidence",
+    "deduplicated_task",
+    "planner",
+    "executor",
+    "reviewer",
+    "policy_and_approval",
+    "exact_commit_deployment",
+    "production_verification",
+    "outcome_and_lesson"
+  ],
+  "deployLanes": [
+    "staged_nightly",
+    "urgent_safe",
+    "approval_required",
+    "blocked_or_escalated"
+  ],
+  "maturityBoundaries": [
+    "production_facing",
+    "local_execution",
+    "attended_or_pilot_scoped",
+    "default_off_or_framework_only"
+  ],
+  "nonClaims": [
+    "model_training",
+    "ml_research",
+    "general_purpose_rag_platform",
+    "unrestricted_autonomous_production_access"
+  ]
+}

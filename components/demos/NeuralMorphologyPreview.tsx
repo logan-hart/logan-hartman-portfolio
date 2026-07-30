@@ -289,7 +289,7 @@ export function NeuralMorphologyPreview() {
       />
       <div className="morphology-preview__canvas" ref={mountRef} />
       {isReady ? (
-        <span aria-hidden="true">H01 · Live 3D preview</span>
+        <span aria-hidden="true">Interactive 3D demo</span>
       ) : !loadFailed ? (
         <div aria-live="polite" className="morphology-preview__loading" role="status">
           <span aria-hidden="true" className="neural-visualizer__spinner" />

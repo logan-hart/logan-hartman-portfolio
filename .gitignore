@@ -18,3 +18,8 @@ coverage/
 /RECRUITER_*.md
 /RED_EYE_*.md
 /SITE_COPY_REVIEW.md
+
+# Local-only resume exports. Keep these in the workspace, never on GitHub.
+/application-materials/Product_Engineer_Resume.pdf
+/application-materials/Forward_Deployed_Engineer_Resume.pdf
+/application-materials/Full_Stack_Product_Engineer_Resume.pdf

@@ -44,6 +44,11 @@ export type Project = {
   liveUrl?: string;
   liveUrlLabel?: string;
   archivedDemoUrl?: string;
+  documentLinks?: Array<{
+    href: string;
+    label: string;
+    detail?: string;
+  }>;
   screenshots?: Screenshot[];
   videoDemo?: string;
   interactiveDemoComponent?: DemoComponentKey;
@@ -187,8 +192,8 @@ export const projects: Project[] = [
       `Processed ${redEyeFacts.metrics.grossPaymentVolume.value} in gross payment volume since the ${redEyeFacts.customPlatformLaunchLabel} custom-platform launch`,
       "Expanded checkout with Apple Pay and Google Pay wallet payment flows",
     ],
-    image: "/images/red-eye/footer-logo-on-black.webp",
-    imageAlt: "Red Eye Tickets footer logo on a black background",
+    image: "/images/red-eye/logo-on-radial-gradient.webp",
+    imageAlt: "Red Eye Tickets logo on a circular red-to-black gradient",
     featured: true,
     interactiveDemoComponent: "red-eye-workflows",
     screenshots: [
@@ -208,7 +213,7 @@ export const projects: Project[] = [
       },
     ],
     permissionsNote:
-      "Owned product work. The production repository and customer data remain private; this case study uses self-hosted Red Eye assets, audited product captures, and a portfolio-safe snapshot. The case remains complete when the separately deployed interactive demo is disabled or unavailable.",
+      "Owned product work. Sanitized Red Eye screenshots, diagrams, test summaries, and code excerpts are approved for publication. Customer data, credentials, private endpoints, production environment values, and security-sensitive operational details remain excluded.",
     caseStudy: {
       overview:
         "Red Eye started as a ticketing business with a WordPress-based MVP. That validated demand, but it could not support the reliability, operational control, or workflow specificity the business needed. I rebuilt the product as a full-stack platform around buyers, producers, admins, and door staff.",
@@ -264,8 +269,9 @@ export const projects: Project[] = [
         "Role-based admin and producer dashboards",
         "Refund, reporting, and support workflows",
         "Mobile check-in with scanner pause/resume and battery-saver controls",
-        "Local prototype: automation that turns production reports, urgent alerts, and CI failures into bounded repair tasks",
-        "Local prototype: AI-assisted triage with planner, executor, reviewer, policy gate, proof, rollback, and PR evidence artifacts",
+        "Guarded production-repair control plane that turns signed reports, urgent alerts, and CI failures into deduplicated, bounded tasks",
+        "Separated planner, executor, and reviewer passes with policy, approval, exact-commit deployment, rollback, and production-verification evidence",
+        "Policy-governed Loop architecture connecting observations and findings to proposals, approvals, verification, outcomes, and reusable lessons",
       ],
       improvements: [
         `Served ${redEyeFacts.metrics.buyerIdentities.value} buyer identities across ${redEyeFacts.metrics.ticketedEvents.value} ticketed events`,
@@ -763,6 +769,18 @@ export const projects: Project[] = [
     image: "/images/projects/steve-madden.svg",
     imageAlt: "Steve Madden sales decks, CAD assets, packaging concepts, and presentation materials",
     thumbnailImage: "/images/madden/madden-nyc-cover.webp",
+    documentLinks: [
+      {
+        href: "/portfolio/steve-madden-nyc-portfolio.pdf",
+        label: "View Madden NYC deck",
+        detail: "24 pages",
+      },
+      {
+        href: "/portfolio/steve-madden-full-portfolio.pdf",
+        label: "View full portfolio deck",
+        detail: "126 pages",
+      },
+    ],
     screenshots: [
       {
         src: "/images/madden/madden-nyc-cover.webp",
