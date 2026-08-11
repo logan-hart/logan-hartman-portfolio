@@ -22,7 +22,7 @@ test("global visibility and opacity preserve independently keyed structures", as
   const hidden = setAllVisibility(registry, false);
   const translucent = setAllOpacity(hidden, 0.25);
 
-  assert.equal(Object.keys(translucent).length, 6);
+  assert.equal(Object.keys(translucent).length, 10);
   assert.ok(Object.values(translucent).every((state) => !state.visible));
   assert.ok(Object.values(translucent).every((state) => state.opacity === 0.25));
 });

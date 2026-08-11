@@ -3,7 +3,7 @@
   "dataset": {
     "id": "public-h01-cortical-context-and-cells-lod-demo",
     "name": "Public H01 cortical-context and proofread-cell demonstration",
-    "description": "Three cropped cortical-layer surfaces and three proofread cell surfaces sharing one coordinate system. Colors are interface encodings, not medical classifications.",
+    "description": "Three cropped cortical-layer surfaces and seven proofread cell surfaces sharing one coordinate system. Colors are interface encodings, not medical classifications.",
     "coordinateSystem": "Shared H01-derived micrometer coordinate frame",
     "sourceAssets": [
       {
@@ -366,12 +366,150 @@
       ]
     },
     {
+      "id": "cell-810151953",
+      "sourceId": "810151953",
+      "kind": "cell",
+      "name": "Proofread cell 810151953",
+      "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
+      "defaultColor": "#ff9d4d",
+      "defaultOpacity": 0.74,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.0726,
+          "targetRatio": 0.08,
+          "triangleCount": 1089,
+          "byteSize": 9904,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/cell-810151953-lod0.glb",
+          "sha256": "34c0703cc941c6c90735ce9d163d25b78df7b163532f857ecbf6c72dd5ff92bf"
+        },
+        {
+          "level": 1,
+          "ratio": 0.2459,
+          "targetRatio": 0.25,
+          "triangleCount": 3686,
+          "byteSize": 21432,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/cell-810151953-lod1.glb",
+          "sha256": "1922240f50a5e321f62f5ff22a15d81937b3452effdb67d75683c8bf2e5f3027"
+        },
+        {
+          "level": 2,
+          "ratio": 0.4997,
+          "targetRatio": 0.5,
+          "triangleCount": 7492,
+          "byteSize": 37380,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/cell-810151953-lod2.glb",
+          "sha256": "c7e9a3de95483530d387d8c03450ecab86af7b885bfa2250e42ac4f000012272"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 14992,
+          "byteSize": 67844,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/cell-810151953-lod3.glb",
+          "sha256": "98a7c942f0d2a30d8b8fbd89116a4a8ddd52e4b2a5ddbf24096f107c3849f87e"
+        }
+      ]
+    },
+    {
+      "id": "cell-620880207",
+      "sourceId": "620880207",
+      "kind": "cell",
+      "name": "Proofread cell 620880207",
+      "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
+      "defaultColor": "#ed70cf",
+      "defaultOpacity": 0.72,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.1935,
+          "targetRatio": 0.08,
+          "triangleCount": 2902,
+          "byteSize": 22768,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/cell-620880207-lod0.glb",
+          "sha256": "9df357dbffc810139ddd563bf0c567e27b8974e94ccddf9d6aa8aa97dd2609e1"
+        },
+        {
+          "level": 1,
+          "ratio": 0.2313,
+          "targetRatio": 0.25,
+          "triangleCount": 3470,
+          "byteSize": 25840,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/cell-620880207-lod1.glb",
+          "sha256": "5cb14b40fac96490c26f5fd00ba91680f5b93ed93560d47963913cbe9e16ea5b"
+        },
+        {
+          "level": 2,
+          "ratio": 0.4849,
+          "targetRatio": 0.5,
+          "triangleCount": 7274,
+          "byteSize": 47488,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/cell-620880207-lod2.glb",
+          "sha256": "e6dd3c1ca3469cd131b7a20e632baa91774503544de8bbf37d10178a240e26b7"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 15001,
+          "byteSize": 85468,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/cell-620880207-lod3.glb",
+          "sha256": "a9a22292939caee1b38217d65caf51a99bb1575ab5ff57e5cd20b3d9d628add0"
+        }
+      ]
+    },
+    {
       "id": "cell-1684504313",
       "sourceId": "1684504313",
       "kind": "cell",
       "name": "Proofread cell 1684504313",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
-      "defaultColor": "#ffad5b",
+      "defaultColor": "#9de36c",
       "defaultOpacity": 0.74,
       "visible": true,
       "transform": {
@@ -435,12 +573,81 @@
       ]
     },
     {
+      "id": "cell-1465400601",
+      "sourceId": "1465400601",
+      "kind": "cell",
+      "name": "Proofread cell 1465400601",
+      "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
+      "defaultColor": "#ffd166",
+      "defaultOpacity": 0.72,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.128,
+          "targetRatio": 0.08,
+          "triangleCount": 1926,
+          "byteSize": 15288,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/cell-1465400601-lod0.glb",
+          "sha256": "12fa5545646dcc1d5199637436734b30a0a06f18efacfb19d6e6aacf6c49183c"
+        },
+        {
+          "level": 1,
+          "ratio": 0.243,
+          "targetRatio": 0.25,
+          "triangleCount": 3656,
+          "byteSize": 23780,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/cell-1465400601-lod1.glb",
+          "sha256": "a71bc357d95bc1da3741d9d8d02d204fa12e8c1f1e03b348c7d47182ecbe688f"
+        },
+        {
+          "level": 2,
+          "ratio": 0.4935,
+          "targetRatio": 0.5,
+          "triangleCount": 7426,
+          "byteSize": 41384,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/cell-1465400601-lod2.glb",
+          "sha256": "baa432612660bc210148819d4d034bf56b16a7f7e01ffd3df4b610c86f187fb3"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 15047,
+          "byteSize": 75956,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/cell-1465400601-lod3.glb",
+          "sha256": "ef076c0b93918946b9cad06f88215b06b3155da3221eb2c1c3ab1e78d41d15f4"
+        }
+      ]
+    },
+    {
       "id": "cell-810970127",
       "sourceId": "810970127",
       "kind": "cell",
       "name": "Proofread cell 810970127",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
-      "defaultColor": "#e979c7",
+      "defaultColor": "#5ea8ff",
       "defaultOpacity": 0.72,
       "visible": true,
       "transform": {
@@ -500,6 +707,75 @@
           "recommendedDistance": 0,
           "url": "/data/scientific-viewer/generated/cell-810970127-lod3.glb",
           "sha256": "62e977285468a06d342e3d07ce6dc579378325b2b301f02c5b6d234850ecc5e8"
+        }
+      ]
+    },
+    {
+      "id": "cell-2047644309",
+      "sourceId": "2047644309",
+      "kind": "cell",
+      "name": "Proofread cell 2047644309",
+      "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
+      "defaultColor": "#9b7cff",
+      "defaultOpacity": 0.72,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.1547,
+          "targetRatio": 0.08,
+          "triangleCount": 2320,
+          "byteSize": 17488,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/cell-2047644309-lod0.glb",
+          "sha256": "79fd352b7da0c639c957cbbcd9ce0272cb0fb17f920a311b971b266e0fa223cd"
+        },
+        {
+          "level": 1,
+          "ratio": 0.2372,
+          "targetRatio": 0.25,
+          "triangleCount": 3558,
+          "byteSize": 23692,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/cell-2047644309-lod1.glb",
+          "sha256": "6acc201eb2b5037aedd3a8cb4810535b894f187c0bc546e10879e2d82898db35"
+        },
+        {
+          "level": 2,
+          "ratio": 0.4923,
+          "targetRatio": 0.5,
+          "triangleCount": 7383,
+          "byteSize": 41644,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/cell-2047644309-lod2.glb",
+          "sha256": "27176ec434d7f00dd6601902627be7031e6fde7be048a67289f4b1a4993d817f"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 14998,
+          "byteSize": 77540,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/cell-2047644309-lod3.glb",
+          "sha256": "ef76cb6ffe1a4ab50f216c96d180ba372360c4420d5f33d9debab430536e176f"
         }
       ]
     }

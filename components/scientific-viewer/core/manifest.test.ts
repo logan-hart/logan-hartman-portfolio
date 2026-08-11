@@ -9,14 +9,14 @@ test("generated scientific-viewer manifest is valid", async () => {
     await readFile("public/data/scientific-viewer/manifest.json", "utf8"),
   );
   const validated = validateManifest(manifest);
-  assert.equal(validated.structures.length, 6);
+  assert.equal(validated.structures.length, 10);
   assert.equal(
     validated.structures.filter((structure) => structure.kind === "context").length,
     3,
   );
   assert.equal(
     validated.structures.filter((structure) => structure.kind === "cell").length,
-    3,
+    7,
   );
 });
 
