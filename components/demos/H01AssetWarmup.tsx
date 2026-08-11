@@ -2,11 +2,10 @@
 
 import { useEffect } from "react";
 import {
-  H01_MODEL_URL,
   H01_PREVIEW_MODEL_URL,
 } from "@/components/demos/h01MorphologyData";
 
-const H01_ASSET_URLS = [H01_PREVIEW_MODEL_URL, H01_MODEL_URL];
+const H01_ASSET_URLS = [H01_PREVIEW_MODEL_URL];
 let warmupPromise: Promise<void> | null = null;
 
 type IdleWindow = Window & {

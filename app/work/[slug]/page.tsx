@@ -306,7 +306,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     : isCompactCreative
       ? "Selected portions of the original front-end work, recreated so the responsive behavior remains reviewable."
       : isNeuralVisualizer
-        ? "Explore seven simplified meshes from the public H01 dataset through layered controls and 3D navigation. The data is used only as an unrelated interface demonstration."
+        ? "Compare full-resolution startup with progressive loading across a mixed public H01 scene—three cortical-layer context surfaces and three proofread cells—then inspect LOD, cache, material, and camera behavior. The public data is unrelated to the professional engagement."
       : "Explore the preserved interaction without depending on a production site.";
   const caseMetricCards = isRedEye
     ? redEyeCaseMetrics
@@ -629,7 +629,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             isCompactCreative
               ? "Interaction recreation"
               : isNeuralVisualizer
-                ? "3D multi-volume morphology explorer"
+                ? "Progressive 3D scientific visualization"
               : isRedEye && process.env.NEXT_PUBLIC_RED_EYE_DEMO_ENABLED !== "true"
                 ? "Workflow captures"
                 : "Workflow demo"

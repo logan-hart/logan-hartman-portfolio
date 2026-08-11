@@ -16,6 +16,9 @@ services:
       - path: /data/h01/*.glb
         name: Cache-Control
         value: public, max-age=86400, stale-while-revalidate=604800
+      - path: /data/scientific-viewer/*
+        name: Cache-Control
+        value: public, max-age=86400, stale-while-revalidate=604800
       - path: /images/the-heart/*
         name: Cache-Control
         value: public, max-age=86400, stale-while-revalidate=604800

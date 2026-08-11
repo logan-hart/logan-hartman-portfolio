@@ -23,6 +23,52 @@ The flagship Red Eye Tickets case examines how a live event-commerce platform pr
 - Sanitized fixtures, diagrams, aggregated metrics, and explicit maturity labels for private production work
 - Static generation, metadata, structured data, sitemaps, and CI-backed builds
 
+## Progressive 3D Scientific Visualization
+
+The Albert Einstein case study includes an independently written Three.js
+demonstration of a professional glTF and meshoptimizer workflow. Its mixed scene
+uses three cropped cortical-layer surfaces and three unrelated proofread-cell
+surfaces from the public H01 release. Each structure has four precomputed GLB
+levels, progressive loading, an explicit Promise-aware in-memory geometry
+cache, one unified manifest and structure registry, synchronized
+baseline/optimized viewers, and live performance instrumentation.
+
+The original professional application used glTF and meshoptimizer. This
+independent demonstration recreates its performance and interaction patterns
+with non-proprietary assets. No original application code, institutional
+assets, neurological datasets, research results, or patient information are
+included.
+
+The offline build extracts bounded layer surfaces with marching cubes, then
+uses glTF-Transform and meshoptimizer for every LOD; the browser does not read
+the segmentation or decimate geometry. Rebuild and test the pipeline with:
+
+```bash
+npm run assets:build
+npm test
+```
+
+Important control flow:
+
+1. `scripts/build_h01_layer_context.py` deterministically extracts H01 layer
+   labels 1–3 from a fixed mip-2 crop in the same coordinate frame as the cells.
+2. `scripts/build-scientific-viewer-assets.mjs` isolates and processes each
+   public structure, then writes four meshopt-compressed GLBs and a manifest.
+3. The case-study component fetches and validates that manifest once, then
+   creates stable display state keyed by structure ID.
+4. Each plain Three.js viewer owns an explicit asset cache. The baseline asks
+   for LOD 3; the progressive viewer commits LOD 0 first and preloads higher
+   levels in order.
+5. One hysteresis-aware function chooses the progressive active LOD from camera
+   distance, selection priority, and manual quality. Downloaded high LODs may
+   stay cached while a lower LOD reduces current GPU work.
+6. The page reports timings, transfer, request/cache counts, and current and
+   loaded triangle counts from the browser session. These are illustrative
+   local measurements, not universal performance claims.
+
+Asset provenance and full MIT license texts are retained in
+[`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md).
+
 ## Selected Technical Evidence
 
 - [Red Eye Tickets platform](https://logan-hartman-portfolio.onrender.com/work/red-eye-tickets/) — Product and engineering ownership across commerce, producer and administrator tools, reporting, support, and admissions
@@ -71,6 +117,7 @@ Run the repository's verification and production-build checks with:
 ```bash
 npm run audit
 npm run verify:evidence
+npm test
 npm run build
 ```
 

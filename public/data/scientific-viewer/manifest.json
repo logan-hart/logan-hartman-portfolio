@@ -1,0 +1,507 @@
+{
+  "schemaVersion": 2,
+  "dataset": {
+    "id": "public-h01-cortical-context-and-cells-lod-demo",
+    "name": "Public H01 cortical-context and proofread-cell demonstration",
+    "description": "Three cropped cortical-layer surfaces and three proofread cell surfaces sharing one coordinate system. Colors are interface encodings, not medical classifications.",
+    "coordinateSystem": "Shared H01-derived micrometer coordinate frame",
+    "sourceAssets": [
+      {
+        "role": "cells",
+        "url": "/data/h01/h01-seven-cells.glb",
+        "byteSize": 2189152,
+        "sha256": "b85f314e52702f3b65d73ca78fe5dd2da9b6ef0d2f00d406460f5379237f2cbb"
+      },
+      {
+        "role": "layers",
+        "url": "/data/h01/h01-layer-context.glb",
+        "byteSize": 24143908,
+        "sha256": "e3efe6992391893c6ba31172cb7a31ff3094fb45f0f4de3a032d9ed6c801ec70"
+      }
+    ],
+    "sourcePage": "https://h01-release.storage.googleapis.com/data.html",
+    "publication": "https://doi.org/10.1126/science.adk4858",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "bounds": {
+    "minimum": [
+      -301.6084899902344,
+      -382.00799560546875,
+      -87.28529357910156
+    ],
+    "maximum": [
+      298.3915100097656,
+      405.99200439453125,
+      87.28529357910156
+    ],
+    "center": [
+      -1.608489990234375,
+      11.99200439453125,
+      0
+    ],
+    "radius": 502.0002531390064
+  },
+  "build": {
+    "command": "npm run assets:build",
+    "deterministic": true,
+    "gltfTransformVersion": "4.4.2",
+    "meshoptimizerVersion": "1.2.0",
+    "simplification": "glTF-Transform simplify() using MeshoptSimplifier",
+    "optimization": "glTF-Transform meshopt() with EXT_meshopt_compression",
+    "ratios": {
+      "context": [
+        {
+          "level": 0,
+          "ratio": 0.03
+        },
+        {
+          "level": 1,
+          "ratio": 0.12
+        },
+        {
+          "level": 2,
+          "ratio": 0.35
+        },
+        {
+          "level": 3,
+          "ratio": 1
+        }
+      ],
+      "cell": [
+        {
+          "level": 0,
+          "ratio": 0.08
+        },
+        {
+          "level": 1,
+          "ratio": 0.25
+        },
+        {
+          "level": 2,
+          "ratio": 0.5
+        },
+        {
+          "level": 3,
+          "ratio": 1
+        }
+      ]
+    }
+  },
+  "structures": [
+    {
+      "id": "layer-1",
+      "sourceId": "1",
+      "kind": "context",
+      "name": "Cortical layer 1 context",
+      "description": "Surface extracted offline from a fixed crop of the public H01 cortical-layer segmentation.",
+      "defaultColor": "#577b9f",
+      "defaultOpacity": 0.16,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.03,
+          "targetRatio": 0.03,
+          "triangleCount": 8922,
+          "byteSize": 30048,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/layer-1-lod0.glb",
+          "sha256": "33569cb34f795196e4a741c2a289541179554e9db8fd00372cfa35aeb9948624"
+        },
+        {
+          "level": 1,
+          "ratio": 0.12,
+          "targetRatio": 0.12,
+          "triangleCount": 35688,
+          "byteSize": 93056,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/layer-1-lod1.glb",
+          "sha256": "b4ad255ff21a971d48f248399339873ca7fea62f81f0048acb506b7053919ca1"
+        },
+        {
+          "level": 2,
+          "ratio": 0.35,
+          "targetRatio": 0.35,
+          "triangleCount": 104094,
+          "byteSize": 272008,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/layer-1-lod2.glb",
+          "sha256": "eb5bbaa5f74bbe5458444250923c9b90ac8fa5ddab2ab7fe935085a44addf60b"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 297416,
+          "byteSize": 683120,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/layer-1-lod3.glb",
+          "sha256": "3f1d451e740424342e6984fd7fa98d6779dac6c73211da79eb88c6f76c562b72"
+        }
+      ]
+    },
+    {
+      "id": "layer-2",
+      "sourceId": "2",
+      "kind": "context",
+      "name": "Cortical layer 2 context",
+      "description": "Surface extracted offline from a fixed crop of the public H01 cortical-layer segmentation.",
+      "defaultColor": "#6f6f9f",
+      "defaultOpacity": 0.13,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.03,
+          "targetRatio": 0.03,
+          "triangleCount": 14056,
+          "byteSize": 41608,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/layer-2-lod0.glb",
+          "sha256": "a9e0cfba248443df6f52064cef86454ae5af1b482dc60e2fe595bc40591edd42"
+        },
+        {
+          "level": 1,
+          "ratio": 0.12,
+          "targetRatio": 0.12,
+          "triangleCount": 56228,
+          "byteSize": 175184,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/layer-2-lod1.glb",
+          "sha256": "cef0399aac6232e06d342beb20d0a4acb92b86d0e71e83f28fe3452c3a22a3f7"
+        },
+        {
+          "level": 2,
+          "ratio": 0.35,
+          "targetRatio": 0.35,
+          "triangleCount": 164000,
+          "byteSize": 461628,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/layer-2-lod2.glb",
+          "sha256": "2c1a8598840ec8ee2dc3f74fe4b70c12a57917eded25e87fe1054379ed12f920"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 468576,
+          "byteSize": 1141184,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/layer-2-lod3.glb",
+          "sha256": "bbc11f34368a21b6a352c8515168037036b966976749b08e1ce25482071d0faa"
+        }
+      ]
+    },
+    {
+      "id": "layer-3",
+      "sourceId": "3",
+      "kind": "context",
+      "name": "Cortical layer 3 context",
+      "description": "Surface extracted offline from a fixed crop of the public H01 cortical-layer segmentation.",
+      "defaultColor": "#775c83",
+      "defaultOpacity": 0.11,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.03,
+          "targetRatio": 0.03,
+          "triangleCount": 7194,
+          "byteSize": 27104,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/layer-3-lod0.glb",
+          "sha256": "86f3dad524c7b58761953605d9044aec64f5d3603bcad0541e595f3f7f628b68"
+        },
+        {
+          "level": 1,
+          "ratio": 0.12,
+          "targetRatio": 0.12,
+          "triangleCount": 28782,
+          "byteSize": 96788,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/layer-3-lod1.glb",
+          "sha256": "29b5beee4e36a0d151fc57844cb5ea66b755f92a53db73e67e72e37e11101237"
+        },
+        {
+          "level": 2,
+          "ratio": 0.35,
+          "targetRatio": 0.35,
+          "triangleCount": 83948,
+          "byteSize": 250184,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/layer-3-lod2.glb",
+          "sha256": "e1548087212257a37ae33df30bc5e413cbaf0260dcb328e6df9756bc7160b0b2"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 239852,
+          "byteSize": 623560,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/layer-3-lod3.glb",
+          "sha256": "d824ee9429346d0769a292f9b2823db133d37d7f3ac7a471a73bef860b88d977"
+        }
+      ]
+    },
+    {
+      "id": "cell-1072605926",
+      "sourceId": "1072605926",
+      "kind": "cell",
+      "name": "Proofread cell 1072605926",
+      "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
+      "defaultColor": "#32d7d2",
+      "defaultOpacity": 0.78,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.1047,
+          "targetRatio": 0.08,
+          "triangleCount": 1570,
+          "byteSize": 13080,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/cell-1072605926-lod0.glb",
+          "sha256": "90c2a7dc044b17b082ea10019927294c2d1d95127a331905f8a8b78b94338e8d"
+        },
+        {
+          "level": 1,
+          "ratio": 0.2413,
+          "targetRatio": 0.25,
+          "triangleCount": 3620,
+          "byteSize": 22712,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/cell-1072605926-lod1.glb",
+          "sha256": "0e3796a4b1d50d760796f967c6a25821249a67678bb89a8fc2aec06a44d692c7"
+        },
+        {
+          "level": 2,
+          "ratio": 0.4961,
+          "targetRatio": 0.5,
+          "triangleCount": 7443,
+          "byteSize": 39720,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/cell-1072605926-lod2.glb",
+          "sha256": "327714a49625ea1cf41188c82182bb23d3ba144a4049c08e83fcd00a2ef448dd"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 15002,
+          "byteSize": 73000,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/cell-1072605926-lod3.glb",
+          "sha256": "dd973985cdb5a681dd7c98f75bc6fe04e89f865e9a0d6d5d6eb59b86c54034e6"
+        }
+      ]
+    },
+    {
+      "id": "cell-1684504313",
+      "sourceId": "1684504313",
+      "kind": "cell",
+      "name": "Proofread cell 1684504313",
+      "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
+      "defaultColor": "#ffad5b",
+      "defaultOpacity": 0.74,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.1892,
+          "targetRatio": 0.08,
+          "triangleCount": 2837,
+          "byteSize": 21040,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/cell-1684504313-lod0.glb",
+          "sha256": "252ee70d7ba75b213fb8b52e1a2d0e67d5bdaec6079066ce303eb06291619af6"
+        },
+        {
+          "level": 1,
+          "ratio": 0.2385,
+          "targetRatio": 0.25,
+          "triangleCount": 3576,
+          "byteSize": 24708,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/cell-1684504313-lod1.glb",
+          "sha256": "f4a1437aa792b413e80069277efa20ecd30559d0facd9cfcfc7c5071748cb107"
+        },
+        {
+          "level": 2,
+          "ratio": 0.4889,
+          "targetRatio": 0.5,
+          "triangleCount": 7329,
+          "byteSize": 43732,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/cell-1684504313-lod2.glb",
+          "sha256": "1f1d51540f4ee914ebe83d6617e7a7515bd5a6f89a6fb9d26e4d150674e58b5f"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 14991,
+          "byteSize": 82364,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/cell-1684504313-lod3.glb",
+          "sha256": "d980d8c8d76b456caafdf16c20c436d081d94b9c1d070ba3694f77577f5f795b"
+        }
+      ]
+    },
+    {
+      "id": "cell-810970127",
+      "sourceId": "810970127",
+      "kind": "cell",
+      "name": "Proofread cell 810970127",
+      "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
+      "defaultColor": "#e979c7",
+      "defaultOpacity": 0.72,
+      "visible": true,
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "ratio": 0.1414,
+          "targetRatio": 0.08,
+          "triangleCount": 2121,
+          "byteSize": 17336,
+          "recommendedDistance": 5.6,
+          "url": "/data/scientific-viewer/generated/cell-810970127-lod0.glb",
+          "sha256": "3407dc6a6e6199e2e16e453397e1e934d78ae83fffe7cc19d0eb139e8f376346"
+        },
+        {
+          "level": 1,
+          "ratio": 0.2395,
+          "targetRatio": 0.25,
+          "triangleCount": 3593,
+          "byteSize": 25224,
+          "recommendedDistance": 3.7,
+          "url": "/data/scientific-viewer/generated/cell-810970127-lod1.glb",
+          "sha256": "83f9c66e8e9100a7806a3a1231604e57f8fc062e1c633f15d5d679c6adf22f93"
+        },
+        {
+          "level": 2,
+          "ratio": 0.4955,
+          "targetRatio": 0.5,
+          "triangleCount": 7433,
+          "byteSize": 43908,
+          "recommendedDistance": 2.2,
+          "url": "/data/scientific-viewer/generated/cell-810970127-lod2.glb",
+          "sha256": "ab417889d5b20f5c548e6aedafe1ddeea3b08abb95cb4346d68e2bfad168dd51"
+        },
+        {
+          "level": 3,
+          "ratio": 1,
+          "targetRatio": 1,
+          "triangleCount": 15000,
+          "byteSize": 79740,
+          "recommendedDistance": 0,
+          "url": "/data/scientific-viewer/generated/cell-810970127-lod3.glb",
+          "sha256": "62e977285468a06d342e3d07ce6dc579378325b2b301f02c5b6d234850ecc5e8"
+        }
+      ]
+    }
+  ]
+}

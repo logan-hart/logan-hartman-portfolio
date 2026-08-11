@@ -8,17 +8,22 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "assets:source:layers": "uv run --python 3.12 --with-requirements scripts/h01-requirements.txt python scripts/build_h01_layer_context.py",
+    "assets:build": "npm run assets:source:layers && node scripts/build-scientific-viewer-assets.mjs",
+    "test": "node --import tsx --test components/scientific-viewer/core/*.test.ts",
     "audit": "npm audit --omit=dev --audit-level=high",
     "verify:evidence": "node scripts/verify-evidence.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
+    "meshoptimizer": "^1.2.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "three": "^0.185.1"
   },
   "overrides": {
+    "nanoid": "3.3.17",
     "postcss": "^8.5.10",
     "sharp": "^0.35.3",
     "minimatch@3.1.5": {
@@ -32,12 +37,16 @@
     }
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.4.2",
+    "@gltf-transform/extensions": "^4.4.2",
+    "@gltf-transform/functions": "^4.4.2",
     "@types/node": "^22.10.1",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "@types/three": "^0.185.1",
     "eslint": "^9.16.0",
     "eslint-config-next": "^15.1.0",
+    "tsx": "^4.20.5",
     "typescript": "^5.7.2"
   },
   "engines": {

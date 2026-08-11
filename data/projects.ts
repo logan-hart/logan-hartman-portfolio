@@ -655,15 +655,15 @@ export const projects: Project[] = [
   },
   {
     slug: "albert-einstein-college-of-medicine",
-    title: "Albert Einstein College of Medicine",
-    category: "Research Tool UI & Visualization Refinement",
+    title: "Progressive 3D Scientific Visualization",
+    category: "Three.js Performance & Interaction Case Study",
     roleLabel: careerFacts.einstein.role,
     period: careerFacts.einstein.period,
     engagementLabel: "Scoped technical contribution",
-    statusLabels: ["Scoped contribution", "Public-data demo"],
+    statusLabels: ["Professional pattern", "Independent public demo"],
     description:
-      "Turned overlapping colored volumes into an inspectable 3D workspace with material states, recoloring, and shared camera controls.",
-    tags: ["Research Tools", "Technical UI", "Data Visualization", "Performance", "Three.js"],
+      "Recreated a glTF and meshoptimizer workflow with progressive LOD loading, explicit geometry caching, measurable rendering states, and unified Three.js controls.",
+    tags: ["Three.js", "glTF", "meshoptimizer", "Progressive LOD", "Performance"],
     image: "/images/projects/einstein-research.svg",
     imageAlt: "Representative workflow diagram for public neuroscience data loading, visualization, and interface refinement",
     interactiveDemoComponent: "neural-visualizer",
@@ -671,23 +671,23 @@ export const projects: Project[] = [
       {
         src: "/images/projects/einstein-research.svg",
         alt: "Representative workflow diagram for research dataset loading, visualization, and interface refinement",
-        caption: "Representative workflow diagram. The interactive recreation below uses an unrelated public H01 subset to demonstrate opacity, layer, and navigation controls without exposing the original research data.",
+        caption: "Representative workflow diagram. The independent recreation below uses an unrelated public H01 subset to demonstrate progressive LOD, caching, structure controls, and navigation without exposing original research data.",
         width: 1280,
         height: 720,
       },
     ],
     permissionsNote:
-      "The original research interface and proprietary datasets are not shown. This recreation uses seven simplified reconstructions from the publicly available H01 dataset solely to demonstrate the interface; it is unrelated to the Albert Einstein engagement.",
+      "The original professional application used glTF and meshoptimizer. This independent demonstration recreates its performance and interaction patterns with non-proprietary assets. Original source code, institutional assets, neurological datasets, research results, and patient information are not shown.",
     caseStudy: {
       overview:
-        "The starting visualization could render multiple colored bodies, but each one behaved largely like another colored blob in the same scene. I helped turn that output into an inspection tool: researchers could distinguish focus from context, change how individual volumes were rendered, and navigate the same scene through global mouse and keyboard controls.",
+        "The original professional application used glTF and meshoptimizer. This independent demonstration recreates its performance and interaction patterns with non-proprietary assets. In the professional engagement, I refined an existing neurological visualization workflow so related structures could load efficiently, coexist in one inspectable scene, retain distinct visual states, and share predictable camera controls.",
       problem:
-        "Color alone was carrying too much meaning. As volumes overlapped, it became difficult to tell what was selected, what should recede into context, and what had been intentionally hidden. The viewer also needed a clearer control model for changing materials and moving through the scene.",
+        "Large related glTF meshes needed to become useful quickly without forcing researchers to load and clear one structure at a time. Overlap also made color carry too much meaning, so loading policy, selection, visibility, material state, and camera behavior needed explicit models.",
       constraints: [
         "The work happened inside an existing research tool rather than a blank-slate redesign.",
         "Proprietary data could not be shown publicly.",
-        "The portfolio recreation needed to distinguish its unrelated public demo data from the original engagement.",
-        "Transparency and additional materials could not make an already dense WebGL scene unusably slow.",
+        "The portfolio recreation needed to distinguish unrelated public surface-mesh data from the original engagement.",
+        "Transparency and additional materials could not make an already dense Three.js scene unusably slow.",
         "New controls needed to respect the rendering pipeline maintained by technical collaborators.",
       ],
       role:
@@ -698,61 +698,61 @@ export const projects: Project[] = [
         "Research collaborators: compare dense spatial relationships without losing orientation",
       ],
       built: [
-        "Per-volume highlight, hide/show, and grey-context states",
-        "Opaque, translucent, and alternate material treatments for overlapping geometry",
-        "Per-volume recoloring plus global show, focus, opacity, and reset controls",
-        "A shared camera model with mouse, trackpad, and keyboard navigation",
-        "Dataset-loading and render-path adjustments that improved responsiveness",
+        "Progressive loading across four offline-generated meshoptimizer LODs per structure",
+        "A Promise-aware in-memory geometry cache that deduplicates requests and retains parsed LODs",
+        "One manifest and stable registry for three cortical-layer context surfaces and three proofread-cell surfaces",
+        "Synchronized baseline and optimized Three.js viewers with live performance instrumentation",
+        "Global and per-structure visibility, opacity, color, focus, solo, quality, camera, and cache controls",
       ],
-      techStack: ["Three.js", "WebGL", "Modern JavaScript", "Material state management", "Keyboard and pointer input"],
+      techStack: ["Three.js", "glTF / GLB", "meshoptimizer", "glTF-Transform", "TypeScript", "WebGL"],
       productArtifacts: [
         {
-          title: "From blobs to visual states",
+          title: "Coarse geometry before full detail",
           context:
-            "The inherited scene differentiated structures primarily by assigning each volume a color.",
-          flow: ["Colored bodies", "Select a volume", "Focus + context states"],
+            "Requesting every full-resolution structure before showing a usable scene increases time to first meaningful render.",
+          flow: ["Request LOD 0", "Render usable scene", "Promote from cache"],
           decision:
-            "Treat highlight, neutral-grey context, transparency, and hidden as explicit states rather than one-off color changes.",
+            "Precompute four GLBs per structure and keep LOD selection in one hysteresis-aware distance function.",
           outcome:
-            "Researchers could keep spatial relationships visible while making the structure under inspection unmistakable.",
+            "The public viewer can become interactive on coarse geometry while higher levels continue loading independently.",
         },
         {
-          title: "Material and color controls",
+          title: "Cache parsed source geometry",
           context:
-            "Overlapping surfaces needed more than an eye icon; users needed control over how each body participated in the scene.",
-          flow: ["Choose layer", "Change color or material", "Adjust global opacity"],
+            "Camera movement can revisit the same LOD repeatedly, and simultaneous requests can otherwise duplicate network and parse work.",
+          flow: ["Key by asset URL", "Reuse in-flight Promise", "Swap cached geometry"],
           decision:
-            "Separate a volume's color, material treatment, opacity, and visibility so changing one property did not destroy the others.",
+            "Separate the browser cache, explicit application cache, and active scene mesh so each behavior remains measurable and explainable.",
           outcome:
-            "The same dataset could support comparison, presentation, and close inspection without being reloaded.",
+            "Zooming out reduces rendered triangles while higher detail remains ready for immediate reuse.",
         },
         {
-          title: "One camera model",
+          title: "One logical dataset",
           context:
-            "Researchers moved between direct manipulation and keyboard-driven inspection while comparing structures.",
-          flow: ["Mouse / trackpad", "Keyboard controls", "Shared camera state"],
+            "Related structures should coexist without becoming one irreversible mesh or clearing prior scene content.",
+          flow: ["Load manifest", "Register structures", "Control each independently"],
           decision:
-            "Route pointer and keyboard input through the same camera target, presets, zoom limits, and reset behavior.",
+            "Use stable structure IDs and shared coordinates, with one container retaining visibility, color, opacity, status, and current LOD.",
           outcome:
-            "Navigation stayed predictable across input methods, and users could recover a known orientation at any time.",
+            "The viewer frames, compares, hides, focuses, and recolors structures without removing unrelated scene content.",
         },
       ],
       decisions: [
-        "Used grey and transparency to preserve context instead of forcing a binary visible-or-hidden choice",
-        "Kept recoloring independent from material and visibility state",
-        "Applied global navigation controls consistently across mouse and keyboard input",
+        "Kept mesh simplification offline so the browser only fetches, decodes, and renders tested GLBs",
+        "Used explicit cache and scene registries instead of adding a state-management framework",
+        "Replaced geometry only after its target LOD was fully parsed to avoid empty-frame popping",
       ],
       outcomes: [
-        "Made overlapping volumes easier to isolate, compare, and return to context",
-        "Expanded the viewer from color-only differentiation to explicit material and visibility states",
-        "Made global 3D navigation available through both pointer and keyboard controls",
+        "Provides a repeatable cold-start comparison without artificial network delays",
+        "Reports time to first geometry, time to first meaningful render, transfer, requests, cache behavior, and triangle counts",
+        "Keeps six public context and cell surfaces aligned and independently controllable in one Three.js scene",
       ],
       lessons: [
-        "In dense visualization, removing context can be as disorienting as showing too much; a neutral intermediate state matters.",
-        "Material, color, visibility, and camera state should be modeled independently when researchers need to compare the same scene in multiple ways.",
+        "Progressive loading improves perceived readiness, but preloading every higher LOD can increase total transfer and retained memory.",
+        "Transparent overlapping surfaces always involve sorting tradeoffs; depth writing and opacity need deliberate, inspectable rules.",
       ],
       shows:
-        "This project shows how I turn raw WebGL output into an inspectable expert workflow without hiding the complexity of the underlying scene.",
+        "This project shows how I turn a glTF asset pipeline and Three.js runtime into a measurable, inspectable expert workflow while keeping professional and public evidence boundaries explicit.",
     },
   },
   {

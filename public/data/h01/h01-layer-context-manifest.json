@@ -1,0 +1,79 @@
+{
+  "asset": {
+    "byteLength": 24143908,
+    "file": "h01-layer-context.glb",
+    "meshCount": 3,
+    "sha256": "e3efe6992391893c6ba31172cb7a31ff3094fb45f0f4de3a032d9ed6c801ec70",
+    "triangleCount": 1005844,
+    "vertexCount": 502928
+  },
+  "build": {
+    "cloudVolumeVersion": "12.14.2",
+    "command": "npm run assets:source:layers",
+    "numpyVersion": "2.5.1",
+    "scikitImageVersion": "0.25.2",
+    "script": "scripts/build_h01_layer_context.py",
+    "surfaceExtraction": "marching cubes at isovalue 0.5; one-voxel zero padding closes crop boundaries"
+  },
+  "coordinateFrame": {
+    "originNanometers": [
+      2780608.5,
+      723008.0,
+      87351.296875
+    ],
+    "outputUnits": "micrometers"
+  },
+  "layers": [
+    {
+      "label": 1,
+      "name": "L1",
+      "triangleCount": 297416,
+      "vertexCount": 148710
+    },
+    {
+      "label": 2,
+      "name": "L2",
+      "triangleCount": 468576,
+      "vertexCount": 234290
+    },
+    {
+      "label": 3,
+      "name": "L3",
+      "triangleCount": 239852,
+      "vertexCount": 119928
+    }
+  ],
+  "schemaVersion": 1,
+  "source": {
+    "cropMaxVoxelExclusive": [
+      1540,
+      565,
+      83
+    ],
+    "cropMinVoxelInclusive": [
+      1240,
+      160,
+      0
+    ],
+    "dataPage": "https://h01-release.storage.googleapis.com/data.html",
+    "hashes": {
+      "infoSha256": "47a424399c3ff4d883830c989599808304276d6f0c681b929fb4347d9634c9f8",
+      "segmentPropertiesSha256": "11568a9f171075c2f1d6f4f7c0749b9f574a4a6e9193a4d1a25b83b482d2a783",
+      "segmentationCropSha256": "1b1d01c61094e06f782d3aa9c31d04072229f5737a27fb82e6c117a27e51d26e"
+    },
+    "labels": [
+      1,
+      2,
+      3
+    ],
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "mip": 2,
+    "resolutionNanometers": [
+      2000.0,
+      2000.0,
+      2112.0
+    ],
+    "volumeUrl": "https://storage.googleapis.com/h01-release/data/20210601/layers"
+  }
+}
