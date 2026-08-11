@@ -1,1058 +1,586 @@
 "use client";
 
 import {
+  Boxes,
   Eye,
   EyeOff,
   Focus,
-  Maximize2,
-  Minimize2,
-  Palette,
+  Gauge,
+  Link2,
+  Link2Off,
+  LoaderCircle,
+  Pause,
+  Play,
+  RefreshCcw,
   RotateCcw,
+  Trash2,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type * as THREE from "three";
-import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { validateManifest } from "@/components/scientific-viewer/core/manifest";
 import {
-  H01_CELLS,
-  H01_DATASET_URL,
-  H01_LICENSE_URL,
-  H01_MODEL_URL,
-  H01_PAPER_URL,
-  type H01CellDefinition,
-} from "@/components/demos/h01MorphologyData";
+  createStructureRegistry,
+  setAllVisibility,
+  updateStructure,
+  type StructureRegistry,
+} from "@/components/scientific-viewer/core/structureRegistry";
+import {
+  ViewerCanvas,
+  type ViewerCanvasHandle,
+} from "@/components/scientific-viewer/ViewerCanvas";
+import type {
+  CameraPose,
+  ScientificViewerManifest,
+  ViewerMetrics,
+  ViewerQuality,
+} from "@/components/scientific-viewer/types";
 
-type ViewPreset = "Front" | "Side" | "Top";
-type DragMode = "rotate" | "pan";
+const MANIFEST_URL = "/data/scientific-viewer/manifest.json";
 
-type VolumeDisplayState = {
-  color: string;
-  muted: boolean;
-  visible: boolean;
-};
+function formatDuration(value: number | null) {
+  return value === null ? "Measuring…" : `${Math.round(value).toLocaleString()} ms`;
+}
 
-type RuntimeVolume = {
-  group: THREE.Group;
-  surfaceMaterial: THREE.MeshPhysicalMaterial;
-  wireMaterial: THREE.MeshBasicMaterial;
-};
+function formatBytes(value: number) {
+  if (!value) return "0 KB";
+  if (value < 1_000_000) return `${(value / 1_000).toFixed(0)} KB`;
+  return `${(value / 1_000_000).toFixed(2)} MB`;
+}
 
-type VisualizerRuntime = {
-  three: typeof import("three");
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
-  controls: OrbitControls;
-  volumes: Map<string, RuntimeVolume>;
-  model?: THREE.Group;
-  distance: number;
-};
+function formatTriangles(value: number) {
+  return value ? value.toLocaleString() : "—";
+}
 
-const VOLUMES = H01_CELLS;
-const DEFAULT_SELECTED_ID = VOLUMES[0].id;
-const NORMALIZED_MODEL_RADIUS = 58;
+function formatCompactTriangles(value: number) {
+  if (!value) return "—";
+  return value >= 10_000 ? `${(value / 1_000).toFixed(0)}k` : `${(value / 1_000).toFixed(1)}k`;
+}
 
-function createInitialVolumeStates(): Record<string, VolumeDisplayState> {
-  return Object.fromEntries(
-    VOLUMES.map((volume) => [
-      volume.id,
-      {
-        color: volume.color,
-        muted: false,
-        visible: true,
-      },
-    ]),
+function emptyMetrics(mode: "baseline" | "progressive"): ViewerMetrics {
+  return {
+    mode,
+    startedAt: 0,
+    firstGeometryMs: null,
+    firstMeaningfulRenderMs: null,
+    interactiveMs: null,
+    highestRequestedLodReadyMs: null,
+    requestedBytes: 0,
+    assetRequests: 0,
+    cacheHits: 0,
+    cacheMisses: 0,
+    currentTriangles: 0,
+    totalLoadedTriangles: 0,
+    structures: {},
+  };
+}
+
+function MetricsPanel({
+  baseline,
+  progressive,
+}: {
+  baseline: ViewerMetrics;
+  progressive: ViewerMetrics;
+}) {
+  const improvement =
+    baseline.firstMeaningfulRenderMs && progressive.firstMeaningfulRenderMs
+      ? ((baseline.firstMeaningfulRenderMs - progressive.firstMeaningfulRenderMs) /
+          baseline.firstMeaningfulRenderMs) *
+        100
+      : null;
+
+  return (
+    <section aria-label="Live performance comparison" className="scientific-demo__performance">
+      <div className="scientific-demo__performance-heading">
+        <div>
+          <span className="scientific-demo__kicker">Live browser measurement</span>
+          <h4>Same geometry, different loading policy</h4>
+        </div>
+        <p>
+          {improvement === null
+            ? "Run in progress. Results reflect this browser session only."
+            : `Time to first meaningful render is ${Math.abs(improvement).toFixed(1)}% ${
+                improvement >= 0 ? "faster" : "slower"
+              } in this run.`}
+        </p>
+      </div>
+      <div className="scientific-demo__metric-grid">
+        <article>
+          <span>First geometry</span>
+          <strong>{formatDuration(baseline.firstGeometryMs)}</strong>
+          <small>Baseline</small>
+          <strong>{formatDuration(progressive.firstGeometryMs)}</strong>
+          <small>Progressive LOD</small>
+        </article>
+        <article>
+          <span>Meaningful render / interactive</span>
+          <strong>{formatDuration(baseline.firstMeaningfulRenderMs)}</strong>
+          <small>Baseline · interactive {formatDuration(baseline.interactiveMs)}</small>
+          <strong>{formatDuration(progressive.firstMeaningfulRenderMs)}</strong>
+          <small>Progressive · interactive {formatDuration(progressive.interactiveMs)}</small>
+        </article>
+        <article>
+          <span>Requested transfer</span>
+          <strong>{formatBytes(baseline.requestedBytes)}</strong>
+          <small>{baseline.assetRequests} baseline requests</small>
+          <strong>{formatBytes(progressive.requestedBytes)}</strong>
+          <small>{progressive.assetRequests} progressive requests</small>
+        </article>
+        <article>
+          <span>Current GPU work</span>
+          <strong>{formatTriangles(baseline.currentTriangles)}</strong>
+          <small>Rendered · {formatTriangles(baseline.totalLoadedTriangles)} loaded</small>
+          <strong>{formatTriangles(progressive.currentTriangles)}</strong>
+          <small>Rendered · {formatTriangles(progressive.totalLoadedTriangles)} loaded</small>
+        </article>
+        <article>
+          <span>Application cache</span>
+          <strong>{baseline.cacheHits} / {baseline.cacheMisses}</strong>
+          <small>Baseline hits / misses</small>
+          <strong>{progressive.cacheHits} / {progressive.cacheMisses}</strong>
+          <small>Progressive hits / misses</small>
+        </article>
+        <article>
+          <span>Highest requested LOD ready</span>
+          <strong>{formatDuration(baseline.highestRequestedLodReadyMs)}</strong>
+          <small>Baseline full detail</small>
+          <strong>{formatDuration(progressive.highestRequestedLodReadyMs)}</strong>
+          <small>Progressive background queue</small>
+        </article>
+      </div>
+      <details>
+        <summary>Metric definitions and test conditions</summary>
+        <div className="scientific-demo__definitions">
+          <p><strong>First geometry</strong> is the first parsed mesh committed to the scene.</p>
+          <p><strong>First meaningful render</strong> is when all six visible structures have a usable geometry level: LOD 3 for baseline, LOD 0 for progressive.</p>
+          <p><strong>Time to interactive</strong> matches meaningful render in this demo because camera and structure controls are enabled as soon as the initial scene is complete.</p>
+          <p><strong>Requested transfer</strong> sums fetched GLB array-buffer sizes. It is not decoded GPU memory.</p>
+          <p><strong>Application cache</strong> tracks parsed geometry reuse and request deduplication; it is separate from the browser HTTP cache and the active scene mesh.</p>
+          <p><strong>Conditions</strong> use this browser, device, viewport, production or development build, and current network. Both viewers use the same origin and start together with `fetch` cache disabled for a comparable cold run. Results are illustrative, not a cross-device benchmark.</p>
+        </div>
+      </details>
+    </section>
   );
 }
 
-function seededValue(seed: number, index: number) {
-  const value = Math.sin(seed * 91.17 + index * 43.73) * 43758.5453;
-  return value - Math.floor(value);
-}
-
-function disposeObject(object: THREE.Object3D, three: typeof import("three")) {
-  const geometries = new Set<THREE.BufferGeometry>();
-  const materials = new Set<THREE.Material>();
-
-  object.traverse((child) => {
-    if ("geometry" in child && child.geometry instanceof three.BufferGeometry) {
-      geometries.add(child.geometry);
-    }
-
-    if ("material" in child) {
-      const material = child.material as THREE.Material | THREE.Material[];
-      (Array.isArray(material) ? material : [material]).forEach((item) => materials.add(item));
-    }
-  });
-
-  geometries.forEach((geometry) => geometry.dispose());
-  materials.forEach((material) => material.dispose());
-}
-
-function createRuntimeVolume(
-  three: typeof import("three"),
-  definition: H01CellDefinition,
-) {
-  const group = new three.Group();
-  group.name = definition.id;
-
-  const surfaceMaterial = new three.MeshPhysicalMaterial({
-    clearcoat: 0.28,
-    clearcoatRoughness: 0.48,
-    color: definition.color,
-    depthWrite: false,
-    metalness: 0.04,
-    opacity: 0.42,
-    roughness: 0.32,
-    side: three.DoubleSide,
-    transparent: true,
-  });
-  const wireMaterial = new three.MeshBasicMaterial({
-    color: definition.color,
-    depthWrite: false,
-    opacity: 0.12,
-    transparent: true,
-    wireframe: true,
-  });
-  surfaceMaterial.forceSinglePass = true;
-
-  return { group, surfaceMaterial, wireMaterial };
-}
-
-function sourceObjectMatchesCell(
-  object: THREE.Object3D,
-  sourceRoot: THREE.Object3D,
-  sourceId: string,
-) {
-  let current: THREE.Object3D | null = object;
-
-  while (current && current !== sourceRoot.parent) {
-    if (current.name.includes(sourceId)) return true;
-    if (current === sourceRoot) break;
-    current = current.parent;
-  }
-
-  return false;
-}
-
-function createH01Model(
-  three: typeof import("three"),
-  sourceScene: THREE.Group,
-) {
-  const model = new three.Group();
-  model.name = "h01-demo-model";
-  model.rotation.set(-0.08, -0.18, -0.04);
-
-  const normalizedRoot = new three.Group();
-  normalizedRoot.name = "h01-normalized-root";
-  const coordinateRoot = new three.Group();
-  coordinateRoot.name = "h01-shared-coordinate-root";
-  normalizedRoot.add(coordinateRoot);
-  model.add(normalizedRoot);
-
-  const volumes = new Map<string, RuntimeVolume>(
-    VOLUMES.map((definition) => {
-      const volume = createRuntimeVolume(three, definition);
-      coordinateRoot.add(volume.group);
-      return [definition.id, volume] as const;
-    }),
-  );
-
-  sourceScene.updateMatrixWorld(true);
-  sourceScene.traverse((object) => {
-    if (!(object instanceof three.Mesh) || !(object.geometry instanceof three.BufferGeometry)) {
-      return;
-    }
-
-    const definition = VOLUMES.find((candidate) =>
-      sourceObjectMatchesCell(object, sourceScene, candidate.sourceId),
-    );
-    if (!definition) return;
-
-    const volume = volumes.get(definition.id);
-    if (!volume) return;
-
-    const geometry = object.geometry.clone();
-    geometry.applyMatrix4(object.matrixWorld);
-    if (!geometry.getAttribute("normal")) geometry.computeVertexNormals();
-
-    const surface = new three.Mesh(geometry, volume.surfaceMaterial);
-    surface.name = `${definition.id}-surface`;
-    surface.userData.volumeId = definition.id;
-    volume.group.add(surface);
-
-    const wireframe = new three.Mesh(geometry, volume.wireMaterial);
-    wireframe.name = `${definition.id}-wire`;
-    wireframe.renderOrder = 10;
-    volume.group.add(wireframe);
-  });
-
-  const missingCells = VOLUMES.filter(
-    (definition) => volumes.get(definition.id)?.group.children.length === 0,
-  );
-  if (missingCells.length) {
-    disposeObject(model, three);
-    throw new Error(`H01 model is missing cell meshes: ${missingCells.map((cell) => cell.sourceId).join(", ")}`);
-  }
-
-  const sourceBox = new three.Box3().setFromObject(coordinateRoot);
-  if (sourceBox.isEmpty()) {
-    disposeObject(model, three);
-    throw new Error("H01 model does not contain renderable geometry.");
-  }
-
-  const sourceSphere = sourceBox.getBoundingSphere(new three.Sphere());
-  coordinateRoot.position.copy(sourceSphere.center).multiplyScalar(-1);
-  normalizedRoot.scale.setScalar(
-    NORMALIZED_MODEL_RADIUS / Math.max(sourceSphere.radius, Number.EPSILON),
-  );
-
-  return { model, volumes };
-}
-
-function createAmbientParticles(three: typeof import("three")) {
-  const positions: number[] = [];
-
-  for (let index = 0; index < 180; index += 1) {
-    positions.push(
-      (seededValue(101, index * 3) - 0.5) * 150,
-      (seededValue(101, index * 3 + 1) - 0.5) * 110,
-      (seededValue(101, index * 3 + 2) - 0.5) * 95,
-    );
-  }
-
-  const geometry = new three.BufferGeometry();
-  geometry.setAttribute("position", new three.Float32BufferAttribute(positions, 3));
-  return new three.Points(
-    geometry,
-    new three.PointsMaterial({
-      color: 0xa6d7e7,
-      opacity: 0.16,
-      size: 0.45,
-      transparent: true,
-    }),
+function ArchitectureDiagram() {
+  const nodes = [
+    "Public cells + cropped layer source",
+    "Offline glTF-Transform + meshoptimizer",
+    "LOD 0 · LOD 1 · LOD 2 · LOD 3",
+    "Unified scene manifest",
+    "Progressive loader + in-memory cache",
+    "Three.js scene",
+    "Structure + camera controls",
+  ];
+  return (
+    <section className="scientific-demo__explanation" id="scientific-architecture">
+      <div>
+        <span className="scientific-demo__kicker">Architecture</span>
+        <h4>Complexity stays offline; runtime policy stays visible</h4>
+        <p>
+          Each public surface mesh remains independently identifiable, but one manifest aligns them in a shared coordinate system and drives one scene registry.
+        </p>
+      </div>
+      <ol aria-label="Scientific viewer asset and runtime pipeline" className="scientific-demo__architecture">
+        {nodes.map((node, index) => (
+          <li key={node}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <strong>{node}</strong>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
 export function NeuralMorphologyVisualizer() {
-  const visualizerRef = useRef<HTMLElement>(null);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const runtimeRef = useRef<VisualizerRuntime | null>(null);
-  const dragModeRef = useRef<DragMode>("rotate");
-  const [shouldInitialize, setShouldInitialize] = useState(false);
-  const [isRendererReady, setIsRendererReady] = useState(false);
-  const [isModelReady, setIsModelReady] = useState(false);
-  const [viewerError, setViewerError] = useState<string | null>(null);
-  const [volumeStates, setVolumeStates] = useState(createInitialVolumeStates);
-  const [selectedId, setSelectedId] = useState(DEFAULT_SELECTED_ID);
-  const [globalOpacity, setGlobalOpacity] = useState(0.42);
+  const baselineRef = useRef<ViewerCanvasHandle>(null);
+  const progressiveRef = useRef<ViewerCanvasHandle>(null);
+  const [manifest, setManifest] = useState<ScientificViewerManifest | null>(null);
+  const [manifestError, setManifestError] = useState<string | null>(null);
+  const [structureStates, setStructureStates] = useState<StructureRegistry>({});
+  const [selectedId, setSelectedId] = useState("");
+  const [globalOpacity, setGlobalOpacity] = useState(0.82);
+  const [quality, setQuality] = useState<ViewerQuality>("automatic");
+  const [camerasLinked, setCamerasLinked] = useState(true);
+  const camerasLinkedRef = useRef(true);
   const [autoRotate, setAutoRotate] = useState(false);
-  const [activeView, setActiveView] = useState<ViewPreset | null>("Front");
-  const [dragMode, setDragMode] = useState<DragMode>("rotate");
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [fullscreenSupported, setFullscreenSupported] = useState(false);
-  const [fullscreenStatus, setFullscreenStatus] = useState("");
-
-  const selectedVolume = useMemo(
-    () => VOLUMES.find((volume) => volume.id === selectedId) ?? VOLUMES[0],
-    [selectedId],
+  const [showPerformance, setShowPerformance] = useState(true);
+  const [comparisonRun, setComparisonRun] = useState(0);
+  const [cacheStatus, setCacheStatus] = useState("");
+  const [baselineMetrics, setBaselineMetrics] = useState<ViewerMetrics>(() =>
+    emptyMetrics("baseline"),
+  );
+  const [progressiveMetrics, setProgressiveMetrics] = useState<ViewerMetrics>(() =>
+    emptyMetrics("progressive"),
   );
 
-  const selectVolume = useCallback((volumeId: string) => {
-    setSelectedId(volumeId);
-    setVolumeStates((current) => ({
-      ...current,
-      [volumeId]: {
-        ...current[volumeId],
-        muted: false,
-        visible: true,
-      },
-    }));
-  }, []);
-
-  const applyView = useCallback((preset: ViewPreset) => {
-    const runtime = runtimeRef.current;
-    if (!runtime) return;
-
-    const { camera, controls, distance } = runtime;
-    camera.up.set(0, 1, 0);
-
-    if (preset === "Side") {
-      camera.position.set(distance, 0, 0);
-    } else if (preset === "Top") {
-      camera.up.set(0, 0, -1);
-      camera.position.set(0, distance, 0);
-    } else {
-      camera.position.set(0, 0, distance);
-    }
-
-    controls.target.set(0, 0, 0);
-    controls.update();
-    setActiveView(preset);
-  }, []);
-
   useEffect(() => {
-    const syncFullscreenState = () => {
-      const visualizer = visualizerRef.current;
-      setFullscreenSupported(
-        Boolean(document.fullscreenEnabled && visualizer?.requestFullscreen),
-      );
-      setIsFullscreen(Boolean(visualizer && document.fullscreenElement === visualizer));
-    };
-
-    syncFullscreenState();
-    document.addEventListener("fullscreenchange", syncFullscreenState);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", syncFullscreenState);
-    };
-  }, []);
-
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    if (!viewport) return;
-
-    if (!("IntersectionObserver" in window)) {
-      setShouldInitialize(true);
-      return;
-    }
-
-    const loadObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        setShouldInitialize(true);
-        loadObserver.disconnect();
-      },
-      { rootMargin: "500px 0px", threshold: 0 },
-    );
-    loadObserver.observe(viewport);
-
-    return () => loadObserver.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    if (!viewport || !shouldInitialize) return;
-
     let cancelled = false;
-    let cleanup = () => {};
-
-    const setup = async () => {
-      const [three, controlsModule] = await Promise.all([
-        import("three"),
-        import("three/examples/jsm/controls/OrbitControls.js"),
-      ]);
-      if (cancelled) return;
-
-      const scene = new three.Scene();
-      scene.background = new three.Color(0x061321);
-      scene.fog = new three.FogExp2(0x061321, 0.0024);
-
-      const camera = new three.PerspectiveCamera(40, 1, 0.1, 1200);
-      camera.position.set(0, 0, 180);
-
-      const renderer = new three.WebGLRenderer({
-        alpha: false,
-        antialias: true,
-        powerPreference: "high-performance",
+    void fetch(MANIFEST_URL, { credentials: "same-origin" })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Manifest request failed with HTTP ${response.status}.`);
+        return response.json();
+      })
+      .then((value) => {
+        if (cancelled) return;
+        const validated = validateManifest(value);
+        setManifest(validated);
+        setStructureStates(createStructureRegistry(validated));
+        setSelectedId(
+          validated.structures.find((structure) => structure.kind === "cell")?.id ??
+            validated.structures[0].id,
+        );
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setManifestError(error instanceof Error ? error.message : "The scene manifest could not be loaded.");
+        }
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.outputColorSpace = three.SRGBColorSpace;
-      renderer.domElement.setAttribute("aria-hidden", "true");
-      viewport.replaceChildren(renderer.domElement);
-
-      const controls = new controlsModule.OrbitControls(camera, renderer.domElement);
-      controls.autoRotateSpeed = 0.72;
-      controls.dampingFactor = 0.06;
-      controls.enableDamping = true;
-      controls.maxDistance = 1400;
-      controls.minDistance = 8;
-      controls.panSpeed = 0.62;
-      controls.rotateSpeed = 0.62;
-      controls.screenSpacePanning = true;
-      controls.zoomToCursor = true;
-
-      scene.add(new three.HemisphereLight(0xc5efff, 0x142033, 1.65));
-      const keyLight = new three.DirectionalLight(0xffffff, 2.2);
-      keyLight.position.set(55, 70, 90);
-      scene.add(keyLight);
-      const rimLight = new three.PointLight(0x46dcd2, 90, 230, 2);
-      rimLight.position.set(-60, -20, 60);
-      scene.add(rimLight);
-      scene.add(createAmbientParticles(three));
-
-      const grid = new three.GridHelper(150, 12, 0x335b70, 0x1b3445);
-      grid.position.y = -47;
-      (grid.material as THREE.Material).transparent = true;
-      (grid.material as THREE.Material).opacity = 0.22;
-      scene.add(grid);
-
-      const runtime: VisualizerRuntime = {
-        camera,
-        controls,
-        distance: 180,
-        renderer,
-        scene,
-        three,
-        volumes: new Map(),
-      };
-      runtimeRef.current = runtime;
-      setIsRendererReady(true);
-
-      const raycaster = new three.Raycaster();
-      const pointer = new three.Vector2();
-      let pointerStart = { x: 0, y: 0 };
-      let pointerIsDown = false;
-
-      const updatePointer = (event: PointerEvent) => {
-        const rect = renderer.domElement.getBoundingClientRect();
-        pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        raycaster.setFromCamera(pointer, camera);
-      };
-
-      const getVisibleHit = () => {
-        const targets = Array.from(runtime.volumes.values())
-          .filter((volume) => volume.group.visible)
-          .flatMap((volume) => volume.group.children)
-          .filter((child): child is THREE.Mesh => child instanceof three.Mesh && Boolean(child.userData.volumeId));
-        return raycaster.intersectObjects(targets, false)[0];
-      };
-
-      const handlePointerDown = (event: PointerEvent) => {
-        pointerStart = { x: event.clientX, y: event.clientY };
-        pointerIsDown = true;
-        renderer.domElement.style.cursor = "grabbing";
-      };
-
-      const handlePointerMove = (event: PointerEvent) => {
-        if (pointerIsDown && Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 5) {
-          setActiveView(null);
-        }
-        updatePointer(event);
-        renderer.domElement.style.cursor = pointerIsDown
-          ? "grabbing"
-          : dragModeRef.current === "pan"
-            ? "move"
-            : getVisibleHit()
-              ? "pointer"
-              : "grab";
-      };
-
-      const handlePointerUp = (event: PointerEvent) => {
-        pointerIsDown = false;
-        updatePointer(event);
-        renderer.domElement.style.cursor = dragModeRef.current === "pan"
-          ? "move"
-          : getVisibleHit()
-            ? "pointer"
-            : "grab";
-        if (Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 5) return;
-        const hit = getVisibleHit();
-        const volumeId = hit?.object.userData.volumeId as string | undefined;
-        if (volumeId) selectVolume(volumeId);
-      };
-
-      const handlePointerCancel = () => {
-        pointerIsDown = false;
-        renderer.domElement.style.cursor = dragModeRef.current === "pan" ? "move" : "grab";
-      };
-
-      const handleWheel = () => setActiveView(null);
-
-      const handleKeyDown = (event: KeyboardEvent) => {
-        const supportedKeys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-", "_"];
-        if (!supportedKeys.includes(event.key)) return;
-
-        event.preventDefault();
-        if (event.shiftKey && event.key.startsWith("Arrow")) {
-          const distance = camera.position.distanceTo(controls.target);
-          const panAmount = distance * 0.035;
-          const cameraRight = new three.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
-          const cameraUp = new three.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
-          const panOffset = new three.Vector3();
-
-          if (event.key === "ArrowLeft") panOffset.addScaledVector(cameraRight, -panAmount);
-          if (event.key === "ArrowRight") panOffset.addScaledVector(cameraRight, panAmount);
-          if (event.key === "ArrowUp") panOffset.addScaledVector(cameraUp, panAmount);
-          if (event.key === "ArrowDown") panOffset.addScaledVector(cameraUp, -panAmount);
-
-          camera.position.add(panOffset);
-          controls.target.add(panOffset);
-          controls.update();
-          setActiveView(null);
-          return;
-        }
-
-        const spherical = new three.Spherical().setFromVector3(
-          camera.position.clone().sub(controls.target),
-        );
-
-        if (event.key === "ArrowLeft") spherical.theta -= 0.12;
-        if (event.key === "ArrowRight") spherical.theta += 0.12;
-        if (event.key === "ArrowUp") spherical.phi -= 0.1;
-        if (event.key === "ArrowDown") spherical.phi += 0.1;
-        if (event.key === "+" || event.key === "=") spherical.radius *= 0.9;
-        if (event.key === "-" || event.key === "_") spherical.radius *= 1.1;
-
-        spherical.phi = three.MathUtils.clamp(spherical.phi, 0.12, Math.PI - 0.12);
-        spherical.radius = three.MathUtils.clamp(
-          spherical.radius,
-          controls.minDistance,
-          controls.maxDistance,
-        );
-        camera.position.copy(controls.target).add(new three.Vector3().setFromSpherical(spherical));
-        camera.lookAt(controls.target);
-        controls.update();
-        setActiveView(null);
-      };
-
-      renderer.domElement.addEventListener("pointerdown", handlePointerDown);
-      renderer.domElement.addEventListener("pointermove", handlePointerMove);
-      renderer.domElement.addEventListener("pointerup", handlePointerUp);
-      renderer.domElement.addEventListener("pointercancel", handlePointerCancel);
-      renderer.domElement.addEventListener("wheel", handleWheel, { passive: true });
-      viewport.addEventListener("keydown", handleKeyDown);
-
-      const resize = () => {
-        const { width, height } = viewport.getBoundingClientRect();
-        if (!width || !height) return;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height, false);
-      };
-
-      const resizeObserver = new ResizeObserver(resize);
-      resizeObserver.observe(viewport);
-      resize();
-
-      let frame = 0;
-      let isVisible = false;
-      const animate = () => {
-        frame = 0;
-        if (!isVisible) return;
-        controls.update();
-        renderer.render(scene, camera);
-        frame = window.requestAnimationFrame(animate);
-      };
-
-      const stopAnimation = () => {
-        if (!frame) return;
-        window.cancelAnimationFrame(frame);
-        frame = 0;
-      };
-
-      const startAnimation = () => {
-        if (!isVisible || frame) return;
-        frame = window.requestAnimationFrame(animate);
-      };
-
-      const visibilityObserver = "IntersectionObserver" in window
-        ? new IntersectionObserver(
-            ([entry]) => {
-              isVisible = entry?.isIntersecting ?? true;
-              if (isVisible) startAnimation();
-              else stopAnimation();
-            },
-            { threshold: 0.01 },
-          )
-        : null;
-
-      if (visibilityObserver) {
-        visibilityObserver.observe(viewport);
-      } else {
-        isVisible = true;
-        startAnimation();
-      }
-
-      cleanup = () => {
-        stopAnimation();
-        visibilityObserver?.disconnect();
-        resizeObserver.disconnect();
-        renderer.domElement.removeEventListener("pointerdown", handlePointerDown);
-        renderer.domElement.removeEventListener("pointermove", handlePointerMove);
-        renderer.domElement.removeEventListener("pointerup", handlePointerUp);
-        renderer.domElement.removeEventListener("pointercancel", handlePointerCancel);
-        renderer.domElement.removeEventListener("wheel", handleWheel);
-        viewport.removeEventListener("keydown", handleKeyDown);
-        controls.dispose();
-        if (runtime.model) {
-          const activeModel = runtime.model;
-          runtime.model = undefined;
-          runtime.volumes.clear();
-          scene.remove(activeModel);
-          disposeObject(activeModel, three);
-        }
-        scene.children.forEach((child) => disposeObject(child, three));
-        renderer.dispose();
-        if (runtimeRef.current === runtime) runtimeRef.current = null;
-        viewport.replaceChildren();
-      };
-    };
-
-    void setup().catch(() => {
-      if (!cancelled) {
-        setViewerError("This browser could not start the WebGL volume viewer.");
-        setIsRendererReady(false);
-      }
-    });
-
     return () => {
       cancelled = true;
-      cleanup();
     };
-  }, [selectVolume, shouldInitialize]);
+  }, []);
 
   useEffect(() => {
-    const runtime = runtimeRef.current;
-    if (!runtime || !isRendererReady) return;
+    camerasLinkedRef.current = camerasLinked;
+  }, [camerasLinked]);
 
-    let cancelled = false;
-    let loadedModel: THREE.Group | undefined;
-    setIsModelReady(false);
-    setViewerError(null);
+  const handleBaselinePose = useCallback((pose: CameraPose) => {
+    if (camerasLinkedRef.current) progressiveRef.current?.applyCameraPose(pose);
+  }, []);
+  const handleProgressivePose = useCallback((pose: CameraPose) => {
+    if (camerasLinkedRef.current) baselineRef.current?.applyCameraPose(pose);
+  }, []);
+  const handleBaselineMetrics = useCallback((metrics: ViewerMetrics) => {
+    setBaselineMetrics(metrics);
+  }, []);
+  const handleProgressiveMetrics = useCallback((metrics: ViewerMetrics) => {
+    setProgressiveMetrics(metrics);
+  }, []);
 
-    const loadModel = async () => {
-      const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
-      const gltf = await new GLTFLoader().loadAsync(H01_MODEL_URL);
+  const selectedStructure = useMemo(
+    () => manifest?.structures.find((structure) => structure.id === selectedId),
+    [manifest, selectedId],
+  );
 
-      if (cancelled) {
-        disposeObject(gltf.scene, runtime.three);
-        return;
-      }
+  const updateDisplayState = useCallback(
+    (structureId: string, patch: Parameters<typeof updateStructure>[2]) => {
+      setStructureStates((current) => updateStructure(current, structureId, patch));
+    },
+    [],
+  );
 
-      let prepared: ReturnType<typeof createH01Model>;
-      try {
-        prepared = createH01Model(runtime.three, gltf.scene);
-      } finally {
-        disposeObject(gltf.scene, runtime.three);
-      }
-
-      if (cancelled) {
-        disposeObject(prepared.model, runtime.three);
-        return;
-      }
-
-      loadedModel = prepared.model;
-      runtime.volumes.clear();
-      prepared.volumes.forEach((volume, volumeId) => runtime.volumes.set(volumeId, volume));
-      runtime.scene.add(loadedModel);
-      runtime.model = loadedModel;
-
-      const modelBox = new runtime.three.Box3().setFromObject(loadedModel);
-      const sphere = modelBox.getBoundingSphere(new runtime.three.Sphere());
-      runtime.controls.target.copy(sphere.center);
-      runtime.controls.minDistance = Math.max(2, sphere.radius * 0.12);
-      runtime.controls.maxDistance = Math.max(1200, sphere.radius * 22);
-      runtime.distance =
-        sphere.radius
-        / Math.sin(runtime.three.MathUtils.degToRad(runtime.camera.fov / 2))
-        * 0.96;
-      runtime.camera.near = Math.max(0.02, runtime.controls.minDistance / 250);
-      runtime.camera.far = Math.max(
-        runtime.controls.maxDistance * 3,
-        runtime.distance * 12,
-      );
-      runtime.camera.updateProjectionMatrix();
-      applyView("Front");
-      setIsModelReady(true);
-    };
-
-    void loadModel().catch(() => {
-      if (!cancelled) {
-        setViewerError("The public H01 demo geometry could not be loaded.");
-        setIsModelReady(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      if (loadedModel && runtime.model === loadedModel) {
-        runtime.scene.remove(loadedModel);
-        disposeObject(loadedModel, runtime.three);
-        runtime.model = undefined;
-        runtime.volumes.clear();
-      }
-    };
-  }, [applyView, isRendererReady]);
-
-  useEffect(() => {
-    const runtime = runtimeRef.current;
-    if (!runtime?.model) return;
-
-    VOLUMES.forEach((definition) => {
-      const state = volumeStates[definition.id];
-      const volume = runtime.volumes.get(definition.id);
-      if (!state || !volume) return;
-
-      const isSelected = selectedId === definition.id;
-      volume.group.visible = state.visible;
-      volume.surfaceMaterial.depthWrite = false;
-      volume.surfaceMaterial.transparent = true;
-
-      if (state.muted) {
-        volume.surfaceMaterial.color.set(0x8391a2);
-        volume.surfaceMaterial.emissive.set(0x000000);
-        volume.surfaceMaterial.emissiveIntensity = 0;
-        volume.surfaceMaterial.opacity = 0.09;
-        volume.wireMaterial.color.set(0x9aa6b4);
-        volume.wireMaterial.opacity = 0.055;
-      } else if (isSelected) {
-        volume.surfaceMaterial.color.set(state.color);
-        volume.surfaceMaterial.emissive.set(state.color);
-        volume.surfaceMaterial.emissiveIntensity = 0.34;
-        volume.surfaceMaterial.opacity = globalOpacity;
-        volume.wireMaterial.color.set(0xffffff);
-        volume.wireMaterial.opacity = 0.46;
-      } else {
-        volume.surfaceMaterial.color.set(state.color);
-        volume.surfaceMaterial.emissive.set(state.color);
-        volume.surfaceMaterial.emissiveIntensity = 0.045;
-        volume.surfaceMaterial.opacity = globalOpacity;
-        volume.wireMaterial.color.set(state.color);
-        volume.wireMaterial.opacity = 0.12;
-      }
-
-      volume.surfaceMaterial.needsUpdate = true;
-    });
-  }, [globalOpacity, isModelReady, isRendererReady, selectedId, volumeStates]);
-
-  useEffect(() => {
-    const runtime = runtimeRef.current;
-    if (runtime) runtime.controls.autoRotate = autoRotate;
-    if (autoRotate) setActiveView(null);
-  }, [autoRotate]);
-
-  useEffect(() => {
-    dragModeRef.current = dragMode;
-
-    const runtime = runtimeRef.current;
-    if (!runtime) return;
-
-    runtime.controls.mouseButtons.LEFT = dragMode === "pan"
-      ? runtime.three.MOUSE.PAN
-      : runtime.three.MOUSE.ROTATE;
-    runtime.controls.mouseButtons.RIGHT = runtime.three.MOUSE.PAN;
-    runtime.controls.touches.ONE = dragMode === "pan"
-      ? runtime.three.TOUCH.PAN
-      : runtime.three.TOUCH.ROTATE;
-    runtime.controls.touches.TWO = runtime.three.TOUCH.DOLLY_PAN;
-    runtime.renderer.domElement.style.cursor = dragMode === "pan" ? "move" : "grab";
-  }, [dragMode, isRendererReady]);
-
-  const updateVolume = (volumeId: string, patch: Partial<VolumeDisplayState>) => {
-    setVolumeStates((current) => ({
-      ...current,
-      [volumeId]: {
-        ...current[volumeId],
-        ...patch,
-      },
-    }));
-  };
-
-  const showAll = () => {
-    setVolumeStates((current) =>
+  const resetColors = () => {
+    if (!manifest) return;
+    setStructureStates((current) =>
       Object.fromEntries(
-        Object.entries(current).map(([volumeId, state]) => [
-          volumeId,
-          { ...state, muted: false, visible: true },
+        manifest.structures.map((structure) => [
+          structure.id,
+          { ...current[structure.id], color: structure.defaultColor },
         ]),
       ),
     );
   };
 
-  const focusSelected = () => {
-    setVolumeStates((current) =>
+  const resetCamera = () => {
+    baselineRef.current?.frameAll();
+    progressiveRef.current?.frameAll();
+  };
+
+  const clearApplicationCache = () => {
+    baselineRef.current?.clearCache();
+    progressiveRef.current?.clearCache();
+    setCacheStatus("Both in-memory asset caches were cleared. Active scene meshes remain visible.");
+  };
+
+  const startColdComparison = () => {
+    baselineRef.current?.clearCache();
+    progressiveRef.current?.clearCache();
+    setBaselineMetrics(emptyMetrics("baseline"));
+    setProgressiveMetrics(emptyMetrics("progressive"));
+    setCacheStatus("Cold comparison restarted with fresh application caches.");
+    setComparisonRun((current) => current + 1);
+  };
+
+  const focusStructure = (structureId: string) => {
+    setSelectedId(structureId);
+    updateDisplayState(structureId, { visible: true });
+    window.requestAnimationFrame(() => {
+      baselineRef.current?.frameStructure(structureId);
+      progressiveRef.current?.frameStructure(structureId);
+    });
+  };
+
+  const soloStructure = (structureId: string) => {
+    setStructureStates((current) =>
       Object.fromEntries(
-        Object.entries(current).map(([volumeId, state]) => [
-          volumeId,
-          {
-            ...state,
-            muted: volumeId !== selectedId,
-            visible: true,
-          },
+        Object.entries(current).map(([id, state]) => [
+          id,
+          { ...state, visible: id === structureId },
         ]),
       ),
     );
+    focusStructure(structureId);
   };
 
-  const resetScene = () => {
-    setVolumeStates(createInitialVolumeStates());
-    setSelectedId(DEFAULT_SELECTED_ID);
-    setGlobalOpacity(0.42);
-    setAutoRotate(false);
-    setDragMode("rotate");
-    applyView("Front");
-  };
+  if (manifestError) {
+    return <div className="scientific-demo__fatal" role="alert">{manifestError}</div>;
+  }
 
-  const toggleFullscreen = async () => {
-    const visualizer = visualizerRef.current;
-
-    if (
-      !visualizer
-      || !document.fullscreenEnabled
-      || typeof visualizer.requestFullscreen !== "function"
-    ) {
-      setFullscreenStatus("Full screen is not available in this browser.");
-      return;
-    }
-
-    setFullscreenStatus("");
-
-    try {
-      if (document.fullscreenElement === visualizer) {
-        await document.exitFullscreen();
-      } else {
-        await visualizer.requestFullscreen();
-      }
-    } catch {
-      setFullscreenStatus("Full screen could not be opened. Browser permission may be required.");
-    }
-  };
+  if (!manifest) {
+    return (
+      <div className="scientific-demo__module-loading" role="status">
+        <LoaderCircle aria-hidden="true" />
+        <span>Loading the unified scene manifest…</span>
+      </div>
+    );
+  }
 
   return (
-    <section
-      className="neural-visualizer"
-      aria-label="Interactive three-dimensional public H01 dataset demo"
-      ref={visualizerRef}
-    >
-      <header className="neural-visualizer__header">
+    <article className="scientific-demo">
+      <header className="scientific-demo__hero">
         <div>
-          <span>Public H01 dataset demo</span>
-          <h3>Multi-volume spatial explorer</h3>
-          <p>Publicly available reconstructions used to demonstrate layered 3D inspection and rendering controls.</p>
+          <span className="scientific-demo__kicker">Independent engineering demonstration</span>
+          <h3>Progressive 3D Scientific Visualization</h3>
+          <p>
+            A non-proprietary Three.js recreation of performance and interaction patterns for complex neurological surface-mesh visualization.
+          </p>
         </div>
-        <div className="neural-visualizer__header-actions">
-          <dl aria-label="Public demo dataset summary">
-            <div><dt>Cells</dt><dd>{VOLUMES.length}</dd></div>
-            <div><dt>Dataset</dt><dd>H01</dd></div>
-            <div><dt>Use</dt><dd>Demo only</dd></div>
-          </dl>
-          <div className="neural-visualizer__fullscreen-control">
-            <button
-              aria-disabled={!fullscreenSupported}
-              aria-label={isFullscreen ? "Exit full screen" : "Open demo in full screen"}
-              aria-pressed={isFullscreen}
-              className="neural-visualizer__fullscreen"
-              onClick={() => void toggleFullscreen()}
-              title={
-                fullscreenSupported
-                  ? isFullscreen
-                    ? "Exit full screen"
-                    : "Open demo in full screen"
-                  : "Full screen is not available in this browser"
-              }
-              type="button"
-            >
-              {isFullscreen
-                ? <Minimize2 aria-hidden="true" size={16} />
-                : <Maximize2 aria-hidden="true" size={16} />}
-              {isFullscreen ? "Exit full screen" : "Full screen"}
-            </button>
-            <span aria-live="polite" className="sr-only">{fullscreenStatus}</span>
-          </div>
+        <div className="scientific-demo__hero-facts" aria-label="Demo facts">
+          <span><Boxes aria-hidden="true" size={17} /> 3 layers · 3 cells</span>
+          <span><Gauge aria-hidden="true" size={17} /> 4 precomputed LODs</span>
+          <span>GLB · meshopt</span>
         </div>
       </header>
 
-      <aside className="neural-visualizer__controls" aria-label="Volume and view controls">
-        <fieldset className="neural-visualizer__layer-fieldset">
-          <legend>Volume layers</legend>
-          <div className="neural-visualizer__layer-actions">
-            <button onClick={showAll} type="button">Show all</button>
-            <button onClick={focusSelected} type="button">
-              <Focus aria-hidden="true" size={14} />
-              Focus
-            </button>
-          </div>
-          <div className="neural-visualizer__layer-list">
-            {VOLUMES.map((volume) => {
-              const state = volumeStates[volume.id];
-              const isSelected = selectedId === volume.id;
+      <aside className="scientific-demo__notice">
+        <strong>Professional-work boundary</strong>
+        <p>
+          The original professional application used glTF and meshoptimizer. This independent demonstration recreates its performance and interaction patterns with non-proprietary assets.
+        </p>
+        <p>
+          The original source code, institutional assets, neurological datasets, research results, and patient information are not reproduced. This mixed scene uses unrelated public H01 proofread cells plus cortical-layer surfaces extracted offline from a bounded public segmentation crop; the browser renders meshes, not a medical volume.
+        </p>
+      </aside>
 
-              return (
-                <div
-                  className="neural-visualizer__layer"
-                  data-muted={state.muted}
-                  data-selected={isSelected}
-                  data-visible={state.visible}
-                  key={volume.id}
-                >
-                  <button
-                    aria-pressed={isSelected}
-                    className="neural-visualizer__layer-name"
-                    onClick={() => selectVolume(volume.id)}
-                    type="button"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="neural-visualizer__swatch"
-                      style={{ backgroundColor: state.color }}
-                    />
-                    <span>
-                      <strong>{volume.name}</strong>
-                      <small>{volume.classification}</small>
-                    </span>
-                  </button>
-                  <div className="neural-visualizer__layer-tools">
-                    <button
-                      aria-label={`${state.visible ? "Hide" : "Show"} ${volume.name}`}
-                      onClick={() => updateVolume(volume.id, { visible: !state.visible })}
-                      title={state.visible ? "Hide volume" : "Show volume"}
-                      type="button"
-                    >
-                      {state.visible ? <Eye aria-hidden="true" size={14} /> : <EyeOff aria-hidden="true" size={14} />}
-                    </button>
-                    <button
-                      aria-label={`${state.muted ? "Restore color to" : "Grey out"} ${volume.name}`}
-                      aria-pressed={state.muted}
-                      className="neural-visualizer__mute"
-                      onClick={() => updateVolume(volume.id, { muted: !state.muted, visible: true })}
-                      title={state.muted ? "Restore color" : "Grey into context"}
-                      type="button"
-                    >
-                      <span aria-hidden="true" />
-                    </button>
-                    <label title={`Change ${volume.name} color`}>
-                      <span className="sr-only">Change {volume.name} color</span>
-                      <input
-                        aria-label={`Change ${volume.name} color`}
-                        onChange={(event) => updateVolume(volume.id, { color: event.target.value, muted: false })}
-                        type="color"
-                        value={state.color}
-                      />
-                    </label>
-                  </div>
-                </div>
-              );
-            })}
+      <section className="scientific-demo__comparison" aria-label="Baseline and progressive LOD comparison">
+        <div className="scientific-demo__comparison-toolbar">
+          <div>
+            <span className="scientific-demo__kicker">Synchronized comparison</span>
+            <h4>Full-resolution startup vs. progressive mesh loading</h4>
           </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>View</legend>
-          <div className="neural-visualizer__button-row">
-            {(["Front", "Side", "Top"] as ViewPreset[]).map((preset) => (
-              <button
-                aria-pressed={activeView === preset}
-                key={preset}
-                onClick={() => applyView(preset)}
-                type="button"
-              >
-                {preset}
-              </button>
-            ))}
-          </div>
-          <div
-            aria-label="Primary mouse and one-finger drag mode"
-            className="neural-visualizer__button-row"
-            role="group"
-            style={{ gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}
-          >
+          <div className="scientific-demo__toolbar-actions">
             <button
-              aria-pressed={dragMode === "rotate"}
-              onClick={() => setDragMode("rotate")}
+              aria-pressed={camerasLinked}
+              onClick={() => setCamerasLinked((current) => !current)}
               type="button"
             >
-              Rotate drag
+              {camerasLinked ? <Link2 aria-hidden="true" size={16} /> : <Link2Off aria-hidden="true" size={16} />}
+              {camerasLinked ? "Cameras linked" : "Cameras unlinked"}
             </button>
-            <button
-              aria-pressed={dragMode === "pan"}
-              onClick={() => setDragMode("pan")}
-              type="button"
-            >
-              Pan drag
+            <button onClick={startColdComparison} type="button">
+              <RefreshCcw aria-hidden="true" size={16} /> Run cold comparison
             </button>
           </div>
-          <label className="neural-visualizer__range">
-            <span>Translucent opacity <output>{Math.round(globalOpacity * 100)}%</output></span>
+        </div>
+        <div className="scientific-demo__viewer-grid" key={comparisonRun}>
+          <section className="scientific-demo__viewer-card">
+            <header>
+              <div><span>Baseline</span><strong>LOD 3 at startup</strong></div>
+              <small>{formatTriangles(baselineMetrics.currentTriangles)} triangles</small>
+            </header>
+            <ViewerCanvas
+              autoRotate={autoRotate}
+              className="scientific-demo__canvas"
+              globalOpacity={globalOpacity}
+              label="Baseline Three.js viewer loading full-resolution GLB assets at startup"
+              manifest={manifest}
+              mode="baseline"
+              onCameraPose={handleBaselinePose}
+              onMetrics={handleBaselineMetrics}
+              quality="high"
+              ref={baselineRef}
+              selectedId={selectedId}
+              structureStates={structureStates}
+            />
+            <p>Requests optimized full-detail GLBs immediately. No artificial delays or deliberately inefficient rendering.</p>
+          </section>
+          <section className="scientific-demo__viewer-card scientific-demo__viewer-card--progressive">
+            <header>
+              <div><span>Progressive LOD</span><strong>Coarse geometry first</strong></div>
+              <small>{formatTriangles(progressiveMetrics.currentTriangles)} triangles</small>
+            </header>
+            <ViewerCanvas
+              autoRotate={autoRotate}
+              className="scientific-demo__canvas"
+              globalOpacity={globalOpacity}
+              label="Optimized Three.js viewer progressively loading four GLB levels of detail"
+              manifest={manifest}
+              mode="progressive"
+              onCameraPose={handleProgressivePose}
+              onMetrics={handleProgressiveMetrics}
+              quality={quality}
+              ref={progressiveRef}
+              selectedId={selectedId}
+              structureStates={structureStates}
+            />
+            <p>Commits LOD 0 first, then fills the explicit application cache with higher levels. Zoom controls only the active scene LOD.</p>
+          </section>
+        </div>
+      </section>
+
+      {showPerformance ? (
+        <MetricsPanel baseline={baselineMetrics} progressive={progressiveMetrics} />
+      ) : null}
+
+      <section className="scientific-demo__workspace">
+        <div className="scientific-demo__workspace-heading">
+          <div>
+            <span className="scientific-demo__kicker">Unified scene registry</span>
+            <h4>Inspect structures without replacing the scene</h4>
+          </div>
+          <p aria-live="polite">{cacheStatus}</p>
+        </div>
+
+        <div className="scientific-demo__global-controls" aria-label="Global visualization controls">
+          <button onClick={() => setStructureStates((current) => setAllVisibility(current, true))} type="button">
+            <Eye aria-hidden="true" size={16} /> Show all
+          </button>
+          <button onClick={() => setStructureStates((current) => setAllVisibility(current, false))} type="button">
+            <EyeOff aria-hidden="true" size={16} /> Hide all
+          </button>
+          <label>
+            <span>Global opacity <output>{Math.round(globalOpacity * 100)}%</output></span>
             <input
-              aria-valuetext={`${Math.round(globalOpacity * 100)} percent`}
+              aria-label="Global structure opacity"
               max="1"
-              min="0"
+              min="0.1"
               onChange={(event) => setGlobalOpacity(Number(event.target.value))}
-              step="0.01"
+              step="0.05"
               type="range"
               value={globalOpacity}
             />
           </label>
           <label>
-            <input checked={autoRotate} onChange={(event) => setAutoRotate(event.target.checked)} type="checkbox" />
-            Auto-rotate
+            <span>Progressive quality</span>
+            <select onChange={(event) => setQuality(event.target.value as ViewerQuality)} value={quality}>
+              <option value="automatic">Automatic</option>
+              <option value="low">Low · LOD 0</option>
+              <option value="balanced">Balanced · LOD 2</option>
+              <option value="high">High · LOD 3</option>
+            </select>
           </label>
-          <button className="neural-visualizer__reset" onClick={resetScene} type="button">
-            <RotateCcw aria-hidden="true" size={14} />
-            Reset scene
+          <button onClick={resetColors} type="button"><RefreshCcw aria-hidden="true" size={16} /> Reset colors</button>
+          <button onClick={resetCamera} type="button"><RotateCcw aria-hidden="true" size={16} /> Reset camera</button>
+          <button onClick={clearApplicationCache} type="button"><Trash2 aria-hidden="true" size={16} /> Clear cache</button>
+          <button aria-pressed={showPerformance} onClick={() => setShowPerformance((current) => !current)} type="button">
+            <Gauge aria-hidden="true" size={16} /> Performance
           </button>
-        </fieldset>
-
-        <fieldset className="neural-visualizer__key">
-          <legend>Display key</legend>
-          <p><span className="neural-key neural-key--selected" /> Highlighted volume</p>
-          <p><span className="neural-key neural-key--visible" /> Translucent volume</p>
-          <p><span className="neural-key neural-key--muted" /> Grey context</p>
-          <p className="neural-visualizer__key-note">
-            <Palette aria-hidden="true" size={14} />
-            Colors and transparency are interface encodings.
-          </p>
-        </fieldset>
-      </aside>
-
-      <div
-        aria-busy={!isModelReady && !viewerError}
-        className="neural-visualizer__viewer"
-      >
-        <div
-          aria-label={`Seven reconstructions from the public H01 dataset. Primary mouse and one-finger drag currently ${dragMode === "pan" ? "pans across the screen plane" : "rotates the model"}. Right-drag or shift plus arrow keys pans across the screen plane. Scroll, pinch, or use plus and minus to zoom.`}
-          className="neural-visualizer__viewport"
-          ref={viewportRef}
-          role="region"
-          tabIndex={0}
-        />
-        <p className="neural-visualizer__gesture">
-          {dragMode === "pan" ? "Drag pans in screen plane" : "Drag rotates"}
-          {" · "}Right-drag pans{" · "}Shift + arrows pan{" · "}Scroll/pinch or +/− zoom
-        </p>
-        <div className="neural-visualizer__selection" aria-live="polite">
-          <span
-            aria-hidden="true"
-            className="neural-visualizer__selection-swatch"
-            style={{ backgroundColor: volumeStates[selectedVolume.id].color }}
-          />
-          <span>
-            <strong>{selectedVolume.name} · {selectedVolume.classification}</strong>
-            <small>{selectedVolume.description}</small>
-          </span>
+          <button aria-pressed={autoRotate} onClick={() => setAutoRotate((current) => !current)} type="button">
+            {autoRotate ? <Pause aria-hidden="true" size={16} /> : <Play aria-hidden="true" size={16} />}
+            Auto-rotate
+          </button>
         </div>
-        {!isModelReady && !viewerError ? (
-          <div className="neural-visualizer__loading" role="status">
-            <div className="neural-visualizer__loading-content">
-              <span aria-hidden="true" className="neural-visualizer__spinner" />
-              <span>Preparing the 3D explorer…</span>
-              <small>
-                The rest of the case study is ready to browse.
-              </small>
-            </div>
-          </div>
-        ) : null}
-        {viewerError ? (
-          <div className="neural-visualizer__loading neural-visualizer__viewer-error" role="alert">{viewerError}</div>
-        ) : null}
-      </div>
 
-      <footer className="neural-visualizer__source">
-        <p>
-          Demo purposes only. Simplified geometry is derived from seven proofread reconstructions in the publicly
-          available{" "}
-          <a href={H01_DATASET_URL} rel="noreferrer" target="_blank">H01 dataset</a>
-          {" "}(
-          <a href={H01_PAPER_URL} rel="noreferrer" target="_blank">Shapson-Coe et al., 2024</a>
-          )
-          {" "}(
-          <a href={H01_LICENSE_URL} rel="noreferrer" target="_blank">CC BY 4.0</a>
-          ). Colors and transparency are interface encodings. This is not data from the original Albert
-          Einstein engagement.
+        <div className="scientific-demo__structure-list">
+          {manifest.structures.map((structure) => {
+            const state = structureStates[structure.id];
+            const runtime = progressiveMetrics.structures[structure.id];
+            if (!state) return null;
+            return (
+              <article data-selected={selectedId === structure.id} key={structure.id}>
+                <div className="scientific-demo__structure-title">
+                  <label>
+                    <input
+                      checked={state.visible}
+                      onChange={(event) => updateDisplayState(structure.id, { visible: event.target.checked })}
+                      type="checkbox"
+                    />
+                    <span aria-hidden="true" style={{ backgroundColor: state.color }} />
+                    <strong>{structure.name}</strong>
+                  </label>
+                  <span className="scientific-demo__lod-status">
+                    {runtime?.loading ? <LoaderCircle aria-hidden="true" size={13} /> : null}
+                    {runtime?.error
+                      ? "Load error"
+                      : `LOD ${runtime?.currentLod ?? "—"} · cached ${runtime?.highestDownloadedLod ?? "—"} · ${formatCompactTriangles(runtime?.triangleCount ?? 0)} tris · ${formatBytes(runtime?.transferSize ?? 0)}`}
+                  </span>
+                </div>
+                <div className="scientific-demo__structure-controls">
+                  <label className="scientific-demo__color-control">
+                    <span className="sr-only">{structure.name} color</span>
+                    <input
+                      aria-label={`${structure.name} color`}
+                      onChange={(event) => updateDisplayState(structure.id, { color: event.target.value })}
+                      type="color"
+                      value={state.color}
+                    />
+                  </label>
+                  <label className="scientific-demo__opacity-control">
+                    <span>Opacity <output>{Math.round(state.opacity * 100)}%</output></span>
+                    <input
+                      aria-label={`${structure.name} opacity`}
+                      max="1"
+                      min="0.05"
+                      onChange={(event) => updateDisplayState(structure.id, { opacity: Number(event.target.value) })}
+                      step="0.05"
+                      type="range"
+                      value={state.opacity}
+                    />
+                  </label>
+                  <button onClick={() => focusStructure(structure.id)} type="button"><Focus aria-hidden="true" size={14} /> Focus</button>
+                  <button onClick={() => soloStructure(structure.id)} type="button">Solo</button>
+                </div>
+                {runtime?.error ? <p role="alert">{runtime.error}</p> : null}
+              </article>
+            );
+          })}
+        </div>
+        <p className="scientific-demo__selection" aria-live="polite">
+          Selected: <strong>{selectedStructure?.name}</strong>. Pointer drag rotates, right-drag pans, wheel or pinch zooms, <kbd>Home</kbd> frames the dataset, and <kbd>+</kbd>/<kbd>−</kbd> zoom.
         </p>
+      </section>
+
+      <ArchitectureDiagram />
+
+      <section className="scientific-demo__technical-grid">
+        <article>
+          <span className="scientific-demo__kicker">Technical approach</span>
+          <h4>Precompute, stream, reuse</h4>
+          <p>glTF-Transform invokes meshoptimizer offline to simplify, reorder, quantize, and compress each surface mesh. At runtime, one Promise-aware cache prevents duplicate fetches and retains parsed source geometry while stable structure containers swap fully loaded geometry.</p>
+        </article>
+        <article>
+          <span className="scientific-demo__kicker">Tradeoffs</span>
+          <h4>Fast repeat navigation costs memory</h4>
+          <p>Keeping all downloaded LODs makes zooming back in immediate. Clearing them lowers memory use. Translucent materials disable depth writing below near-opaque values, which avoids common self-occlusion artifacts but cannot perfectly sort every overlapping transparent surface.</p>
+        </article>
+        <article>
+          <span className="scientific-demo__kicker">Professional contribution</span>
+          <h4>Original category of work</h4>
+          <p>The professional engagement involved glTF, meshoptimizer, dataset-load performance, material and visibility states, and camera interaction inside an existing neurological visualization application. Proprietary implementation details and research assets remain excluded.</p>
+        </article>
+        <article>
+          <span className="scientific-demo__kicker">Public recreation</span>
+          <h4>Independently written evidence</h4>
+          <p>This repository demonstrates the same engineering category with public surface geometry: deterministic offline LOD generation, progressive network loading, explicit cache behavior, a unified manifest, instrumentation, and accessible controls.</p>
+        </article>
+      </section>
+
+      <footer className="scientific-demo__credits">
+        <div>
+          <strong>Open-source acknowledgements</strong>
+          <p>Mesh optimization uses meshoptimizer, Copyright © 2016–2026 Arseny Kapoulkine, licensed under the MIT License. Asset processing uses glTF-Transform, licensed under the MIT License.</p>
+          <p>Public demonstration geometry: H01 proofread reconstructions and cortical-layer labels, CC BY 4.0. Layer names follow the source metadata; colors are interface encodings, not medical classifications.</p>
+        </div>
+        <div>
+          <a href={manifest.dataset.sourcePage} rel="noreferrer" target="_blank">H01 source</a>
+          <a href={manifest.dataset.publication} rel="noreferrer" target="_blank">Publication</a>
+          <a href={manifest.dataset.licenseUrl} rel="noreferrer" target="_blank">CC BY 4.0</a>
+          <a href="https://github.com/zeux/meshoptimizer" rel="noreferrer" target="_blank">meshoptimizer</a>
+          <a href="https://gltf-transform.dev/" rel="noreferrer" target="_blank">glTF-Transform</a>
+        </div>
       </footer>
-    </section>
+    </article>
   );
 }

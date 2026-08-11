@@ -33,7 +33,7 @@ const featuredDescriptions: Record<string, string> = {
   "red-eye-tickets":
     "Built and operate a Rails, React, and PostgreSQL event-commerce platform where payments, inventory, ticket delivery, and venue admission must remain in sync.",
   "albert-einstein-college-of-medicine":
-    "Refined a Three.js workspace for inspecting overlapping neurological volumes and reduced large-dataset load time by approximately 20%.",
+    "Recreated a professional glTF and meshoptimizer workflow as a public Three.js demo with progressive LOD loading, caching, structure controls, and live measurement.",
 };
 
 const featuredProof: Record<string, string> = {
