@@ -700,7 +700,7 @@ export const projects: Project[] = [
       built: [
         "Progressive loading across four offline-generated meshoptimizer LODs per structure",
         "A Promise-aware in-memory geometry cache that deduplicates requests and retains parsed LODs",
-        "One manifest and stable registry for three cortical-layer context surfaces and three proofread-cell surfaces",
+        "One manifest and stable registry for three cortical-layer context surfaces and seven proofread-cell surfaces",
         "Synchronized baseline and optimized Three.js viewers with live performance instrumentation",
         "Global and per-structure visibility, opacity, color, focus, solo, quality, camera, and cache controls",
       ],
@@ -745,7 +745,7 @@ export const projects: Project[] = [
       outcomes: [
         "Provides a repeatable cold-start comparison without artificial network delays",
         "Reports time to first geometry, time to first meaningful render, transfer, requests, cache behavior, and triangle counts",
-        "Keeps six public context and cell surfaces aligned and independently controllable in one Three.js scene",
+        "Keeps ten public context and cell surfaces aligned and independently controllable in one Three.js scene",
       ],
       lessons: [
         "Progressive loading improves perceived readiness, but preloading every higher LOD can increase total transfer and retained memory.",

@@ -151,7 +151,7 @@ function MetricsPanel({
         <summary>Metric definitions and test conditions</summary>
         <div className="scientific-demo__definitions">
           <p><strong>First geometry</strong> is the first parsed mesh committed to the scene.</p>
-          <p><strong>First meaningful render</strong> is when all six visible structures have a usable geometry level: LOD 3 for baseline, LOD 0 for progressive.</p>
+          <p><strong>First meaningful render</strong> is when all ten visible structures have a usable geometry level: LOD 3 for baseline, LOD 0 for progressive.</p>
           <p><strong>Time to interactive</strong> matches meaningful render in this demo because camera and structure controls are enabled as soon as the initial scene is complete.</p>
           <p><strong>Requested transfer</strong> sums fetched GLB array-buffer sizes. It is not decoded GPU memory.</p>
           <p><strong>Application cache</strong> tracks parsed geometry reuse and request deduplication; it is separate from the browser HTTP cache and the active scene mesh.</p>
@@ -348,7 +348,7 @@ export function NeuralMorphologyVisualizer() {
           </p>
         </div>
         <div className="scientific-demo__hero-facts" aria-label="Demo facts">
-          <span><Boxes aria-hidden="true" size={17} /> 3 layers · 3 cells</span>
+          <span><Boxes aria-hidden="true" size={17} /> 3 layers · 7 cells</span>
           <span><Gauge aria-hidden="true" size={17} /> 4 precomputed LODs</span>
           <span>GLB · meshopt</span>
         </div>

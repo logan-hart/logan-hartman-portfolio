@@ -27,7 +27,7 @@ The flagship Red Eye Tickets case examines how a live event-commerce platform pr
 
 The Albert Einstein case study includes an independently written Three.js
 demonstration of a professional glTF and meshoptimizer workflow. Its mixed scene
-uses three cropped cortical-layer surfaces and three unrelated proofread-cell
+uses three cropped cortical-layer surfaces and seven unrelated proofread-cell
 surfaces from the public H01 release. Each structure has four precomputed GLB
 levels, progressive loading, an explicit Promise-aware in-memory geometry
 cache, one unified manifest and structure registry, synchronized

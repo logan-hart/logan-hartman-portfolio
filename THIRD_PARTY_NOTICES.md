@@ -65,7 +65,7 @@ Source: <https://github.com/donmccurdy/glTF-Transform>
 
 ## Public H01 demonstration geometry
 
-The independent public demonstration uses three surface reconstructions from
+The independent public demonstration uses seven surface reconstructions from
 the H01 `proofread_104` mesh layer and three bounded surfaces extracted from
 labels 1–3 of the H01 cortical-layer segmentation. H01 publishes these sources
 under Creative Commons Attribution 4.0. The source geometry is unrelated to

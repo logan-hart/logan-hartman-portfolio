@@ -306,7 +306,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     : isCompactCreative
       ? "Selected portions of the original front-end work, recreated so the responsive behavior remains reviewable."
       : isNeuralVisualizer
-        ? "Compare full-resolution startup with progressive loading across a mixed public H01 scene—three cortical-layer context surfaces and three proofread cells—then inspect LOD, cache, material, and camera behavior. The public data is unrelated to the professional engagement."
+        ? "Compare full-resolution startup with progressive loading across a mixed public H01 scene—three cortical-layer context surfaces and seven proofread cells—then inspect LOD, cache, material, and camera behavior. The public data is unrelated to the professional engagement."
       : "Explore the preserved interaction without depending on a production site.";
   const caseMetricCards = isRedEye
     ? redEyeCaseMetrics
