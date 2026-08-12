@@ -93,6 +93,7 @@
 }
 
 .scientific-demo__hero,
+.scientific-demo__start,
 .scientific-demo__notice,
 .scientific-demo__comparison,
 .scientific-demo__performance,
@@ -114,6 +115,51 @@
   gap: 1.5rem;
   justify-content: space-between;
   padding: clamp(1.25rem, 3vw, 2.25rem);
+}
+
+.scientific-demo__start {
+  align-items: center;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)),
+    repeating-linear-gradient(90deg, transparent 0 55px, rgba(20, 33, 61, 0.06) 56px),
+    repeating-linear-gradient(0deg, transparent 0 55px, rgba(20, 33, 61, 0.06) 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: clamp(18rem, 38vw, 28rem);
+  padding: clamp(2rem, 6vw, 4.5rem);
+  text-align: center;
+}
+
+.scientific-demo__start h4 {
+  color: var(--navy);
+  font-size: clamp(1.45rem, 3vw, 2.2rem);
+  letter-spacing: -0.025em;
+  margin-bottom: 0.65rem;
+}
+
+.scientific-demo__start p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  margin-bottom: 1.15rem;
+  max-width: 62ch;
+}
+
+.scientific-demo__hero-start {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--navy);
+  font-size: 0.84rem;
+  min-height: 2.8rem;
+  padding-inline: 1rem;
+  width: 100%;
+}
+
+.scientific-demo__hero-start:hover,
+.scientific-demo__hero-start:focus-visible {
+  background: #de7200;
+  border-color: #de7200;
 }
 
 .scientific-demo__hero h3 {

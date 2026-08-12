@@ -196,10 +196,12 @@ function ArchitectureDiagram() {
 }
 
 export function NeuralMorphologyVisualizer() {
+  const startRef = useRef<HTMLElement>(null);
   const baselineRef = useRef<ViewerCanvasHandle>(null);
   const progressiveRef = useRef<ViewerCanvasHandle>(null);
   const [manifest, setManifest] = useState<ScientificViewerManifest | null>(null);
   const [manifestError, setManifestError] = useState<string | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
   const [structureStates, setStructureStates] = useState<StructureRegistry>({});
   const [selectedId, setSelectedId] = useState("");
   const [globalOpacity, setGlobalOpacity] = useState(0.82);
@@ -218,6 +220,25 @@ export function NeuralMorphologyVisualizer() {
   );
 
   useEffect(() => {
+    if (hasStarted) return;
+    const startPanel = startRef.current;
+    if (!startPanel) return;
+    if (!("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setHasStarted(true);
+        observer.disconnect();
+      },
+      { threshold: 0.6 },
+    );
+    observer.observe(startPanel);
+    return () => observer.disconnect();
+  }, [hasStarted]);
+
+  useEffect(() => {
+    if (!hasStarted) return;
     let cancelled = false;
     void fetch(MANIFEST_URL, { credentials: "same-origin" })
       .then((response) => {
@@ -242,7 +263,7 @@ export function NeuralMorphologyVisualizer() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [hasStarted]);
 
   useEffect(() => {
     camerasLinkedRef.current = camerasLinked;
@@ -326,19 +347,6 @@ export function NeuralMorphologyVisualizer() {
     focusStructure(structureId);
   };
 
-  if (manifestError) {
-    return <div className="scientific-demo__fatal" role="alert">{manifestError}</div>;
-  }
-
-  if (!manifest) {
-    return (
-      <div className="scientific-demo__module-loading" role="status">
-        <LoaderCircle aria-hidden="true" />
-        <span>Loading the unified scene manifest…</span>
-      </div>
-    );
-  }
-
   return (
     <article className="scientific-demo">
       <header className="scientific-demo__hero">
@@ -353,8 +361,39 @@ export function NeuralMorphologyVisualizer() {
           <span><Boxes aria-hidden="true" size={17} /> 3 layers · 7 cells</span>
           <span><Gauge aria-hidden="true" size={17} /> 4 precomputed LODs</span>
           <span>GLB · meshopt</span>
+          {!hasStarted ? (
+            <button
+              className="scientific-demo__hero-start"
+              onClick={() => setHasStarted(true)}
+              type="button"
+            >
+              <Play aria-hidden="true" size={17} /> Start interactive comparison
+            </button>
+          ) : null}
         </div>
       </header>
+
+      {!hasStarted ? (
+        <section
+          aria-label="Start interactive scientific visualization"
+          className="scientific-demo__start"
+          ref={startRef}
+        >
+          <span className="scientific-demo__kicker">Interactive demo paused</span>
+          <h4>The live LOD comparison starts here</h4>
+          <p>
+            The Three.js renderers and GLB requests wait until this panel enters the viewport, keeping the case-study page light and the cold-start measurement tied to the moment you reach it. Use the start button above to launch it sooner.
+          </p>
+        </section>
+      ) : manifestError ? (
+        <div className="scientific-demo__fatal" role="alert">{manifestError}</div>
+      ) : !manifest ? (
+        <div className="scientific-demo__module-loading" role="status">
+          <LoaderCircle aria-hidden="true" />
+          <span>Loading the unified scene manifest…</span>
+        </div>
+      ) : (
+        <>
 
       <aside className="scientific-demo__notice">
         <strong>Professional-work boundary</strong>
@@ -583,6 +622,8 @@ export function NeuralMorphologyVisualizer() {
           <a href="https://gltf-transform.dev/" rel="noreferrer" target="_blank">glTF-Transform</a>
         </div>
       </footer>
+        </>
+      )}
     </article>
   );
 }

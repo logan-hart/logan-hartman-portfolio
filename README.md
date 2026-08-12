@@ -55,7 +55,9 @@ Important control flow:
 2. `scripts/build-scientific-viewer-assets.mjs` isolates and processes each
    public structure, then writes four meshopt-compressed GLBs and a manifest.
 3. The case-study component fetches and validates that manifest once, then
-   creates stable display state keyed by structure ID.
+   creates stable display state keyed by structure ID. The manifest and both
+   WebGL viewers are deferred until the demo is started manually or its start
+   panel is substantially visible.
 4. Each plain Three.js viewer owns an explicit asset cache. The baseline asks
    for LOD 3; the progressive viewer commits LOD 0 first and requests higher
    detail only when camera distance, selection, or manual quality requires it.
