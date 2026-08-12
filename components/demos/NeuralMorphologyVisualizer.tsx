@@ -51,6 +51,10 @@ function formatTriangles(value: number) {
   return value ? value.toLocaleString() : "—";
 }
 
+function formatRequestCount(value: number) {
+  return `${value} ${value === 1 ? "request" : "requests"}`;
+}
+
 function formatCompactTriangles(value: number) {
   if (!value) return "—";
   return value >= 10_000 ? `${(value / 1_000).toFixed(0)}k` : `${(value / 1_000).toFixed(1)}k`;
@@ -94,20 +98,24 @@ function MetricsPanel({
     baseline.firstMeaningfulRenderMs && progressive.firstMeaningfulRenderMs
       ? baseline.firstMeaningfulRenderMs - progressive.firstMeaningfulRenderMs
       : null;
+  const startupTransferReduction =
+    baseline.startupBytes > 0 && progressive.startupBytes > 0
+      ? (1 - progressive.startupBytes / baseline.startupBytes) * 100
+      : null;
 
   return (
     <section aria-label="Live performance comparison" className="scientific-demo__performance">
       <div className="scientific-demo__performance-heading">
         <div>
           <span className="scientific-demo__kicker">Live browser measurement</span>
-          <h4>Same geometry, different loading policy</h4>
+          <h4>Same geometry, different delivery pipeline</h4>
         </div>
         <p>
           {improvement === null
             ? "Run in progress. Results reflect this browser session only."
             : `The coarse scene became interactive ${Math.abs(
                 Math.round(meaningfulRenderDelta ?? 0),
-              ).toLocaleString()} ms ${improvement >= 0 ? "earlier" : "later"} than the full-detail baseline in this run (${Math.abs(improvement).toFixed(1)}%).`}
+              ).toLocaleString()} ms ${improvement >= 0 ? "earlier" : "later"} than the full-source baseline in this run (${Math.abs(improvement).toFixed(1)}%), with ${startupTransferReduction?.toFixed(1)}% less startup geometry transfer.`}
         </p>
       </div>
       <div className="scientific-demo__metric-grid">
@@ -128,9 +136,9 @@ function MetricsPanel({
         <article>
           <span>Startup network</span>
           <strong>{formatBytes(baseline.startupBytes)}</strong>
-          <small>{baseline.startupRequests} requests · {formatBytes(baseline.requestedBytes)} now</small>
+          <small>{formatRequestCount(baseline.startupRequests)} · {formatBytes(baseline.requestedBytes)} now</small>
           <strong>{formatBytes(progressive.startupBytes)}</strong>
-          <small>{progressive.startupRequests} requests · {formatBytes(progressive.requestedBytes)} now</small>
+          <small>{formatRequestCount(progressive.startupRequests)} · {formatBytes(progressive.requestedBytes)} now</small>
         </article>
         <article>
           <span>Startup GPU work</span>
@@ -151,9 +159,9 @@ function MetricsPanel({
         <summary>Metric definitions and test conditions</summary>
         <div className="scientific-demo__definitions">
           <p><strong>First geometry</strong> is the first parsed mesh committed to the scene.</p>
-          <p><strong>First meaningful render</strong> is when all ten visible structures have a usable geometry level: LOD 3 for baseline, LOD 0 for progressive.</p>
+          <p><strong>First meaningful render</strong> is when all ten visible structures are usable: original full-resolution source geometry for baseline, packed meshopt LOD 0 for progressive.</p>
           <p><strong>Time to interactive</strong> matches meaningful render in this demo because camera and structure controls are enabled as soon as the initial scene is complete.</p>
-          <p><strong>Startup network</strong> is the GLB data required before the initial scene becomes interactive: LOD 3 for baseline and LOD 0 for progressive. “Now” includes detail requested after interaction.</p>
+          <p><strong>Startup network</strong> is the GLB data required before the initial scene becomes interactive: two original public source GLBs for baseline and one packed meshopt LOD 0 GLB for progressive. “Now” includes detail requested after interaction.</p>
           <p><strong>Startup GPU work</strong> is the triangle count committed at meaningful render. The smaller line reports what the camera currently renders.</p>
           <p><strong>Current requested detail ready:</strong> baseline {formatDuration(baseline.highestRequestedLodReadyMs)}; progressive {formatDuration(progressive.highestRequestedLodReadyMs)}. This updates when camera, selection, or quality requests finish; progressive does not download unneeded LODs.</p>
           <p><strong>Application cache</strong> tracks parsed geometry reuse and request deduplication; it is separate from the browser HTTP cache and the active scene mesh.</p>
@@ -168,7 +176,7 @@ function ArchitectureDiagram() {
   const nodes = [
     "Public cells + cropped layer source",
     "Offline glTF-Transform + meshoptimizer",
-    "LOD 0 · LOD 1 · LOD 2 · LOD 3",
+    "Packed LOD 0 bootstrap · individual LOD 1–3",
     "Unified scene manifest",
     "Progressive loader + in-memory cache",
     "Three.js scene",
@@ -320,9 +328,10 @@ export function NeuralMorphologyVisualizer() {
   const startColdComparison = () => {
     baselineRef.current?.clearCache();
     progressiveRef.current?.clearCache();
+    setQuality("automatic");
     setBaselineMetrics(emptyMetrics("baseline"));
     setProgressiveMetrics(emptyMetrics("progressive"));
-    setCacheStatus("Cold comparison restarted with fresh application caches.");
+    setCacheStatus("Cold comparison restarted with fresh application caches and automatic quality.");
     setComparisonRun((current) => current + 1);
   };
 
@@ -409,7 +418,7 @@ export function NeuralMorphologyVisualizer() {
         <div className="scientific-demo__comparison-toolbar">
           <div>
             <span className="scientific-demo__kicker">Synchronized comparison</span>
-            <h4>Full-resolution startup vs. progressive mesh loading</h4>
+            <h4>Full source startup vs. meshopt progressive LOD</h4>
           </div>
           <div className="scientific-demo__toolbar-actions">
             <button
@@ -428,14 +437,14 @@ export function NeuralMorphologyVisualizer() {
         <div className="scientific-demo__viewer-grid" key={comparisonRun}>
           <section className="scientific-demo__viewer-card">
             <header>
-              <div><span>Baseline</span><strong>LOD 3 at startup</strong></div>
+              <div><span>Baseline</span><strong>Full source GLBs at startup</strong></div>
               <small>{formatTriangles(baselineMetrics.currentTriangles)} triangles</small>
             </header>
             <ViewerCanvas
               autoRotate={autoRotate}
               className="scientific-demo__canvas"
               globalOpacity={globalOpacity}
-              label="Baseline Three.js viewer loading full-resolution GLB assets at startup"
+              label="Baseline Three.js viewer loading original full-resolution source GLBs at startup"
               manifest={manifest}
               mode="baseline"
               onCameraPose={handleBaselinePose}
@@ -445,11 +454,11 @@ export function NeuralMorphologyVisualizer() {
               selectedId={selectedId}
               structureStates={structureStates}
             />
-            <p>Requests optimized full-detail GLBs immediately. No artificial delays or deliberately inefficient rendering.</p>
+            <p>Requests the two original public full-resolution source GLBs immediately. The renderer is not delayed or deliberately made inefficient.</p>
           </section>
           <section className="scientific-demo__viewer-card scientific-demo__viewer-card--progressive">
             <header>
-              <div><span>Progressive LOD</span><strong>Coarse geometry first</strong></div>
+              <div><span>Progressive LOD</span><strong>Packed coarse scene first</strong></div>
               <small>{formatTriangles(progressiveMetrics.currentTriangles)} triangles</small>
             </header>
             <ViewerCanvas
@@ -466,7 +475,7 @@ export function NeuralMorphologyVisualizer() {
               selectedId={selectedId}
               structureStates={structureStates}
             />
-            <p>Commits LOD 0 first, then requests only the detail needed by camera distance, selection, or manual quality. Previously loaded LODs stay cached for reuse.</p>
+            <p>Commits one packed meshopt LOD 0 scene, then requests individual detail only after camera movement, selection, framing, or a manual quality change. Loaded LODs stay cached for reuse.</p>
           </section>
         </div>
       </section>
@@ -589,12 +598,12 @@ export function NeuralMorphologyVisualizer() {
         <article>
           <span className="scientific-demo__kicker">Technical approach</span>
           <h4>Precompute, stream, reuse</h4>
-          <p>glTF-Transform invokes meshoptimizer offline to simplify, reorder, quantize, and compress each surface mesh. At runtime, one Promise-aware cache prevents duplicate fetches and retains parsed source geometry while stable structure containers swap fully loaded geometry.</p>
+          <p>glTF-Transform invokes meshoptimizer offline to simplify, reorder, quantize, and compress each surface mesh. It also packs the ten coarse meshes into one named-node bootstrap GLB. At runtime, one Promise-aware cache prevents duplicate fetches and retains parsed geometry while stable structure containers swap fully loaded LODs.</p>
         </article>
         <article>
           <span className="scientific-demo__kicker">Tradeoffs</span>
           <h4>Fast repeat navigation costs memory</h4>
-          <p>Demand-driven promotion avoids downloading every possible LOD, while retaining requested levels makes repeat navigation immediate. Clearing the cache lowers memory use. Translucent materials disable depth writing below near-opaque values, which avoids common self-occlusion artifacts but cannot perfectly sort every overlapping transparent surface.</p>
+          <p>The initial camera leaves the packed coarse scene intact; promotion begins only with real user demand. Retaining requested levels makes repeat navigation immediate, while clearing the cache lowers memory use. Translucent materials disable depth writing below near-opaque values, which avoids common self-occlusion artifacts but cannot perfectly sort every overlapping transparent surface.</p>
         </article>
         <article>
           <span className="scientific-demo__kicker">Professional contribution</span>
