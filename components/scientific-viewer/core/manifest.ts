@@ -11,7 +11,7 @@ export function validateManifest(value: unknown): ScientificViewerManifest {
   }
 
   const manifest = value as Partial<ScientificViewerManifest>;
-  if (manifest.schemaVersion !== 2) {
+  if (manifest.schemaVersion !== 3) {
     throw new Error("Unsupported scene manifest version.");
   }
   if (!manifest.bounds || !(manifest.bounds.radius > 0)) {
@@ -20,6 +20,27 @@ export function validateManifest(value: unknown): ScientificViewerManifest {
   if (!Array.isArray(manifest.structures) || manifest.structures.length < 2) {
     throw new Error("The scene manifest must contain multiple structures.");
   }
+  const bootstrap = manifest.delivery?.progressive?.bootstrap;
+  if (
+    !bootstrap?.url.endsWith(".glb") ||
+    bootstrap.byteSize <= 0 ||
+    bootstrap.triangleCount <= 0 ||
+    bootstrap.structureCount !== manifest.structures.length
+  ) {
+    throw new Error("The scene manifest has invalid progressive bootstrap metadata.");
+  }
+  if (
+    manifest.delivery?.baseline?.strategy !== "full-resolution-source-glbs" ||
+    manifest.delivery.baseline.byteSize <= 0 ||
+    manifest.delivery.baseline.requestCount <= 0 ||
+    manifest.delivery.baseline.triangleCount <= 0
+  ) {
+    throw new Error("The scene manifest has invalid baseline delivery metadata.");
+  }
+
+  const sourceRoles = new Set(
+    manifest.dataset?.sourceAssets?.map((asset) => asset.role) ?? [],
+  );
 
   const ids = new Set<string>();
   for (const structure of manifest.structures) {
@@ -27,6 +48,13 @@ export function validateManifest(value: unknown): ScientificViewerManifest {
       throw new Error(`Duplicate or missing structure id: ${structure.id || "(empty)"}.`);
     }
     ids.add(structure.id);
+    if (
+      !structure.sourceNodeName ||
+      !structure.sourceAssetRole ||
+      !sourceRoles.has(structure.sourceAssetRole)
+    ) {
+      throw new Error(`${structure.id} has invalid source-asset mapping.`);
+    }
     if (structure.kind !== "context" && structure.kind !== "cell") {
       throw new Error(`${structure.id} has an invalid structure kind.`);
     }
@@ -44,6 +72,14 @@ export function validateManifest(value: unknown): ScientificViewerManifest {
         throw new Error(`${structure.id} LOD ${level.level} has invalid asset metadata.`);
       }
     }
+  }
+
+  const lod0Triangles = manifest.structures.reduce(
+    (sum, structure) => sum + structure.levels[0].triangleCount,
+    0,
+  );
+  if (bootstrap.triangleCount !== lod0Triangles) {
+    throw new Error("The progressive bootstrap triangle count does not match LOD 0.");
   }
 
   return manifest as ScientificViewerManifest;
