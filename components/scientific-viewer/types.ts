@@ -89,6 +89,9 @@ export type ViewerMetrics = {
   firstMeaningfulRenderMs: number | null;
   interactiveMs: number | null;
   highestRequestedLodReadyMs: number | null;
+  startupBytes: number;
+  startupRequests: number;
+  startupTriangles: number;
   requestedBytes: number;
   assetRequests: number;
   cacheHits: number;

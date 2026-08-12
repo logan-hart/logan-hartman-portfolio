@@ -68,11 +68,15 @@ export class AssetCache<TAsset extends CacheableAsset> {
 
   peek(key: string): TAsset | undefined {
     const entry = this.entries.get(key);
-    if (entry?.asset) {
-      this.hits += 1;
-      entry.lastUsedAt = performance.now();
-    }
     return entry?.asset;
+  }
+
+  reuse(key: string): TAsset | undefined {
+    const entry = this.entries.get(key);
+    if (!entry?.asset) return undefined;
+    this.hits += 1;
+    entry.lastUsedAt = performance.now();
+    return entry.asset;
   }
 
   clear() {

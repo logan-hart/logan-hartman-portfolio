@@ -19,11 +19,11 @@
 
 /* Progressive scientific visualization case study */
 .scientific-demo {
-  --scientific-ink: #eaf6fa;
-  --scientific-muted: #91a8b7;
-  --scientific-line: rgba(167, 217, 230, 0.17);
-  --scientific-panel: rgba(7, 18, 31, 0.82);
-  --scientific-accent: #59ded7;
+  --scientific-ink: var(--navy);
+  --scientific-muted: var(--muted);
+  --scientific-line: rgba(20, 33, 61, 0.14);
+  --scientific-panel: var(--white);
+  --scientific-accent: var(--orange);
   color: var(--scientific-ink);
   display: grid;
   gap: 1rem;
@@ -50,7 +50,7 @@
 
 .scientific-demo button {
   align-items: center;
-  background: rgba(255, 255, 255, 0.055);
+  background: var(--white);
   border: 1px solid var(--scientific-line);
   border-radius: 0.6rem;
   color: var(--scientific-ink);
@@ -68,8 +68,8 @@
 .scientific-demo button:hover,
 .scientific-demo button:focus-visible,
 .scientific-demo button[aria-pressed="true"] {
-  background: rgba(89, 222, 215, 0.12);
-  border-color: rgba(89, 222, 215, 0.56);
+  background: #fff7ed;
+  border-color: rgba(247, 127, 0, 0.58);
 }
 
 .scientific-demo button:active {
@@ -102,14 +102,14 @@
 .scientific-demo__credits {
   background: var(--scientific-panel);
   border: 1px solid var(--scientific-line);
-  border-radius: 1rem;
+  border-radius: var(--radius);
 }
 
 .scientific-demo__hero {
   align-items: flex-end;
   background:
-    radial-gradient(circle at 85% 12%, rgba(89, 222, 215, 0.17), transparent 32%),
-    linear-gradient(145deg, rgba(9, 29, 46, 0.96), rgba(6, 15, 26, 0.96));
+    radial-gradient(circle at 85% 12%, rgba(247, 127, 0, 0.22), transparent 32%),
+    linear-gradient(145deg, var(--navy), var(--navy-dark));
   display: flex;
   gap: 1.5rem;
   justify-content: space-between;
@@ -125,7 +125,7 @@
 }
 
 .scientific-demo__hero p {
-  color: #b5c9d3;
+  color: #dbe4ef;
   font-size: clamp(0.92rem, 1.5vw, 1.08rem);
   line-height: 1.65;
   margin-bottom: 0;
@@ -144,8 +144,9 @@
   align-items: center;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--scientific-line);
+  border-color: var(--line-dark);
   border-radius: 999px;
-  color: #c9dce4;
+  color: #f2f5f9;
   display: inline-flex;
   font-size: 0.72rem;
   font-weight: 760;
@@ -155,8 +156,7 @@
 }
 
 .scientific-demo__notice {
-  background:
-    linear-gradient(90deg, rgba(16, 53, 63, 0.98), rgba(10, 31, 46, 0.98));
+  background: #fff7ed;
   border-left: 3px solid var(--scientific-accent);
   display: grid;
   gap: 0.36rem;
@@ -164,12 +164,12 @@
 }
 
 .scientific-demo__notice strong {
-  color: #fff;
+  color: var(--navy);
   font-size: 0.82rem;
 }
 
 .scientific-demo__notice p {
-  color: #b8cad2;
+  color: var(--muted);
   font-size: 0.78rem;
   line-height: 1.58;
   margin-bottom: 0;
@@ -198,7 +198,7 @@
 .scientific-demo__workspace-heading h4,
 .scientific-demo__explanation h4,
 .scientific-demo__technical-grid h4 {
-  color: #fff;
+  color: var(--navy);
   font-size: clamp(1rem, 2vw, 1.35rem);
   letter-spacing: -0.018em;
   margin-bottom: 0;
@@ -218,15 +218,15 @@
 }
 
 .scientific-demo__viewer-card {
-  background: #07111d;
-  border: 1px solid var(--scientific-line);
+  background: var(--navy);
+  border: 1px solid var(--line-dark);
   border-radius: 0.82rem;
   overflow: hidden;
 }
 
 .scientific-demo__viewer-card--progressive {
-  border-color: rgba(89, 222, 215, 0.36);
-  box-shadow: inset 0 2px 0 rgba(89, 222, 215, 0.62);
+  border-color: rgba(247, 127, 0, 0.58);
+  box-shadow: inset 0 2px 0 var(--orange);
 }
 
 .scientific-demo__viewer-card > header {
@@ -256,13 +256,13 @@
 }
 
 .scientific-demo__viewer-card > header small {
-  color: var(--scientific-muted);
+  color: #c9d3df;
   font-size: 0.68rem;
 }
 
 .scientific-demo__canvas {
   aspect-ratio: 16 / 10;
-  background: #07111d;
+  background: var(--navy);
   min-height: 260px;
   outline: none;
   position: relative;
@@ -276,12 +276,12 @@
 }
 
 .scientific-demo__canvas:focus-visible {
-  box-shadow: inset 0 0 0 3px rgba(89, 222, 215, 0.78);
+  box-shadow: inset 0 0 0 3px rgba(247, 127, 0, 0.82);
 }
 
 .scientific-demo__viewer-card > p {
-  border-top: 1px solid var(--scientific-line);
-  color: var(--scientific-muted);
+  border-top: 1px solid var(--line-dark);
+  color: #c9d3df;
   font-size: 0.7rem;
   line-height: 1.5;
   margin-bottom: 0;
@@ -301,11 +301,11 @@
 .scientific-demo__metric-grid {
   display: grid;
   gap: 0.55rem;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .scientific-demo__metric-grid article {
-  background: rgba(255, 255, 255, 0.035);
+  background: var(--gray);
   border: 1px solid var(--scientific-line);
   border-radius: 0.7rem;
   display: grid;
@@ -322,13 +322,13 @@
 }
 
 .scientific-demo__metric-grid strong {
-  color: #fff;
+  color: var(--navy);
   font-size: 0.86rem;
   font-variant-numeric: tabular-nums;
 }
 
 .scientific-demo__metric-grid small {
-  color: #718b9b;
+  color: var(--subtle);
   font-size: 0.58rem;
   margin-bottom: 0.34rem;
 }
@@ -340,7 +340,7 @@
 }
 
 .scientific-demo__performance summary {
-  color: #bed0d8;
+  color: var(--navy);
   cursor: pointer;
   font-size: 0.72rem;
   font-weight: 740;
@@ -362,7 +362,7 @@
 
 .scientific-demo__global-controls {
   align-items: flex-end;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--gray);
   border: 1px solid var(--scientific-line);
   border-radius: 0.78rem;
   display: grid;
@@ -388,7 +388,7 @@
 }
 
 .scientific-demo output {
-  color: #d9ecf0;
+  color: var(--navy);
   font-variant-numeric: tabular-nums;
 }
 
@@ -399,7 +399,7 @@
 }
 
 .scientific-demo select {
-  background: #0b1a2a;
+  background: var(--white);
   border: 1px solid var(--scientific-line);
   border-radius: 0.55rem;
   color: var(--scientific-ink);
@@ -414,15 +414,15 @@
 }
 
 .scientific-demo__structure-list article {
-  background: rgba(255, 255, 255, 0.027);
+  background: var(--white);
   border: 1px solid var(--scientific-line);
   border-radius: 0.72rem;
   padding: 0.65rem;
 }
 
 .scientific-demo__structure-list article[data-selected="true"] {
-  background: rgba(89, 222, 215, 0.06);
-  border-color: rgba(89, 222, 215, 0.42);
+  background: #fff7ed;
+  border-color: rgba(247, 127, 0, 0.48);
 }
 
 .scientific-demo__structure-title,
@@ -443,7 +443,7 @@
 }
 
 .scientific-demo__structure-title > label > span {
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(20, 33, 61, 0.3);
   border-radius: 50%;
   flex: 0 0 auto;
   height: 0.68rem;
@@ -451,7 +451,7 @@
 }
 
 .scientific-demo__structure-title strong {
-  color: #eaf7f9;
+  color: var(--navy);
   font-size: 0.72rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -460,7 +460,7 @@
 
 .scientific-demo__lod-status {
   align-items: center;
-  color: #7592a1;
+  color: var(--subtle);
   display: inline-flex;
   flex: 0 0 auto;
   font-size: 0.58rem;
@@ -499,7 +499,7 @@
 }
 
 .scientific-demo__structure-list article > p {
-  color: #ffaaa2;
+  color: #b42318;
   font-size: 0.62rem;
   margin: 0.5rem 0 0;
 }
@@ -512,10 +512,10 @@
 }
 
 .scientific-demo kbd {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--gray);
   border: 1px solid var(--scientific-line);
   border-radius: 0.25rem;
-  color: #d8ebef;
+  color: var(--navy);
   font-size: 0.62rem;
   padding: 0.08rem 0.25rem;
 }
@@ -546,7 +546,7 @@
 
 .scientific-demo__architecture li {
   align-items: center;
-  background: rgba(255, 255, 255, 0.033);
+  background: var(--gray);
   border: 1px solid var(--scientific-line);
   border-radius: 0.58rem;
   display: grid;
@@ -575,7 +575,7 @@
 }
 
 .scientific-demo__architecture strong {
-  color: #d9ebef;
+  color: var(--navy);
   font-size: 0.72rem;
 }
 
@@ -587,7 +587,7 @@
 }
 
 .scientific-demo__technical-grid article {
-  background: rgba(255, 255, 255, 0.025);
+  background: var(--gray);
   border: 1px solid var(--scientific-line);
   border-radius: 0.72rem;
   padding: 0.9rem;
@@ -601,7 +601,7 @@
 }
 
 .scientific-demo__credits strong {
-  color: #fff;
+  color: var(--navy);
   font-size: 0.8rem;
 }
 
@@ -625,10 +625,10 @@
 .scientific-demo__module-loading,
 .scientific-demo__fatal {
   align-items: center;
-  background: #07111d;
-  border: 1px solid rgba(167, 217, 230, 0.17);
-  border-radius: 1rem;
-  color: #c7dce3;
+  background: var(--white);
+  border: 1px solid var(--scientific-line);
+  border-radius: var(--radius);
+  color: var(--navy);
   display: flex;
   gap: 0.65rem;
   justify-content: center;
@@ -637,7 +637,7 @@
 }
 
 .scientific-demo__fatal {
-  color: #ffb5ad;
+  color: #b42318;
 }
 
 @keyframes scientific-spin {

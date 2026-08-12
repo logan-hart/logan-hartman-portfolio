@@ -57,8 +57,8 @@ Important control flow:
 3. The case-study component fetches and validates that manifest once, then
    creates stable display state keyed by structure ID.
 4. Each plain Three.js viewer owns an explicit asset cache. The baseline asks
-   for LOD 3; the progressive viewer commits LOD 0 first and preloads higher
-   levels in order.
+   for LOD 3; the progressive viewer commits LOD 0 first and requests higher
+   detail only when camera distance, selection, or manual quality requires it.
 5. One hysteresis-aware function chooses the progressive active LOD from camera
    distance, selection priority, and manual quality. Downloaded high LODs may
    stay cached while a lower LOD reduces current GPU work.
