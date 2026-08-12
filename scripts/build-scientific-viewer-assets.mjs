@@ -14,13 +14,15 @@ import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { NodeIO } from "@gltf-transform/core";
+import { Document, NodeIO } from "@gltf-transform/core";
 import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
 import {
   cloneDocument,
+  mergeDocuments,
   meshopt,
   prune,
   simplify,
+  unpartition,
   weld,
 } from "@gltf-transform/functions";
 import {
@@ -43,6 +45,7 @@ const MANIFEST_FILE = join(
   REPOSITORY_ROOT,
   "public/data/scientific-viewer/manifest.json",
 );
+const BOOTSTRAP_FILE_NAME = "scene-lod0-bootstrap.glb";
 
 const LOD_LEVELS = [
   { level: 0, recommendedDistance: 5.6 },
@@ -296,6 +299,91 @@ async function buildLevel(sourceDocument, structure, levelSpec, io) {
   };
 }
 
+async function buildBootstrapAsset(io, structures) {
+  const document = new Document();
+  const scene = document.createScene("Progressive LOD 0 bootstrap");
+
+  for (const structure of structures) {
+    const level = structure.levels[0];
+    const levelDocument = await io.read(
+      join(OUTPUT_DIRECTORY, `${structure.id}-lod0.glb`),
+    );
+    const sourceNode = levelDocument
+      .getRoot()
+      .listNodes()
+      .find((node) => node.getMesh());
+    if (!sourceNode) {
+      throw new Error(`${structure.id} LOD 0 has no mesh node to bundle.`);
+    }
+
+    const propertyMap = mergeDocuments(document, levelDocument);
+    const copiedNode = propertyMap.get(sourceNode);
+    if (!copiedNode || copiedNode.propertyType !== "Node") {
+      throw new Error(`${structure.id} LOD 0 could not be copied into the bootstrap.`);
+    }
+    copiedNode.setName(structure.id);
+    copiedNode.getMesh()?.setName(structure.id);
+    scene.addChild(copiedNode);
+
+    // mergeDocuments also copies the source scene. The named bootstrap scene is
+    // the only scene the browser needs, while each copied mesh remains a
+    // separately addressable node inside it.
+    for (const candidate of document.getRoot().listScenes()) {
+      if (candidate !== scene) candidate.dispose();
+    }
+
+    if (triangleCount(levelDocument) !== level.triangleCount) {
+      throw new Error(`${structure.id} LOD 0 metadata changed before bundling.`);
+    }
+  }
+
+  await document.transform(
+    unpartition(),
+    prune(),
+    meshopt({
+      encoder: MeshoptEncoder,
+      level: "high",
+      quantizePosition: 14,
+      quantizeNormal: 10,
+    }),
+  );
+
+  const outputPath = join(OUTPUT_DIRECTORY, BOOTSTRAP_FILE_NAME);
+  await io.write(outputPath, document);
+  const verificationDocument = await io.read(outputPath);
+  const generatedTriangles = triangleCount(verificationDocument);
+  const expectedTriangles = structures.reduce(
+    (sum, structure) => sum + structure.levels[0].triangleCount,
+    0,
+  );
+  if (generatedTriangles !== expectedTriangles) {
+    throw new Error(
+      `${BOOTSTRAP_FILE_NAME} has ${generatedTriangles} triangles; expected ${expectedTriangles}.`,
+    );
+  }
+
+  const nodeNames = new Set(
+    verificationDocument
+      .getRoot()
+      .listNodes()
+      .filter((node) => node.getMesh())
+      .map((node) => node.getName()),
+  );
+  for (const structure of structures) {
+    if (!nodeNames.has(structure.id)) {
+      throw new Error(`${BOOTSTRAP_FILE_NAME} is missing ${structure.id}.`);
+    }
+  }
+
+  return {
+    url: `/data/scientific-viewer/generated/${BOOTSTRAP_FILE_NAME}`,
+    byteSize: (await stat(outputPath)).size,
+    triangleCount: generatedTriangles,
+    structureCount: structures.length,
+    sha256: await sha256(outputPath),
+  };
+}
+
 async function main() {
   await Promise.all([
     MeshoptDecoder.ready,
@@ -342,6 +430,8 @@ async function main() {
     structures.push({
       id: structure.id,
       sourceId: structure.sourceId,
+      sourceAssetRole: structure.sourceKey,
+      sourceNodeName: structure.sourceName,
       kind: structure.kind,
       name: structure.name,
       description:
@@ -359,6 +449,11 @@ async function main() {
       levels,
     });
   }
+
+  const bootstrap = await buildBootstrapAsset(io, structures);
+  process.stdout.write(
+    `LOD 0 bootstrap: ${bootstrap.triangleCount.toLocaleString()} triangles, ${bootstrap.byteSize.toLocaleString()} bytes\n`,
+  );
 
   const gltfTransformPackage = JSON.parse(
     await readFile(
@@ -380,8 +475,16 @@ async function main() {
       sha256: await sha256(file),
     })),
   );
+  const baselineTriangles = structures.reduce(
+    (sum, structure) => sum + structure.levels[3].triangleCount,
+    0,
+  );
+  const baselineBytes = sourceAssets.reduce(
+    (sum, asset) => sum + asset.byteSize,
+    0,
+  );
   const manifest = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     dataset: {
       id: "public-h01-cortical-context-and-cells-lod-demo",
       name: "Public H01 cortical-context and proofread-cell demonstration",
@@ -393,6 +496,18 @@ async function main() {
       publication: "https://doi.org/10.1126/science.adk4858",
       license: "CC BY 4.0",
       licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    },
+    delivery: {
+      baseline: {
+        strategy: "full-resolution-source-glbs",
+        byteSize: baselineBytes,
+        requestCount: sourceAssets.length,
+        triangleCount: baselineTriangles,
+      },
+      progressive: {
+        strategy: "packed-meshopt-lod0-then-demand-driven-lods",
+        bootstrap,
+      },
     },
     bounds,
     build: {

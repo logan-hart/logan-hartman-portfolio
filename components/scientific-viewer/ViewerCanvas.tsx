@@ -24,12 +24,23 @@ import type {
 } from "@/components/scientific-viewer/types";
 
 type GeometryAsset = {
+  kind: "geometry";
   geometry: THREE.BufferGeometry;
   matrix: THREE.Matrix4;
   triangleCount: number;
   byteSize: number;
   dispose: () => void;
 };
+
+type GeometryBundleAsset = {
+  kind: "bundle";
+  geometries: Map<string, GeometryAsset>;
+  triangleCount: number;
+  byteSize: number;
+  dispose: () => void;
+};
+
+type ViewerAsset = GeometryAsset | GeometryBundleAsset;
 
 type RuntimeStructure = {
   container: THREE.Group;
@@ -46,9 +57,11 @@ type ViewerRuntime = {
   scene: THREE.Scene;
   datasetRoot: THREE.Group;
   structures: Map<string, RuntimeStructure>;
-  cache: AssetCache<GeometryAsset>;
+  cache: AssetCache<ViewerAsset>;
   requestedLevels: Map<string, LodLevel>;
+  activateDemandDrivenLods: () => void;
   applyCameraPose: (pose: CameraPose) => void;
+  clearCache: () => void;
   frameAll: () => void;
   frameStructure: (structureId: string) => void;
   updateDisplayedLods: () => void;
@@ -146,7 +159,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
 
     useImperativeHandle(ref, () => ({
       applyCameraPose: (pose) => runtimeRef.current?.applyCameraPose(pose),
-      clearCache: () => runtimeRef.current?.cache.clear(),
+      clearCache: () => runtimeRef.current?.clearCache(),
       frameAll: () => runtimeRef.current?.frameAll(),
       frameStructure: (structureId) =>
         runtimeRef.current?.frameStructure(structureId),
@@ -154,7 +167,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
 
     useEffect(() => {
       qualityRef.current = quality;
-      runtimeRef.current?.updateDisplayedLods();
+      runtimeRef.current?.activateDemandDrivenLods();
     }, [quality]);
 
     useEffect(() => {
@@ -167,7 +180,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         );
         structure.material.emissiveIntensity = id === selectedId ? 0.12 : 0;
       }
-      runtime.updateDisplayedLods();
+      runtime.activateDemandDrivenLods();
     }, [selectedId]);
 
     useEffect(() => {
@@ -303,7 +316,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         controls.target.fromArray(defaultPose.target);
         controls.update();
 
-        const cache = new AssetCache<GeometryAsset>();
+        const cache = new AssetCache<ViewerAsset>();
         const requestScheduler = new RequestScheduler(3);
         const gltfLoader = new loaderModule.GLTFLoader();
         gltfLoader.setMeshoptDecoder(meshoptimizer.MeshoptDecoder);
@@ -322,7 +335,9 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         };
         const requestedLevels = new Map<string, LodLevel>();
         const downloadedLevels = new Map<string, Set<LodLevel>>();
+        const bootstrapGeometries = new Map<string, GeometryAsset>();
         let demandRequestsInFlight = 0;
+        let demandActivated = false;
         let suppressCameraBroadcast = false;
         let progressiveBaseReady = mode === "baseline";
 
@@ -353,7 +368,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
 
         const emitMetrics = () => onMetrics(snapshotMetrics());
 
-        const loadGeometry = (url: string): Promise<GeometryAsset> =>
+        const fetchGlb = (url: string) =>
           requestScheduler.run(async () => {
             const response = await fetch(url, {
               cache: "no-store",
@@ -364,26 +379,92 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
             }
             const buffer = await response.arrayBuffer();
             const gltf = await gltfLoader.parseAsync(buffer, "");
-            gltf.scene.updateMatrixWorld(true);
-            const sourceMesh = gltf.scene.getObjectByProperty("type", "Mesh") as
-              | THREE.Mesh
-              | undefined;
+            return { buffer, gltf };
+          });
+
+        const loadGeometry = async (url: string): Promise<GeometryAsset> => {
+          const { buffer, gltf } = await fetchGlb(url);
+          gltf.scene.updateMatrixWorld(true);
+          const sourceMesh = gltf.scene.getObjectByProperty("type", "Mesh") as
+            | THREE.Mesh
+            | undefined;
+          if (!sourceMesh || !(sourceMesh.geometry instanceof three.BufferGeometry)) {
+            disposeObject(gltf.scene, three);
+            throw new Error("The GLB contains no mesh geometry.");
+          }
+          const geometry = sourceMesh.geometry.clone();
+          const matrix = sourceMesh.matrixWorld.clone();
+          const asset: GeometryAsset = {
+            kind: "geometry",
+            geometry,
+            matrix,
+            triangleCount: triangleCount(geometry),
+            byteSize: buffer.byteLength,
+            dispose: () => geometry.dispose(),
+          };
+          disposeObject(gltf.scene, three);
+          return asset;
+        };
+
+        const loadGeometryBundle = async (
+          url: string,
+          expectedNodes: Array<{ structureId: string; nodeName: string }>,
+        ): Promise<GeometryBundleAsset> => {
+          const { buffer, gltf } = await fetchGlb(url);
+          gltf.scene.updateMatrixWorld(true);
+          const geometries = new Map<string, GeometryAsset>();
+
+          for (const expected of expectedNodes) {
+            let object: THREE.Object3D | undefined;
+            gltf.scene.traverse((candidate) => {
+              if (
+                !object &&
+                (candidate.name === expected.nodeName ||
+                  candidate.userData.name === expected.nodeName)
+              ) {
+                object = candidate;
+              }
+            });
+            let sourceMesh: THREE.Mesh | undefined;
+            object?.traverse((child) => {
+              if (!sourceMesh && child instanceof three.Mesh) sourceMesh = child;
+            });
             if (!sourceMesh || !(sourceMesh.geometry instanceof three.BufferGeometry)) {
               disposeObject(gltf.scene, three);
-              throw new Error("The GLB contains no mesh geometry.");
+              geometries.forEach((asset) => asset.dispose());
+              throw new Error(
+                `${url} is missing mesh node ${expected.nodeName}.`,
+              );
             }
             const geometry = sourceMesh.geometry.clone();
-            const matrix = sourceMesh.matrixWorld.clone();
-            const asset: GeometryAsset = {
+            geometries.set(expected.structureId, {
+              kind: "geometry",
               geometry,
-              matrix,
+              matrix: sourceMesh.matrixWorld.clone(),
               triangleCount: triangleCount(geometry),
-              byteSize: buffer.byteLength,
+              byteSize: 0,
               dispose: () => geometry.dispose(),
-            };
-            disposeObject(gltf.scene, three);
-            return asset;
-          });
+            });
+          }
+
+          disposeObject(gltf.scene, three);
+          const bundleTriangles = [...geometries.values()].reduce(
+            (sum, asset) => sum + asset.triangleCount,
+            0,
+          );
+          for (const asset of geometries.values()) {
+            asset.byteSize = Math.round(
+              buffer.byteLength * (asset.triangleCount / bundleTriangles),
+            );
+          }
+          return {
+            kind: "bundle",
+            geometries,
+            triangleCount: bundleTriangles,
+            byteSize: buffer.byteLength,
+            dispose: () => geometries.forEach((asset) => asset.dispose()),
+          };
+        };
 
         const replaceActiveGeometry = (
           structureId: string,
@@ -438,6 +519,9 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
               loadGeometry(levelDefinition.url),
             );
             if (cancelled) return;
+            if (asset.kind !== "geometry") {
+              throw new Error(`${levelDefinition.url} returned an unexpected bundle.`);
+            }
             const priorHighest = statuses[structureId].highestDownloadedLod;
             statuses[structureId].highestDownloadedLod = Math.max(
               priorHighest ?? 0,
@@ -461,7 +545,11 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         };
 
         const updateDisplayedLods = () => {
-          if (!progressiveBaseReady || mode === "baseline") return;
+          if (
+            !demandActivated ||
+            !progressiveBaseReady ||
+            mode === "baseline"
+          ) return;
           const distance = camera.position.distanceTo(controls.target);
           for (const definition of manifest.structures) {
             const structure = structures.get(definition.id);
@@ -475,8 +563,15 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
             });
             if (structure.currentLod === desired) continue;
             const desiredUrl = definition.levels[desired].url;
+            if (desired === 0) {
+              const bootstrapAsset = bootstrapGeometries.get(definition.id);
+              if (bootstrapAsset) {
+                replaceActiveGeometry(definition.id, desired, bootstrapAsset);
+                continue;
+              }
+            }
             const desiredAsset = cache.reuse(desiredUrl);
-            if (desiredAsset) {
+            if (desiredAsset?.kind === "geometry") {
               replaceActiveGeometry(definition.id, desired, desiredAsset);
               continue;
             }
@@ -502,8 +597,15 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
             // loads. This avoids an empty frame and lets camera motion drive
             // network work instead of eagerly fetching every possible LOD.
             for (let fallback = desired - 1; fallback >= 0; fallback -= 1) {
+              if (fallback === 0) {
+                const bootstrapAsset = bootstrapGeometries.get(definition.id);
+                if (bootstrapAsset) {
+                  replaceActiveGeometry(definition.id, 0, bootstrapAsset);
+                  break;
+                }
+              }
               const asset = cache.peek(definition.levels[fallback].url);
-              if (asset) {
+              if (asset?.kind === "geometry") {
                 replaceActiveGeometry(
                   definition.id,
                   fallback as LodLevel,
@@ -516,6 +618,11 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
           emitMetrics();
         };
 
+        const activateDemandDrivenLods = () => {
+          demandActivated = true;
+          updateDisplayedLods();
+        };
+
         const publishCameraPose = () => {
           if (suppressCameraBroadcast) return;
           onCameraPose({
@@ -523,7 +630,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
             target: controls.target.toArray(),
             up: camera.up.toArray(),
           });
-          updateDisplayedLods();
+          activateDemandDrivenLods();
         };
         controls.addEventListener("change", publishCameraPose);
 
@@ -534,7 +641,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
           controls.target.fromArray(pose.target);
           controls.update();
           suppressCameraBroadcast = false;
-          updateDisplayedLods();
+          activateDemandDrivenLods();
         };
 
         const frameSphere = (sphere: THREE.Sphere) => {
@@ -577,7 +684,12 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
           structures,
           cache,
           requestedLevels,
+          activateDemandDrivenLods,
           applyCameraPose,
+          clearCache: () => {
+            cache.clear();
+            bootstrapGeometries.clear();
+          },
           frameAll,
           frameStructure,
           updateDisplayedLods,
@@ -632,12 +744,66 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
           if (runtimeRef.current === runtime) runtimeRef.current = null;
         };
 
-        const initialLevel: LodLevel = mode === "baseline" ? 3 : 0;
-        await Promise.all(
-          manifest.structures.map((structure) =>
-            loadLevel(structure.id, initialLevel, true),
-          ),
-        );
+        if (mode === "baseline") {
+          await Promise.all(
+            manifest.dataset.sourceAssets.map(async (sourceAsset) => {
+              const definitions = manifest.structures.filter(
+                (structure) => structure.sourceAssetRole === sourceAsset.role,
+              );
+              const bundle = await cache.load(sourceAsset.url, () =>
+                loadGeometryBundle(
+                  sourceAsset.url,
+                  definitions.map((structure) => ({
+                    structureId: structure.id,
+                    nodeName: structure.sourceNodeName,
+                  })),
+                ),
+              );
+              if (cancelled) return;
+              if (bundle.kind !== "bundle") {
+                throw new Error(`${sourceAsset.url} returned an unexpected mesh.`);
+              }
+              for (const definition of definitions) {
+                const asset = bundle.geometries.get(definition.id);
+                if (!asset) {
+                  throw new Error(`${sourceAsset.url} is missing ${definition.id}.`);
+                }
+                downloadedLevels.set(definition.id, new Set<LodLevel>([3]));
+                statuses[definition.id].highestDownloadedLod = 3;
+                statuses[definition.id].loading = false;
+                statuses[definition.id].transferSize = asset.byteSize;
+                replaceActiveGeometry(definition.id, 3, asset);
+              }
+            }),
+          );
+        } else {
+          const bootstrapDefinition = manifest.delivery.progressive.bootstrap;
+          const bundle = await cache.load(bootstrapDefinition.url, () =>
+            loadGeometryBundle(
+              bootstrapDefinition.url,
+              manifest.structures.map((structure) => ({
+                structureId: structure.id,
+                nodeName: structure.id,
+              })),
+            ),
+          );
+          if (cancelled) return;
+          if (bundle.kind !== "bundle") {
+            throw new Error(`${bootstrapDefinition.url} returned an unexpected mesh.`);
+          }
+          for (const definition of manifest.structures) {
+            const asset = bundle.geometries.get(definition.id);
+            if (!asset) {
+              throw new Error(`${bootstrapDefinition.url} is missing ${definition.id}.`);
+            }
+            bootstrapGeometries.set(definition.id, asset);
+            downloadedLevels.set(definition.id, new Set<LodLevel>([0]));
+            statuses[definition.id].highestDownloadedLod = 0;
+            statuses[definition.id].loading = false;
+            statuses[definition.id].transferSize = asset.byteSize;
+            replaceActiveGeometry(definition.id, 0, asset);
+          }
+        }
         if (cancelled) return;
         timings.firstMeaningfulRenderMs = performance.now() - startedAt;
         timings.interactiveMs = timings.firstMeaningfulRenderMs;
@@ -647,8 +813,9 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         startup.triangles = startupSnapshot.totalLoadedTriangles;
         progressiveBaseReady = true;
         timings.highestRequestedLodReadyMs = timings.firstMeaningfulRenderMs;
-        // Progressive requests after LOD 0 are demand-driven by camera
-        // distance, selection, or the manual quality control.
+        // The initial camera alone does not promote LODs. Promotion begins only
+        // after camera movement, selection, framing, or a manual quality change.
+        if (qualityRef.current !== "automatic") demandActivated = true;
         updateDisplayedLods();
         emitMetrics();
 

@@ -58,9 +58,11 @@ Important control flow:
    creates stable display state keyed by structure ID. The manifest and both
    WebGL viewers are deferred until the demo is started manually or its start
    panel is substantially visible.
-4. Each plain Three.js viewer owns an explicit asset cache. The baseline asks
-   for LOD 3; the progressive viewer commits LOD 0 first and requests higher
-   detail only when camera distance, selection, or manual quality requires it.
+4. Each plain Three.js viewer owns an explicit asset cache. The baseline loads
+   the two original full-resolution public source GLBs. The progressive viewer
+   commits one packed meshopt LOD 0 bootstrap, then requests individual higher
+   detail only after camera movement, framing, selection, or manual quality
+   creates real demand.
 5. One hysteresis-aware function chooses the progressive active LOD from camera
    distance, selection priority, and manual quality. Downloaded high LODs may
    stay cached while a lower LOD reduces current GPU work.

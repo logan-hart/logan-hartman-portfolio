@@ -17,6 +17,8 @@ export type LodManifestEntry = {
 export type StructureManifest = {
   id: string;
   sourceId: string;
+  sourceAssetRole: string;
+  sourceNodeName: string;
   kind: StructureKind;
   name: string;
   description: string;
@@ -32,7 +34,7 @@ export type StructureManifest = {
 };
 
 export type ScientificViewerManifest = {
-  schemaVersion: 2;
+  schemaVersion: 3;
   dataset: {
     id: string;
     name: string;
@@ -48,6 +50,24 @@ export type ScientificViewerManifest = {
     publication: string;
     license: string;
     licenseUrl: string;
+  };
+  delivery: {
+    baseline: {
+      strategy: "full-resolution-source-glbs";
+      byteSize: number;
+      requestCount: number;
+      triangleCount: number;
+    };
+    progressive: {
+      strategy: "packed-meshopt-lod0-then-demand-driven-lods";
+      bootstrap: {
+        url: string;
+        byteSize: number;
+        triangleCount: number;
+        structureCount: number;
+        sha256: string;
+      };
+    };
   };
   bounds: {
     minimum: [number, number, number];

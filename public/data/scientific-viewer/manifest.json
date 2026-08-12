@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "dataset": {
     "id": "public-h01-cortical-context-and-cells-lod-demo",
     "name": "Public H01 cortical-context and proofread-cell demonstration",
@@ -23,6 +23,24 @@
     "publication": "https://doi.org/10.1126/science.adk4858",
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "delivery": {
+    "baseline": {
+      "strategy": "full-resolution-source-glbs",
+      "byteSize": 26333060,
+      "requestCount": 2,
+      "triangleCount": 1110875
+    },
+    "progressive": {
+      "strategy": "packed-meshopt-lod0-then-demand-driven-lods",
+      "bootstrap": {
+        "url": "/data/scientific-viewer/generated/scene-lod0-bootstrap.glb",
+        "byteSize": 203200,
+        "triangleCount": 44937,
+        "structureCount": 10,
+        "sha256": "14c70e1ac05b64d927438a7126ae42252a8cc407a02e53d312caf41b068d6eac"
+      }
+    }
   },
   "bounds": {
     "minimum": [
@@ -92,6 +110,8 @@
     {
       "id": "layer-1",
       "sourceId": "1",
+      "sourceAssetRole": "layers",
+      "sourceNodeName": "H01 cortical layer 1 crop",
       "kind": "context",
       "name": "Cortical layer 1 context",
       "description": "Surface extracted offline from a fixed crop of the public H01 cortical-layer segmentation.",
@@ -161,6 +181,8 @@
     {
       "id": "layer-2",
       "sourceId": "2",
+      "sourceAssetRole": "layers",
+      "sourceNodeName": "H01 cortical layer 2 crop",
       "kind": "context",
       "name": "Cortical layer 2 context",
       "description": "Surface extracted offline from a fixed crop of the public H01 cortical-layer segmentation.",
@@ -230,6 +252,8 @@
     {
       "id": "layer-3",
       "sourceId": "3",
+      "sourceAssetRole": "layers",
+      "sourceNodeName": "H01 cortical layer 3 crop",
       "kind": "context",
       "name": "Cortical layer 3 context",
       "description": "Surface extracted offline from a fixed crop of the public H01 cortical-layer segmentation.",
@@ -299,6 +323,8 @@
     {
       "id": "cell-1072605926",
       "sourceId": "1072605926",
+      "sourceAssetRole": "cells",
+      "sourceNodeName": "H01 reconstruction 1072605926",
       "kind": "cell",
       "name": "Proofread cell 1072605926",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
@@ -368,6 +394,8 @@
     {
       "id": "cell-810151953",
       "sourceId": "810151953",
+      "sourceAssetRole": "cells",
+      "sourceNodeName": "H01 reconstruction 810151953",
       "kind": "cell",
       "name": "Proofread cell 810151953",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
@@ -437,6 +465,8 @@
     {
       "id": "cell-620880207",
       "sourceId": "620880207",
+      "sourceAssetRole": "cells",
+      "sourceNodeName": "H01 reconstruction 620880207",
       "kind": "cell",
       "name": "Proofread cell 620880207",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
@@ -506,6 +536,8 @@
     {
       "id": "cell-1684504313",
       "sourceId": "1684504313",
+      "sourceAssetRole": "cells",
+      "sourceNodeName": "H01 reconstruction 1684504313",
       "kind": "cell",
       "name": "Proofread cell 1684504313",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
@@ -575,6 +607,8 @@
     {
       "id": "cell-1465400601",
       "sourceId": "1465400601",
+      "sourceAssetRole": "cells",
+      "sourceNodeName": "H01 reconstruction 1465400601",
       "kind": "cell",
       "name": "Proofread cell 1465400601",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
@@ -644,6 +678,8 @@
     {
       "id": "cell-810970127",
       "sourceId": "810970127",
+      "sourceAssetRole": "cells",
+      "sourceNodeName": "H01 reconstruction 810970127",
       "kind": "cell",
       "name": "Proofread cell 810970127",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
@@ -713,6 +749,8 @@
     {
       "id": "cell-2047644309",
       "sourceId": "2047644309",
+      "sourceAssetRole": "cells",
+      "sourceNodeName": "H01 reconstruction 2047644309",
       "kind": "cell",
       "name": "Proofread cell 2047644309",
       "description": "Public H01 proofread surface reconstruction used as non-proprietary demonstration geometry.",
