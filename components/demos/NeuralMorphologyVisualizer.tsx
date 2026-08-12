@@ -64,6 +64,9 @@ function emptyMetrics(mode: "baseline" | "progressive"): ViewerMetrics {
     firstMeaningfulRenderMs: null,
     interactiveMs: null,
     highestRequestedLodReadyMs: null,
+    startupBytes: 0,
+    startupRequests: 0,
+    startupTriangles: 0,
     requestedBytes: 0,
     assetRequests: 0,
     cacheHits: 0,
@@ -87,6 +90,10 @@ function MetricsPanel({
           baseline.firstMeaningfulRenderMs) *
         100
       : null;
+  const meaningfulRenderDelta =
+    baseline.firstMeaningfulRenderMs && progressive.firstMeaningfulRenderMs
+      ? baseline.firstMeaningfulRenderMs - progressive.firstMeaningfulRenderMs
+      : null;
 
   return (
     <section aria-label="Live performance comparison" className="scientific-demo__performance">
@@ -98,9 +105,9 @@ function MetricsPanel({
         <p>
           {improvement === null
             ? "Run in progress. Results reflect this browser session only."
-            : `Time to first meaningful render is ${Math.abs(improvement).toFixed(1)}% ${
-                improvement >= 0 ? "faster" : "slower"
-              } in this run.`}
+            : `The coarse scene became interactive ${Math.abs(
+                Math.round(meaningfulRenderDelta ?? 0),
+              ).toLocaleString()} ms ${improvement >= 0 ? "earlier" : "later"} than the full-detail baseline in this run (${Math.abs(improvement).toFixed(1)}%).`}
         </p>
       </div>
       <div className="scientific-demo__metric-grid">
@@ -119,32 +126,25 @@ function MetricsPanel({
           <small>Progressive · interactive {formatDuration(progressive.interactiveMs)}</small>
         </article>
         <article>
-          <span>Requested transfer</span>
-          <strong>{formatBytes(baseline.requestedBytes)}</strong>
-          <small>{baseline.assetRequests} baseline requests</small>
-          <strong>{formatBytes(progressive.requestedBytes)}</strong>
-          <small>{progressive.assetRequests} progressive requests</small>
+          <span>Startup network</span>
+          <strong>{formatBytes(baseline.startupBytes)}</strong>
+          <small>{baseline.startupRequests} requests · {formatBytes(baseline.requestedBytes)} now</small>
+          <strong>{formatBytes(progressive.startupBytes)}</strong>
+          <small>{progressive.startupRequests} requests · {formatBytes(progressive.requestedBytes)} now</small>
         </article>
         <article>
-          <span>Current GPU work</span>
-          <strong>{formatTriangles(baseline.currentTriangles)}</strong>
-          <small>Rendered · {formatTriangles(baseline.totalLoadedTriangles)} loaded</small>
-          <strong>{formatTriangles(progressive.currentTriangles)}</strong>
-          <small>Rendered · {formatTriangles(progressive.totalLoadedTriangles)} loaded</small>
+          <span>Startup GPU work</span>
+          <strong>{formatTriangles(baseline.startupTriangles)}</strong>
+          <small>{formatTriangles(baseline.currentTriangles)} rendered now</small>
+          <strong>{formatTriangles(progressive.startupTriangles)}</strong>
+          <small>{formatTriangles(progressive.currentTriangles)} rendered now</small>
         </article>
         <article>
-          <span>Application cache</span>
-          <strong>{baseline.cacheHits} / {baseline.cacheMisses}</strong>
-          <small>Baseline hits / misses</small>
-          <strong>{progressive.cacheHits} / {progressive.cacheMisses}</strong>
-          <small>Progressive hits / misses</small>
-        </article>
-        <article>
-          <span>Highest requested LOD ready</span>
-          <strong>{formatDuration(baseline.highestRequestedLodReadyMs)}</strong>
-          <small>Baseline full detail</small>
-          <strong>{formatDuration(progressive.highestRequestedLodReadyMs)}</strong>
-          <small>Progressive background queue</small>
+          <span>Parsed LOD reuse</span>
+          <strong>{baseline.cacheHits} cache hits</strong>
+          <small>{baseline.cacheMisses} unique baseline loads</small>
+          <strong>{progressive.cacheHits} cache hits</strong>
+          <small>{progressive.cacheMisses} unique progressive loads</small>
         </article>
       </div>
       <details>
@@ -153,7 +153,9 @@ function MetricsPanel({
           <p><strong>First geometry</strong> is the first parsed mesh committed to the scene.</p>
           <p><strong>First meaningful render</strong> is when all ten visible structures have a usable geometry level: LOD 3 for baseline, LOD 0 for progressive.</p>
           <p><strong>Time to interactive</strong> matches meaningful render in this demo because camera and structure controls are enabled as soon as the initial scene is complete.</p>
-          <p><strong>Requested transfer</strong> sums fetched GLB array-buffer sizes. It is not decoded GPU memory.</p>
+          <p><strong>Startup network</strong> is the GLB data required before the initial scene becomes interactive: LOD 3 for baseline and LOD 0 for progressive. “Now” includes detail requested after interaction.</p>
+          <p><strong>Startup GPU work</strong> is the triangle count committed at meaningful render. The smaller line reports what the camera currently renders.</p>
+          <p><strong>Current requested detail ready:</strong> baseline {formatDuration(baseline.highestRequestedLodReadyMs)}; progressive {formatDuration(progressive.highestRequestedLodReadyMs)}. This updates when camera, selection, or quality requests finish; progressive does not download unneeded LODs.</p>
           <p><strong>Application cache</strong> tracks parsed geometry reuse and request deduplication; it is separate from the browser HTTP cache and the active scene mesh.</p>
           <p><strong>Conditions</strong> use this browser, device, viewport, production or development build, and current network. Both viewers use the same origin and start together with `fetch` cache disabled for a comparable cold run. Results are illustrative, not a cross-device benchmark.</p>
         </div>
@@ -425,7 +427,7 @@ export function NeuralMorphologyVisualizer() {
               selectedId={selectedId}
               structureStates={structureStates}
             />
-            <p>Commits LOD 0 first, then fills the explicit application cache with higher levels. Zoom controls only the active scene LOD.</p>
+            <p>Commits LOD 0 first, then requests only the detail needed by camera distance, selection, or manual quality. Previously loaded LODs stay cached for reuse.</p>
           </section>
         </div>
       </section>
@@ -553,7 +555,7 @@ export function NeuralMorphologyVisualizer() {
         <article>
           <span className="scientific-demo__kicker">Tradeoffs</span>
           <h4>Fast repeat navigation costs memory</h4>
-          <p>Keeping all downloaded LODs makes zooming back in immediate. Clearing them lowers memory use. Translucent materials disable depth writing below near-opaque values, which avoids common self-occlusion artifacts but cannot perfectly sort every overlapping transparent surface.</p>
+          <p>Demand-driven promotion avoids downloading every possible LOD, while retaining requested levels makes repeat navigation immediate. Clearing the cache lowers memory use. Translucent materials disable depth writing below near-opaque values, which avoids common self-occlusion artifacts but cannot perfectly sort every overlapping transparent surface.</p>
         </article>
         <article>
           <span className="scientific-demo__kicker">Professional contribution</span>

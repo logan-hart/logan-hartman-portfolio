@@ -47,6 +47,7 @@ type ViewerRuntime = {
   datasetRoot: THREE.Group;
   structures: Map<string, RuntimeStructure>;
   cache: AssetCache<GeometryAsset>;
+  requestedLevels: Map<string, LodLevel>;
   applyCameraPose: (pose: CameraPose) => void;
   frameAll: () => void;
   frameStructure: (structureId: string) => void;
@@ -213,8 +214,8 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         if (cancelled) return;
 
         const scene = new three.Scene();
-        scene.background = new three.Color(0x07111d);
-        scene.fog = new three.FogExp2(0x07111d, 0.105);
+        scene.background = new three.Color(0x14213d);
+        scene.fog = new three.FogExp2(0x14213d, 0.105);
         const camera = new three.PerspectiveCamera(38, 1, 0.01, 30);
         const renderer = new three.WebGLRenderer({
           antialias: true,
@@ -230,7 +231,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         const keyLight = new three.DirectionalLight(0xffffff, 2.6);
         keyLight.position.set(3, 4, 6);
         scene.add(keyLight);
-        const rimLight = new three.DirectionalLight(0x54ded6, 1.6);
+        const rimLight = new three.DirectionalLight(0xf77f00, 1.45);
         rimLight.position.set(-4, -2, 3);
         scene.add(rimLight);
 
@@ -314,6 +315,14 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
           interactiveMs: null as number | null,
           highestRequestedLodReadyMs: null as number | null,
         };
+        const startup = {
+          bytes: 0,
+          requests: 0,
+          triangles: 0,
+        };
+        const requestedLevels = new Map<string, LodLevel>();
+        const downloadedLevels = new Map<string, Set<LodLevel>>();
+        let demandRequestsInFlight = 0;
         let suppressCameraBroadcast = false;
         let progressiveBaseReady = mode === "baseline";
 
@@ -329,6 +338,9 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
             mode,
             startedAt,
             ...timings,
+            startupBytes: startup.bytes,
+            startupRequests: startup.requests,
+            startupTriangles: startup.triangles,
             requestedBytes: cacheStats.requestedBytes,
             assetRequests: cacheStats.requests,
             cacheHits: cacheStats.hits,
@@ -431,9 +443,12 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
               priorHighest ?? 0,
               level,
             ) as LodLevel;
-            statuses[structureId].transferSize = definition.levels
-              .slice(0, statuses[structureId].highestDownloadedLod + 1)
-              .reduce((sum, item) => sum + item.byteSize, 0);
+            const downloaded = downloadedLevels.get(structureId) ?? new Set<LodLevel>();
+            if (!downloaded.has(level)) {
+              downloaded.add(level);
+              downloadedLevels.set(structureId, downloaded);
+              statuses[structureId].transferSize += asset.byteSize;
+            }
             statuses[structureId].loading = false;
             if (activate) replaceActiveGeometry(structureId, level, asset);
             emitMetrics();
@@ -451,6 +466,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
           for (const definition of manifest.structures) {
             const structure = structures.get(definition.id);
             if (!structure) continue;
+            if (statuses[definition.id].error) continue;
             const desired = chooseLod({
               distance,
               currentLevel: structure.currentLod,
@@ -458,14 +474,33 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
               quality: qualityRef.current,
             });
             if (structure.currentLod === desired) continue;
-            const desiredAsset = cache.peek(definition.levels[desired].url);
+            const desiredUrl = definition.levels[desired].url;
+            const desiredAsset = cache.reuse(desiredUrl);
             if (desiredAsset) {
               replaceActiveGeometry(definition.id, desired, desiredAsset);
               continue;
             }
 
-            // During progressive background loading, display the best cached
-            // level no higher than the requested level.
+            const requestedLevel = requestedLevels.get(definition.id);
+            if (requestedLevel === undefined) {
+              requestedLevels.set(definition.id, desired);
+              demandRequestsInFlight += 1;
+              timings.highestRequestedLodReadyMs = null;
+              void loadLevel(definition.id, desired, false).finally(() => {
+                if (cancelled) return;
+                requestedLevels.delete(definition.id);
+                demandRequestsInFlight -= 1;
+                updateDisplayedLods();
+                if (demandRequestsInFlight === 0) {
+                  timings.highestRequestedLodReadyMs = performance.now() - startedAt;
+                  emitMetrics();
+                }
+              });
+            }
+
+            // Keep the best cached level visible while the requested detail
+            // loads. This avoids an empty frame and lets camera motion drive
+            // network work instead of eagerly fetching every possible LOD.
             for (let fallback = desired - 1; fallback >= 0; fallback -= 1) {
               const asset = cache.peek(definition.levels[fallback].url);
               if (asset) {
@@ -541,6 +576,7 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
           datasetRoot,
           structures,
           cache,
+          requestedLevels,
           applyCameraPose,
           frameAll,
           frameStructure,
@@ -605,24 +641,15 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
         if (cancelled) return;
         timings.firstMeaningfulRenderMs = performance.now() - startedAt;
         timings.interactiveMs = timings.firstMeaningfulRenderMs;
+        const startupSnapshot = cache.snapshot();
+        startup.bytes = startupSnapshot.requestedBytes;
+        startup.requests = startupSnapshot.requests;
+        startup.triangles = startupSnapshot.totalLoadedTriangles;
         progressiveBaseReady = true;
+        timings.highestRequestedLodReadyMs = timings.firstMeaningfulRenderMs;
+        // Progressive requests after LOD 0 are demand-driven by camera
+        // distance, selection, or the manual quality control.
         updateDisplayedLods();
-        if (mode === "baseline") {
-          timings.highestRequestedLodReadyMs = timings.firstMeaningfulRenderMs;
-        } else {
-          // Each level completes before the next begins, ensuring the coarse
-          // scene is never delayed by higher-detail transfers.
-          for (const level of [1, 2, 3] as LodLevel[]) {
-            await Promise.all(
-              manifest.structures.map((structure) =>
-                loadLevel(structure.id, level, false),
-              ),
-            );
-            if (cancelled) return;
-            updateDisplayedLods();
-          }
-          timings.highestRequestedLodReadyMs = performance.now() - startedAt;
-        }
         emitMetrics();
 
       };
@@ -641,6 +668,9 @@ export const ViewerCanvas = forwardRef<ViewerCanvasHandle, ViewerCanvasProps>(
             firstMeaningfulRenderMs: null,
             interactiveMs: null,
             highestRequestedLodReadyMs: null,
+            startupBytes: 0,
+            startupRequests: 0,
+            startupTriangles: 0,
             requestedBytes: 0,
             assetRequests: 0,
             cacheHits: 0,

@@ -710,11 +710,11 @@ export const projects: Project[] = [
           title: "Coarse geometry before full detail",
           context:
             "Requesting every full-resolution structure before showing a usable scene increases time to first meaningful render.",
-          flow: ["Request LOD 0", "Render usable scene", "Promote from cache"],
+          flow: ["Request LOD 0", "Render usable scene", "Promote on demand"],
           decision:
             "Precompute four GLBs per structure and keep LOD selection in one hysteresis-aware distance function.",
           outcome:
-            "The public viewer can become interactive on coarse geometry while higher levels continue loading independently.",
+            "The public viewer can become interactive on coarse geometry while higher levels load only when camera distance, selection, or quality requires them.",
         },
         {
           title: "Cache parsed source geometry",
@@ -748,7 +748,7 @@ export const projects: Project[] = [
         "Keeps ten public context and cell surfaces aligned and independently controllable in one Three.js scene",
       ],
       lessons: [
-        "Progressive loading improves perceived readiness, but preloading every higher LOD can increase total transfer and retained memory.",
+        "Demand-driven LOD promotion protects startup transfer while retaining requested levels makes repeat navigation immediate.",
         "Transparent overlapping surfaces always involve sorting tradeoffs; depth writing and opacity need deliberate, inspectable rules.",
       ],
       shows:

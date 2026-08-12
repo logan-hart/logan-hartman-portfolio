@@ -81,7 +81,7 @@ export function NeuralMorphologyPreview() {
       if (cancelled) return;
 
       const scene = new three.Scene();
-      scene.background = new three.Color(0x061321);
+      scene.background = new three.Color(0x14213d);
 
       const camera = new three.PerspectiveCamera(38, 16 / 9, 0.1, 5000);
       const renderer = new three.WebGLRenderer({
@@ -107,7 +107,7 @@ export function NeuralMorphologyPreview() {
       const keyLight = new three.DirectionalLight(0xffffff, 2.2);
       keyLight.position.set(420, 520, 700);
       scene.add(keyLight);
-      const rimLight = new three.PointLight(0x52e1da, 32, 1800, 2);
+      const rimLight = new three.PointLight(0xf77f00, 28, 1800, 2);
       rimLight.position.set(-520, -120, 520);
       scene.add(rimLight);
 

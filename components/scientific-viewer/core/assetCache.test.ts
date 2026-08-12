@@ -40,6 +40,16 @@ test("cache deduplicates simultaneous requests by reusing one promise", async ()
   assert.equal(cache.snapshot().hits, 1);
 });
 
+test("cache distinguishes policy inspection from parsed geometry reuse", async () => {
+  const cache = new AssetCache<{ byteSize: number; triangleCount: number }>();
+  const asset = await cache.load("mesh", async () => ({ byteSize: 1, triangleCount: 2 }));
+
+  assert.equal(cache.peek("mesh"), asset);
+  assert.equal(cache.snapshot().hits, 0);
+  assert.equal(cache.reuse("mesh"), asset);
+  assert.equal(cache.snapshot().hits, 1);
+});
+
 test("clear disposes ready cached assets", async () => {
   let disposed = 0;
   const cache = new AssetCache<{
