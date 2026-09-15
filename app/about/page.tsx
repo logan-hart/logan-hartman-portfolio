@@ -88,8 +88,8 @@ export default function AboutPage() {
           <article>
             <span>Operating proof</span>
             <h3>
-              {careerFacts.redEye.metrics.ticketsIssued.value} tickets across{" "}
-              {careerFacts.redEye.metrics.ticketedEvents.value} events
+              {careerFacts.redEye.metrics.ticketsSold.value} tickets sold across{" "}
+              {careerFacts.redEye.metrics.salesGeneratingEvents.value} sales-generating events
             </h3>
             <p>
               The work includes the unglamorous parts of production ownership: edge cases, support workflows,

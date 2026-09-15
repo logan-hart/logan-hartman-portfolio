@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { NeuralMorphologyPreview } from "@/components/demos/NeuralMorphologyPreview";
 import { HeartProjectVisual } from "@/components/work/HeartProjectVisual";
+import { careerFacts } from "@/data/careerFacts";
 import { profile } from "@/data/profile";
 import type { Project } from "@/data/projects";
 import { projects } from "@/data/projects";
@@ -207,7 +208,12 @@ export default function WorkPage() {
               <dl className="work-featured-card__facts">
                 <div>
                   <dt>Production scale</dt>
-                  <dd>240+ ticketed events · 19K+ completed orders · 29K+ tickets issued · $900K+ in gross payment volume</dd>
+                  <dd>
+                    {careerFacts.redEye.metrics.salesGeneratingEvents.value} sales-generating events ·{" "}
+                    {careerFacts.redEye.metrics.paidOrders.value} paid orders ·{" "}
+                    {careerFacts.redEye.metrics.ticketsSold.value} tickets sold ·{" "}
+                    {careerFacts.redEye.metrics.capturedCharges.value} in captured customer charges
+                  </dd>
                 </div>
                 <div>
                   <dt>Role</dt>

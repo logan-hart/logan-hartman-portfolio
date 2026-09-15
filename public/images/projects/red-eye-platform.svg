@@ -6,17 +6,17 @@
   <text x="112" y="136" fill="#fb7b16" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="4">PRODUCT SYSTEMS</text>
   <text x="112" y="214" fill="#ffffff" font-family="Arial, sans-serif" font-size="70" font-weight="800">Red Eye Tickets</text>
   <text x="116" y="260" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="24">Commerce, admissions, producer tools, reporting, and support operations.</text>
-  <text x="116" y="306" fill="#8da0b8" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2">PRODUCTION FLOORS · JULY 21, 2026</text>
+  <text x="116" y="306" fill="#8da0b8" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2">PRODUCTION FLOORS · SEPTEMBER 11, 2026</text>
   <g transform="translate(112 338)">
     <rect width="208" height="118" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
-    <text x="26" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">19K+</text>
-    <text x="26" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">orders processed</text>
+    <text x="26" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">28.5K+</text>
+    <text x="26" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">paid orders</text>
     <rect x="232" width="208" height="118" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
-    <text x="258" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">29K+</text>
-    <text x="258" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">tickets issued</text>
+    <text x="258" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">42.7K+</text>
+    <text x="258" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">tickets sold</text>
     <rect x="464" width="254" height="118" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.15)"/>
-    <text x="490" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">$900K+</text>
-    <text x="490" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">gross payment volume</text>
+    <text x="490" y="48" fill="#fb7b16" font-family="Arial, sans-serif" font-size="28" font-weight="800">$1.44M+</text>
+    <text x="490" y="82" fill="#dbe4ef" font-family="Arial, sans-serif" font-size="17">captured charges</text>
   </g>
   <g transform="translate(736 184)">
     <rect width="348" height="326" rx="12" fill="#0b1b2f" stroke="rgba(255,255,255,.18)"/>

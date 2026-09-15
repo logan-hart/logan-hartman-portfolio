@@ -164,7 +164,7 @@ export const productThinkingArticles = [
 export const impactMetrics = redEyeMetrics.map(({ value, label }) => ({ value, label }));
 
 export const proofPoints = [
-  `Production ticketing platform serving ${redEyeFacts.metrics.buyerIdentities.value} buyer identities`,
+  `Production ticketing platform serving ${redEyeFacts.metrics.uniqueBuyers.value} unique buyers`,
   "Payments, refunds, ticketing, and admissions workflows",
   "Research visualization and technical UI refinement",
   "Visual communication for product and sales teams",
@@ -186,10 +186,10 @@ export const projects: Project[] = [
       "Built the platform behind a live ticketing business, spanning checkout, payments, admissions, producer tools, refunds, and reporting.",
     tags: ["Product Engineering", "Workflow Design", "Payments", "Operations", "Rails", "React"],
     metrics: [
-      `Served ${redEyeFacts.metrics.buyerIdentities.value} buyer identities across the platform`,
-      `Processed ${redEyeFacts.metrics.completedOrders.value} completed orders`,
-      `Issued ${redEyeFacts.metrics.ticketsIssued.value} tickets across ${redEyeFacts.metrics.ticketedEvents.value} ticketed events`,
-      `Processed ${redEyeFacts.metrics.grossPaymentVolume.value} in gross payment volume since the ${redEyeFacts.customPlatformLaunchLabel} custom-platform launch`,
+      `Served ${redEyeFacts.metrics.uniqueBuyers.value} unique buyers across the platform`,
+      `Processed ${redEyeFacts.metrics.paidOrders.value} paid orders`,
+      `Sold ${redEyeFacts.metrics.ticketsSold.value} tickets across ${redEyeFacts.metrics.salesGeneratingEvents.value} sales-generating events`,
+      `Captured ${redEyeFacts.metrics.capturedCharges.value} in customer charges as of ${redEyeFacts.metricsAsOfLabel}`,
       "Expanded checkout with Apple Pay and Google Pay wallet payment flows",
     ],
     image: "/images/red-eye/logo-on-radial-gradient.webp",
@@ -274,11 +274,11 @@ export const projects: Project[] = [
         "Policy-governed Loop architecture connecting observations and findings to proposals, approvals, verification, outcomes, and reusable lessons",
       ],
       improvements: [
-        `Served ${redEyeFacts.metrics.buyerIdentities.value} buyer identities across ${redEyeFacts.metrics.ticketedEvents.value} ticketed events`,
-        `Processed more than ${redEyeFacts.metrics.grossPaymentVolume.value} in gross payment volume since the custom platform launched in ${redEyeFacts.customPlatformLaunchLabel}`,
+        `Served ${redEyeFacts.metrics.uniqueBuyers.value} unique buyers across ${redEyeFacts.metrics.salesGeneratingEvents.value} sales-generating events`,
+        `Captured ${redEyeFacts.metrics.capturedCharges.value} in customer charges as of ${redEyeFacts.metricsAsOfLabel}`,
         "Added Apple Pay and Google Pay as provider-specific checkout paths",
         "Replaced the WordPress MVP with a custom application built around event-commerce operations",
-        `Processed ${redEyeFacts.metrics.completedOrders.value} completed orders and issued ${redEyeFacts.metrics.ticketsIssued.value} tickets`,
+        `Processed ${redEyeFacts.metrics.paidOrders.value} paid orders and sold ${redEyeFacts.metrics.ticketsSold.value} tickets`,
         "Improved reliability and confidence for door staff working live events",
       ],
       decisions: [
@@ -379,11 +379,11 @@ export const projects: Project[] = [
         "AI-assisted development workflows",
       ],
       outcomes: [
-        `${redEyeFacts.metrics.buyerIdentities.value} buyer identities served`,
-        `${redEyeFacts.metrics.completedOrders.value} completed orders processed`,
-        `${redEyeFacts.metrics.ticketsIssued.value} tickets issued`,
-        `${redEyeFacts.metrics.grossPaymentVolume.value} gross payment volume processed since the ${redEyeFacts.customPlatformLaunchLabel} platform launch`,
-        `${redEyeFacts.metrics.ticketedEvents.value} ticketed events supported`,
+        `${redEyeFacts.metrics.uniqueBuyers.value} unique buyers served`,
+        `${redEyeFacts.metrics.paidOrders.value} paid orders processed`,
+        `${redEyeFacts.metrics.ticketsSold.value} tickets sold`,
+        `${redEyeFacts.metrics.capturedCharges.value} in customer charges captured as of ${redEyeFacts.metricsAsOfLabel}`,
+        `${redEyeFacts.metrics.salesGeneratingEvents.value} sales-generating events supported`,
         "More reliable checkout and buyer payment options",
         "Operational control for event setup, support, reporting, refunds, and check-in",
       ],
