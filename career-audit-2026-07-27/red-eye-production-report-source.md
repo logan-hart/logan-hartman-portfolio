@@ -1,6 +1,49 @@
 # Red Eye production report source
 
-Latest canonical snapshot supplied September 15, 2026 from the source-backed production report.
+The static fallback uses the canonical snapshot supplied September 15, 2026.
+The following read-only refresh evidence retains its definitions for the new
+page-load feed. Code preparation does not establish a live connection.
+
+## September 30 refresh verification
+
+Authenticated production PostgreSQL SELECT queries at cutoff
+**September 30, 2026 at 12:01:33 PM PDT** (`2026-09-30T19:01:33.278848Z`)
+independently reproduced the retained portfolio cohorts:
+
+| Existing feed metric | Exact total | Conservative public display |
+|---|---:|---:|
+| Sales-generating events | 309 | 309 |
+| Unique identifiable buyers | 19,995 | 19.9K+ |
+| Paid customer orders | 30,406 | 30.4K+ |
+| Tickets sold | 45,205 | 45.2K+ |
+| Captured customer charges, including fees/taxes | $1,509,383.47 | $1.50M+ |
+
+Gross ticket sales were $1,375,660.95 and remain a different metric. No new
+public metric slot is added. The source reader's SQL reproduced these five
+totals again in one read-only repeatable-read transaction at
+`2026-09-30T19:26:28.127685Z`, with zero invalid source rows.
+
+Reconciliation: 30,953 recorded-paid orders less one known check-in pilot
+fixture and 546 comp-only orders equals 30,406. Email-first buyer identity
+remains the approved definition; switching to today's user-first application
+method would produce 23,884 and would be a definition change. Seventeen orders
+lack both email and user ID. Three nonduplicative legacy ticket rows remain
+included. Three orders have multiple captured charge movements, which remain
+included at movement grain. No active line-item dimension conflicts were found.
+
+The historical paid-recorded cohort includes 89 ticket units ($2,368.20 ticket
+gross) excluded by the newer settled-payment guard. This feed intentionally
+retains the approved historical definition; tickets are not represented as
+attendance or settlement proof. The automatic source contract is
+`redeye_portfolio_lifetime_v1`, and any definition change requires explicit
+version review rather than substituting current application report values.
+
+Evidence is retained in the existing "Pull production lifetime statistics"
+chat `019f8a26-11f9-7e51-ae54-e468d5c471e8`, with the aggregate query receipt
+`portfolio-production-verification-sources.json`. Only aggregate results were
+read; no production records, payment providers or publication schedules were
+changed by verification. The original September 11 source remains below for
+the static fallback and historical provenance.
 
 ## Canonical source
 

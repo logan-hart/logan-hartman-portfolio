@@ -1,6 +1,7 @@
+import { LiveMetricText, LiveMetricDate } from "@/components/red-eye/LivePortfolioStatistics";
 import type { Metadata } from "next";
 import { EvidenceCallout, EvidencePage, EvidenceSection } from "@/components/red-eye/EvidencePage";
-import { redEyeMetrics, redEyeMetricsAsOf, redEyeMetricsDisclosure } from "@/data/redEyeMetrics";
+import { redEyeMetrics, redEyeMetricsDisclosure } from "@/data/redEyeMetrics";
 
 export const metadata: Metadata = {
   title: "Production Metric Methodology | Red Eye Tickets",
@@ -15,17 +16,17 @@ export default function RedEyeMetricsPage() {
       eyebrow="Production evidence"
       title="How the production numbers are counted"
       intro="The case study uses conservative display floors from a dated production snapshot. This page defines each existing scale claim and makes its limits explicit."
-      meta={[`Snapshot: ${redEyeMetricsAsOf}`, "Read-only query", "QA fixtures excluded"]}
+      meta={[<>Snapshot: <LiveMetricDate /></>, "Read-only query", "QA fixtures excluded"]}
     >
       <EvidenceCallout title="Published disclosure">
-        <p>{redEyeMetricsDisclosure}</p>
+        <p><LiveMetricText text={redEyeMetricsDisclosure} /></p>
       </EvidenceCallout>
 
       <EvidenceSection number="01" title="The publishable production snapshot">
         <div className="metric-method-grid">
           {redEyeMetrics.map((metric) => (
             <article key={metric.key}>
-              <strong>{metric.value}</strong>
+              <strong><LiveMetricText text={metric.value} /></strong>
               <span>{metric.label}</span>
             </article>
           ))}

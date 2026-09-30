@@ -1,3 +1,4 @@
+import { LiveMetricText, LiveMetricDate } from "@/components/red-eye/LivePortfolioStatistics";
 import type { Metadata } from "next";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
@@ -209,10 +210,10 @@ export default function WorkPage() {
                 <div>
                   <dt>Production scale</dt>
                   <dd>
-                    {careerFacts.redEye.metrics.salesGeneratingEvents.value} sales-generating events ·{" "}
-                    {careerFacts.redEye.metrics.paidOrders.value} paid orders ·{" "}
-                    {careerFacts.redEye.metrics.ticketsSold.value} tickets sold ·{" "}
-                    {careerFacts.redEye.metrics.capturedCharges.value} in captured customer charges
+                    <LiveMetricText text={careerFacts.redEye.metrics.salesGeneratingEvents.value} /> sales-generating events ·{" "}
+                    <LiveMetricText text={careerFacts.redEye.metrics.paidOrders.value} /> paid orders ·{" "}
+                    <LiveMetricText text={careerFacts.redEye.metrics.ticketsSold.value} /> tickets sold ·{" "}
+                    <LiveMetricText text={careerFacts.redEye.metrics.capturedCharges.value} /> in captured customer charges
                   </dd>
                 </div>
                 <div>

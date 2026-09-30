@@ -21,21 +21,21 @@ export const redEyeMetrics: RedEyeMetric[] = [
     value: careerFacts.redEye.metrics.uniqueBuyers.value,
     label: "Unique buyers",
     definition:
-      "Distinct paid-order identities after normalizing account and guest-checkout identity.",
+      "Distinct normalized paid-order emails, falling back to user ID only when email is missing.",
   },
   {
     key: "orders",
     value: careerFacts.redEye.metrics.paidOrders.value,
     label: "Paid orders",
     definition:
-      "Orders included in the production report's paid-order cohort.",
+      "Orders with recorded paid timestamps, excluding known check-in pilot fixtures and comp-only orders. This historical portfolio cohort is retained across refreshes.",
   },
   {
     key: "tickets",
     value: careerFacts.redEye.metrics.ticketsSold.value,
     label: "Tickets sold",
     definition:
-      "Tickets included in the production report's lifetime sold-ticket cohort.",
+      "Non-canceled, non-comp line-item quantities on recorded paid customer orders, plus nonduplicative legacy tickets. This historical cohort is not a settled-payment or attendance measure.",
   },
   {
     key: "gpv",
@@ -47,7 +47,7 @@ export const redEyeMetrics: RedEyeMetric[] = [
 ];
 
 export const redEyeMetricsDisclosure =
-  `Production lifetime totals as of ${redEyeMetricsAsOf}. Unique buyers use normalized paid-order identity; captured customer charges include fees and taxes. Display values use conservative floors from the dated source snapshot.`;
+  `Production lifetime totals as of ${redEyeMetricsAsOf}. Unique buyers use normalized order email with user-ID fallback; captured customer charges include fees and taxes. Display values use conservative floors from the dated source snapshot and retain the approved historical paid-recorded cohort.`;
 
 export function redEyeMetric(key: RedEyeMetric["key"]) {
   return redEyeMetrics.find((metric) => metric.key === key)!;

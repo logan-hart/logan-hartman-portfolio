@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
+import { LivePortfolioStatistics } from "@/components/red-eye/LivePortfolioStatistics";
 import { Header } from "@/components/Header";
 import { H01AssetWarmup } from "@/components/demos/H01AssetWarmup";
 import { profile } from "@/data/profile";
@@ -58,11 +59,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skip-link" href="#main">
           Skip to content
         </a>
-        <div className="site-shell">
-          <Header />
-          <main id="main">{children}</main>
-          <Footer />
-        </div>
+        <LivePortfolioStatistics>
+          <div className="site-shell">
+            <Header />
+            <main id="main">{children}</main>
+            <Footer />
+          </div>
+        </LivePortfolioStatistics>
         <H01AssetWarmup />
         <script
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
