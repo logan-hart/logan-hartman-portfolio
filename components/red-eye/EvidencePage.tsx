@@ -6,7 +6,7 @@ type EvidencePageProps = {
   eyebrow: string;
   title: string;
   intro: string;
-  meta: string[];
+  meta: ReactNode[];
   children: ReactNode;
 };
 
@@ -23,7 +23,7 @@ export function EvidencePage({ eyebrow, title, intro, meta, children }: Evidence
           <h1>{title}</h1>
           <p className="evidence-page-hero__intro">{intro}</p>
           <div className="evidence-page-meta" aria-label="Artifact metadata">
-            {meta.map((item) => <span key={item}>{item}</span>)}
+            {meta.map((item, index) => <span key={index}>{item}</span>)}
           </div>
         </div>
       </section>

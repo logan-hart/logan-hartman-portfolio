@@ -2,6 +2,7 @@
 .next/
 out/
 node_modules/
+/output/playwright/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -1,6 +1,7 @@
+import { LiveMetricText, LiveMetricDate } from "@/components/red-eye/LivePortfolioStatistics";
 import type { Metadata } from "next";
 import { EvidenceCallout, EvidencePage, EvidenceSection } from "@/components/red-eye/EvidencePage";
-import { redEyeMetrics, redEyeMetricsAsOf, redEyeMetricsDisclosure } from "@/data/redEyeMetrics";
+import { redEyeMetrics, redEyeMetricsDisclosure } from "@/data/redEyeMetrics";
 
 export const metadata: Metadata = {
   title: "Production Metric Methodology | Red Eye Tickets",
@@ -14,25 +15,25 @@ export default function RedEyeMetricsPage() {
     <EvidencePage
       eyebrow="Production evidence"
       title="How the production numbers are counted"
-      intro="The case study uses conservative, rounded floors from a read-only production snapshot. This page defines each claim and makes its limits explicit."
-      meta={[`Snapshot: ${redEyeMetricsAsOf}`, "Read-only query", "QA fixtures excluded"]}
+      intro="The case study uses conservative display floors from a dated production snapshot. This page defines each existing scale claim and makes its limits explicit."
+      meta={[<>Snapshot: <LiveMetricDate /></>, "Read-only query", "QA fixtures excluded"]}
     >
       <EvidenceCallout title="Published disclosure">
-        <p>{redEyeMetricsDisclosure}</p>
+        <p><LiveMetricText text={redEyeMetricsDisclosure} /></p>
       </EvidenceCallout>
 
       <EvidenceSection number="01" title="The publishable production snapshot">
         <div className="metric-method-grid">
           {redEyeMetrics.map((metric) => (
             <article key={metric.key}>
-              <strong>{metric.value}</strong>
+              <strong><LiveMetricText text={metric.value} /></strong>
               <span>{metric.label}</span>
             </article>
           ))}
         </div>
         <p>
-          Each displayed value is rounded down below the verified total. The floors remain stable after obvious QA,
-          demo, and local fixtures are removed.
+          Counts and currency are compacted into conservative public display floors. Exact totals, supporting figures,
+          cohort notes, and query provenance remain in the dated internal source record.
         </p>
       </EvidenceSection>
 
@@ -49,10 +50,11 @@ export default function RedEyeMetricsPage() {
 
       <EvidenceSection number="03" title="Exclusions and privacy boundary">
         <ul>
-          <li>Obvious QA, demo, and local fixture markers are excluded before the rounded floors are chosen.</li>
-          <li>The validation query selects aggregate counts and sums; customer names, emails, order IDs, and payment details are not published.</li>
-          <li>Refunded and charged-back orders remain completed checkouts, while GPV is explicitly stated before refunds and chargebacks.</li>
-          <li>Complimentary and later-canceled tickets remain historical issuance records; they are not represented as paid attendance.</li>
+          <li>The published figures are aggregate counts and sums; customer names, emails, order IDs, and payment details are not published.</li>
+          <li>Unique buyers use normalized paid-order identity rather than the larger registered-account count.</li>
+          <li>Captured customer charges include fees and taxes and are not labeled as ticket-sales revenue.</li>
+          <li>Tickets sold follow the report&apos;s lifetime sold-ticket cohort and are not represented as attendance.</li>
+          <li>All lifetime totals include July 15–18; those dates are excluded only from the corrected payment-method cohort.</li>
         </ul>
       </EvidenceSection>
 

@@ -12,42 +12,42 @@ export const redEyeMetricsAsOf = careerFacts.redEye.metricsAsOfLabel;
 export const redEyeMetrics: RedEyeMetric[] = [
   {
     key: "events",
-    value: careerFacts.redEye.metrics.ticketedEvents.value,
-    label: "Ticketed events",
-    definition: "Distinct events with at least one issued, non-QA ticket.",
+    value: careerFacts.redEye.metrics.salesGeneratingEvents.value,
+    label: "Sales-generating events",
+    definition: "Distinct events represented by at least one paid order.",
   },
   {
     key: "buyers",
-    value: careerFacts.redEye.metrics.buyerIdentities.value,
-    label: "Buyer identities",
+    value: careerFacts.redEye.metrics.uniqueBuyers.value,
+    label: "Unique buyers",
     definition:
-      "Distinct account ID when present; otherwise a normalized purchaser email across completed orders.",
+      "Distinct normalized paid-order emails, falling back to user ID only when email is missing.",
   },
   {
     key: "orders",
-    value: careerFacts.redEye.metrics.completedOrders.value,
-    label: "Completed orders",
+    value: careerFacts.redEye.metrics.paidOrders.value,
+    label: "Paid orders",
     definition:
-      "Orders that reached paid, partial-refund, refunded, or chargeback state after completing payment.",
+      "Orders with recorded paid timestamps, excluding known check-in pilot fixtures and comp-only orders. This historical portfolio cohort is retained across refreshes.",
   },
   {
     key: "tickets",
-    value: careerFacts.redEye.metrics.ticketsIssued.value,
-    label: "Tickets issued",
+    value: careerFacts.redEye.metrics.ticketsSold.value,
+    label: "Tickets sold",
     definition:
-      "Historical issued ticket records, including complimentary tickets and tickets later refunded or canceled.",
+      "Non-canceled, non-comp line-item quantities on recorded paid customer orders, plus nonduplicative legacy tickets. This historical cohort is not a settled-payment or attendance measure.",
   },
   {
     key: "gpv",
-    value: careerFacts.redEye.metrics.grossPaymentVolume.value,
-    label: "Gross payment volume",
+    value: careerFacts.redEye.metrics.capturedCharges.value,
+    label: "Captured customer charges",
     definition:
-      "Successful or captured charge volume before refunds and chargebacks. GPV is payment volume, not revenue.",
+      "Captured customer charge volume including fees and taxes; this is payment volume, not ticket-sales revenue.",
   },
 ];
 
 export const redEyeMetricsDisclosure =
-  `Production totals through ${redEyeMetricsAsOf}. Buyer identities deduplicate completed orders by account ID or normalized email; GPV includes successful charges before refunds. Obvious QA and local fixtures are excluded.`;
+  `Production lifetime totals as of ${redEyeMetricsAsOf}. Unique buyers use normalized order email with user-ID fallback; captured customer charges include fees and taxes. Display values use conservative floors from the dated source snapshot and retain the approved historical paid-recorded cohort.`;
 
 export function redEyeMetric(key: RedEyeMetric["key"]) {
   return redEyeMetrics.find((metric) => metric.key === key)!;

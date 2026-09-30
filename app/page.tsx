@@ -1,3 +1,4 @@
+import { LiveMetricText, LiveMetricDate } from "@/components/red-eye/LivePortfolioStatistics";
 import { ArrowRight, Blocks, Compass, Route } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,12 +13,8 @@ import {
   operatingManualPrinciples,
   selectedProjects,
 } from "@/data/projects";
-import { redEyeMetrics, redEyeMetricsAsOf } from "@/data/redEyeMetrics";
 
 const approachIcons = [Route, Compass, Blocks];
-const homepageImpactMetrics = redEyeMetrics.filter((metric) =>
-  ["events", "orders", "tickets", "gpv"].includes(metric.key),
-);
 
 const featuredLabels: Record<string, string> = {
   "red-eye-tickets": "Product Engineering",
@@ -65,6 +62,20 @@ const featuredLinkLabels: Record<string, string> = {
 
 export default function HomePage() {
   const redEye = careerFacts.redEye;
+  const homepageImpactMetrics = [
+    {
+      value: redEye.metrics.capturedCharges.value,
+      label: "Customer charges processed",
+    },
+    {
+      value: redEye.metrics.paidOrders.value,
+      label: "Paid orders",
+    },
+    {
+      value: redEye.metrics.uniqueBuyers.value,
+      label: "Unique buyers",
+    },
+  ];
   preload("/images/hero-workflow-background.webp", {
     as: "image",
     fetchPriority: "high",
@@ -88,10 +99,9 @@ export default function HomePage() {
               inventory, ticketing, producer tools, and live admissions.
             </p>
             <p className="hero-proof-line">
-              Since the custom platform launched in {redEye.customPlatformLaunchLabel}:{" "}
-              {redEye.metrics.ticketedEvents.value} ticketed events · {redEye.metrics.completedOrders.value} completed
-              orders · {redEye.metrics.ticketsIssued.value} tickets issued ·{" "}
-              {redEye.metrics.grossPaymentVolume.value} in gross payment volume.
+              Production lifetime snapshot as of <LiveMetricDate />: <LiveMetricText text={redEye.metrics.capturedCharges.value} /> in
+              customer charges processed · <LiveMetricText text={redEye.metrics.paidOrders.value} /> paid orders ·{" "}
+              <LiveMetricText text={redEye.metrics.uniqueBuyers.value} /> unique buyers.
             </p>
             <div className="actions">
               <Link className="button button--primary" href="/work/red-eye-tickets/">
@@ -114,14 +124,14 @@ export default function HomePage() {
           </div>
           <div className="impact-stats" aria-label="Selected impact metrics">
             {homepageImpactMetrics.map((metric) => (
-              <article key={metric.value}>
-                <strong>{metric.value}</strong>
+              <article key={metric.label}>
+                <strong><LiveMetricText text={metric.value} /></strong>
                 <span>{metric.label}</span>
               </article>
             ))}
           </div>
           <p className="metric-method-note">
-            Production totals through {redEyeMetricsAsOf} ·{" "}
+            Production totals through <LiveMetricDate /> ·{" "}
             <Link href="/work/red-eye-tickets/metrics/">Metric definitions →</Link>
           </p>
         </div>

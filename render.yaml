@@ -7,6 +7,8 @@ services:
     branch: main
     autoDeploy: true
     envVars:
+      - key: NEXT_PUBLIC_PORTFOLIO_METRICS_URL
+        value: https://api.redeyetickets.com/api/v1/portfolio_statistics
       - key: NEXT_PUBLIC_RED_EYE_DEMO_ENABLED
         value: false
     headers:

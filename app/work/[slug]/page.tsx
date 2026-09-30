@@ -1,3 +1,4 @@
+import { LiveMetricText, LiveMetricDate } from "@/components/red-eye/LivePortfolioStatistics";
 import {
   ArrowLeft,
   ArrowRight,
@@ -23,7 +24,7 @@ import { Section } from "@/components/Section";
 import { HeartProjectVisual } from "@/components/work/HeartProjectVisual";
 import type { ProductArtifact, Project, Screenshot } from "@/data/projects";
 import { projects } from "@/data/projects";
-import { redEyeMetric, redEyeMetricsAsOf } from "@/data/redEyeMetrics";
+import { redEyeMetric } from "@/data/redEyeMetrics";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -73,7 +74,7 @@ function ListPanel({ title, items }: { title?: string; items?: string[] }) {
       {title ? <h2>{title}</h2> : null}
       <ul>
         {items.map((item) => (
-          <li key={item}>{item}</li>
+          <li key={item}><LiveMetricText text={item} /></li>
         ))}
       </ul>
     </section>
@@ -425,8 +426,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {caseMetricCards?.length ? (
             <div className="case-metric-strip" aria-label={`${project.title} impact metrics`}>
               {caseMetricCards.map((metric) => (
-                <article key={`${metric.value}-${metric.label}`}>
-                  <strong data-count-value={metric.value}>{metric.value}</strong>
+                <article key={metric.label}>
+                  <strong><LiveMetricText text={metric.value} /></strong>
                   <span>{metric.label}</span>
                 </article>
               ))}
@@ -434,7 +435,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           ) : null}
           {isRedEye ? (
             <p className="case-metric-note">
-              Production totals through {redEyeMetricsAsOf}; rounded down with QA and local fixtures excluded.{" "}
+              Production totals through <LiveMetricDate />; rounded down with QA and local fixtures excluded.{" "}
               <Link href="/work/red-eye-tickets/metrics/">Definitions and limitations →</Link>
             </p>
           ) : null}

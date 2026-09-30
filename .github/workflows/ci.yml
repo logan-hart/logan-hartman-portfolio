@@ -27,6 +27,9 @@ jobs:
       - name: Audit dependencies
         run: npm run audit
 
+      - name: Test snapshot contract and existing components
+        run: npm test
+
       - name: Verify sanitized evidence
         run: npm run verify:evidence
 

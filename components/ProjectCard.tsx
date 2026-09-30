@@ -1,3 +1,4 @@
+import { LiveMetricText } from "@/components/red-eye/LivePortfolioStatistics";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,7 +28,7 @@ export function ProjectCard({ project, detailed = false }: ProjectCardProps) {
         {detailed && project.metrics && (
           <ul>
             {project.metrics.map((metric) => (
-              <li key={metric}>{metric}</li>
+              <li key={metric}>{project.slug === "red-eye-tickets" ? <LiveMetricText text={metric} /> : metric}</li>
             ))}
           </ul>
         )}
