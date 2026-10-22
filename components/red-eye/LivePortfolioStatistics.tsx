@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { careerFacts } from "@/data/careerFacts";
-import { portfolioSnapshotContract, validatePortfolioSnapshot, type PortfolioSnapshot } from "@/data/portfolioSnapshot";
+import { formatHeadlineTicketSalesVolume, portfolioSnapshotContract, validatePortfolioSnapshot, type PortfolioSnapshot } from "@/data/portfolioSnapshot";
 
 const facts = careerFacts.redEye;
 const baseline: PortfolioSnapshot = {
@@ -50,10 +50,15 @@ export function LiveMetricDate() {
   return <>{snapshot === baseline ? facts.metricsAsOfLabel : dateLabel(snapshot.asOf)}</>;
 }
 
+export function LiveTicketSalesVolume() {
+  const snapshot = useContext(SnapshotContext);
+  return <>{formatHeadlineTicketSalesVolume(snapshot.metrics.gpv.floor)}</>;
+}
+
 function dateLabel(asOf: string) {
   return new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles", year: "numeric", month: "long", day: "numeric",
-    hour: "numeric", minute: "2-digit", timeZoneName: "short",
+    hour: "numeric", minute: "2-digit", second: "2-digit", timeZoneName: "short",
   }).format(new Date(asOf));
 }
 

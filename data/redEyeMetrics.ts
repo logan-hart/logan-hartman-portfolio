@@ -21,7 +21,7 @@ export const redEyeMetrics: RedEyeMetric[] = [
     value: careerFacts.redEye.metrics.uniqueBuyers.value,
     label: "Unique buyers",
     definition:
-      "Distinct normalized paid-order emails, falling back to user ID only when email is missing.",
+      "Distinct buyer identities from normalized paid-order emails, falling back to user ID only when email is missing; not registered-account counts.",
   },
   {
     key: "orders",
@@ -40,14 +40,14 @@ export const redEyeMetrics: RedEyeMetric[] = [
   {
     key: "gpv",
     value: careerFacts.redEye.metrics.capturedCharges.value,
-    label: "Captured customer charges",
+    label: "Ticket sales volume",
     definition:
-      "Captured customer charge volume including fees and taxes; this is payment volume, not ticket-sales revenue.",
+      "A conservative public floor of lifetime captured customer charges including fees and taxes. This is payment volume, not company revenue, ARR, or an annualized run rate.",
   },
 ];
 
 export const redEyeMetricsDisclosure =
-  `Production lifetime totals as of ${redEyeMetricsAsOf}. Unique buyers use normalized order email with user-ID fallback; captured customer charges include fees and taxes. Display values use conservative floors from the dated source snapshot and retain the approved historical paid-recorded cohort.`;
+  `Production lifetime totals as of ${redEyeMetricsAsOf}. Unique buyers use normalized order email with user-ID fallback. Ticket sales volume includes captured customer charges, fees, and taxes; it is not company revenue, ARR, or an annualized run rate. The homepage uses a coarser sales-volume floor than this methodology page; neither amount is an exact total. All display values use conservative floors from the dated source snapshot and retain the approved historical paid-recorded cohort.`;
 
 export function redEyeMetric(key: RedEyeMetric["key"]) {
   return redEyeMetrics.find((metric) => metric.key === key)!;
