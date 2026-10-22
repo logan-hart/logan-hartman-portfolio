@@ -1,4 +1,4 @@
-import { LiveMetricText, LiveMetricDate } from "@/components/red-eye/LivePortfolioStatistics";
+import { LiveMetricText, LiveMetricDate, LiveTicketSalesVolume } from "@/components/red-eye/LivePortfolioStatistics";
 import { ArrowRight, Blocks, Compass, Route } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -64,15 +64,15 @@ export default function HomePage() {
   const redEye = careerFacts.redEye;
   const homepageImpactMetrics = [
     {
-      value: redEye.metrics.capturedCharges.value,
-      label: "Customer charges processed",
+      value: <LiveTicketSalesVolume />,
+      label: "Ticket sales volume",
     },
     {
-      value: redEye.metrics.paidOrders.value,
+      value: <LiveMetricText text={redEye.metrics.paidOrders.value} />,
       label: "Paid orders",
     },
     {
-      value: redEye.metrics.uniqueBuyers.value,
+      value: <LiveMetricText text={redEye.metrics.uniqueBuyers.value} />,
       label: "Unique buyers",
     },
   ];
@@ -99,8 +99,8 @@ export default function HomePage() {
               inventory, ticketing, producer tools, and live admissions.
             </p>
             <p className="hero-proof-line">
-              Production lifetime snapshot as of <LiveMetricDate />: <LiveMetricText text={redEye.metrics.capturedCharges.value} /> in
-              customer charges processed · <LiveMetricText text={redEye.metrics.paidOrders.value} /> paid orders ·{" "}
+              Production lifetime snapshot as of <LiveMetricDate />: <LiveTicketSalesVolume /> in
+              ticket sales volume · <LiveMetricText text={redEye.metrics.paidOrders.value} /> paid orders ·{" "}
               <LiveMetricText text={redEye.metrics.uniqueBuyers.value} /> unique buyers.
             </p>
             <div className="actions">
@@ -125,7 +125,7 @@ export default function HomePage() {
           <div className="impact-stats" aria-label="Selected impact metrics">
             {homepageImpactMetrics.map((metric) => (
               <article key={metric.label}>
-                <strong><LiveMetricText text={metric.value} /></strong>
+                <strong>{metric.value}</strong>
                 <span>{metric.label}</span>
               </article>
             ))}

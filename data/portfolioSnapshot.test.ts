@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { validatePortfolioSnapshot, portfolioSnapshotContract, type PortfolioSnapshot } from "./portfolioSnapshot";
+import { formatHeadlineTicketSalesVolume, validatePortfolioSnapshot, portfolioSnapshotContract, type PortfolioSnapshot } from "./portfolioSnapshot";
 
 const baseline: PortfolioSnapshot = {
   schemaVersion: 1, contract: portfolioSnapshotContract, asOf: "2026-09-11T22:51:00Z",
@@ -12,6 +12,13 @@ const baseline: PortfolioSnapshot = {
 };
 const now = Date.parse("2026-09-30T19:00:00Z");
 function fresh() { return { ...structuredClone(baseline), asOf: "2026-09-30T18:00:00Z" }; }
+
+test("headline ticket sales volume keeps a conservative floor across refresh boundaries", () => {
+  assert.equal(formatHeadlineTicketSalesVolume(1_560_000), "$1.5M+");
+  assert.equal(formatHeadlineTicketSalesVolume(1_590_000), "$1.5M+");
+  assert.equal(formatHeadlineTicketSalesVolume(1_600_000), "$1.6M+");
+  assert.equal(formatHeadlineTicketSalesVolume(990_000), "$990K+");
+});
 
 test("accepts only a newer complete contract with conservative floors", () => {
   const snapshot = fresh(); snapshot.metrics.buyers = { value: "20.0K+", floor: 20000 };

@@ -15,6 +15,13 @@ export function formatPortfolioFloor(key: PortfolioMetricKey, floor: number) {
   return floor >= 1000 ? `${(floor / 1000).toFixed(1)}K+` : String(floor);
 }
 
+// The headline uses a coarser floor than the methodology, never a rounded-up amount.
+export function formatHeadlineTicketSalesVolume(floor: number) {
+  return floor >= 1_000_000
+    ? `$${(Math.floor(floor / 100_000) / 10).toFixed(1)}M+`
+    : formatPortfolioFloor("gpv", floor);
+}
+
 // No partial updates, arbitrary labels, HTML, identifiers or unknown fields.
 export function validatePortfolioSnapshot(input: unknown, baseline: PortfolioSnapshot, now = Date.now()): PortfolioSnapshot | null {
   if (!input || typeof input !== "object") return null;
